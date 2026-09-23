@@ -1,0 +1,27 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
+  --color-bg: #f7f7f5;
+  --color-surface: #ffffff;
+  --color-border: #e6e6e2;
+  --color-text: #1f1f1d;
+  --color-text-muted: #6b6b64;
+  --color-accent: #2f6fed;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  line-height: 1.5;
+}

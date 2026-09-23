@@ -1,0 +1,30 @@
+appId: com.mynote.app
+productName: myNote
+directories:
+  buildResources: build
+files:
+  - '!**/.vscode/*'
+  - '!src/*'
+  - '!electron.vite.config.{js,ts,mjs,cjs}'
+  - '!{.eslintcache,eslint.config.mjs,.prettierignore,.prettierrc.yaml,CHANGELOG.md,README.md}'
+  - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
+  - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
+  - '!{PRD.md,DEVELOPMENT_PLAN.md,vitest.config.ts}'
+asarUnpack:
+  - node_modules/sql.js/**
+extraResources:
+  - from: node_modules/sql.js/dist/sql-wasm.wasm
+    to: sql-wasm.wasm
+win:
+  executableName: myNote
+  target:
+    - nsis
+    - dir
+nsis:
+  oneClick: true
+  artifactName: myNote-setup.${ext}
+  shortcutName: ${productName}
+  uninstallDisplayName: ${productName}
+  createDesktopShortcut: always
+  createStartMenuShortcut: true
+npmRebuild: false
