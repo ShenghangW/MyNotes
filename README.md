@@ -1,50 +1,82 @@
-# myNote
+# myNotes
 
-Personal desktop app for notes, calendar, to-dos, and a weekly timetable. All data stays on this computer.
+A free, local-first note-taking and planning app that runs on your own computer. Think of it as a lightweight Notion for localhost: write Markdown notes, fold sections away, plan your week on a 7-day timetable, and tick off a to-do list. No account, no cloud, no subscription.
 
-## Requirements
+> **Status: in active development.** The design and project structure are in place and features are being built step by step. See the [Roadmap](#roadmap) for what is done and what is next.
 
-- Node.js 20+ (22/24 is fine)
-- Windows for the V1 installer later; `npm run dev` works during development
+## Why this project
 
-## Start the app (Windows)
+Most note apps want an account, an internet connection or a paid plan. myNotes keeps everything on your machine, so it is fast, private and always available. It is also my hands-on project for practising full-stack development, automated testing and CI.
 
-After a package build you can double-click **myNote.exe** — no terminal needed.
+## Features
+
+| Feature | What it does |
+| --- | --- |
+| **Markdown notes** | Write in Markdown, see it formatted as you type |
+| **Foldable sections** | Collapse and expand headings to keep long notes tidy, like Notion |
+| **Auto-save** | Changes are saved in the background while you type |
+| **Manual save** | Save on demand (Ctrl/Cmd + S) for peace of mind |
+| **7-day timetable** | Plan your week as time blocks across seven days |
+| **To-do list** | Add, tick off and remove tasks |
+| **Local only** | Runs on `localhost`, data stays on your computer |
+
+## Screenshots
+
+_Coming soon._
+
+## Quick start
+
+Requires [Node.js](https://nodejs.org) 20 or newer.
 
 ```bash
-npm run package:exe
-```
-
-That creates:
-
-- `dist/win-unpacked/myNote.exe` — double-click this anytime
-- `dist/myNote-setup.exe` — installer (desktop + Start Menu shortcuts)
-
-A **myNote** shortcut is also placed on your Desktop and in this project folder.
-
-Rebuild with `npm run package:exe` after code changes if you want the .exe to pick them up. Use `npm run dev` while actively developing (hot reload).
-
-## Commands
-
-```bash
+git clone https://github.com/ShenghangW/myNotes.git
+cd myNotes
 npm install
 npm run dev
-npm test
-npm run typecheck
-npm run build
-npm run package:exe
 ```
 
-## Data location
+Then open `http://localhost:3000`.
 
-On first launch the app creates folders under Electron’s user data directory (not inside this repo):
+## Tech stack
 
-- Windows: `%APPDATA%\myNote\` (exact path is shown later on the Settings page)
-- `images\` for uploaded photos
+- **React + TypeScript** for the interface
+- **Markdown** for note content
+- **SQLite** for local storage
+- **Vitest + Testing Library** for tests
+- **GitHub Actions** for continuous integration (lint, type-check and tests on every push)
 
-The SQLite file (`app.db`) is added in Phase 2.
+## Project structure
 
-## Docs
+```
+myNotes/
+├── src/          # React pages, components and editor
+├── server/       # Local storage and save logic
+├── tests/        # Unit and component tests
+├── docs/         # Requirements and design notes
+└── .github/      # CI workflow
+```
 
-- `PRD.md` — product requirements
-- `DEVELOPMENT_PLAN.md` — phased build plan
+## Roadmap
+
+- [x] Project setup and design
+- [ ] Notes: create, edit, delete
+- [ ] Markdown editor
+- [ ] Foldable headings
+- [ ] Auto-save and manual save
+- [ ] 7-day timetable
+- [ ] To-do list
+- [ ] GitHub Actions CI pipeline
+- [ ] Backup and export
+
+## Development
+
+```bash
+npm run lint        # code style
+npm run typecheck   # type checking
+npm test            # tests
+npm run build       # production build
+```
+
+## License
+
+MIT
