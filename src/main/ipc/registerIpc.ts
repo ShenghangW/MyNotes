@@ -11,7 +11,7 @@ import { registerTodoHandlers } from './todoHandlers'
 export function registerIpc(db: AppDatabase, userDataRoot: string): void {
   registerSettingsHandlers(db)
   registerNoteGroupsHandlers()
-  registerNotesHandlers()
+  registerNotesHandlers(db)
   registerTodoHandlers()
   registerCalendarHandlers()
   registerTimetableHandlers()

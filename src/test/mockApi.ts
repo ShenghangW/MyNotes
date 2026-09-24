@@ -27,7 +27,7 @@ export function createMockApi(overrides: Partial<AppApi> = {}): AppApi {
       delete: notImplemented
     },
     notes: {
-      list: notImplemented,
+      list: async () => ({ ok: true, data: [] }),
       get: notImplemented,
       create: notImplemented,
       update: notImplemented,

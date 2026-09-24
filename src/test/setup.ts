@@ -4,6 +4,9 @@ import { createMockApi } from './mockApi'
 
 afterEach(() => {
   cleanup()
+  if (typeof window !== 'undefined') {
+    window.api = createMockApi()
+  }
 })
 
 if (typeof window !== 'undefined') {

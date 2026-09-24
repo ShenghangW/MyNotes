@@ -1,9 +1,10 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { randomUUID } from 'node:crypto'
 import { createRequire } from 'node:module'
 import { dirname, join } from 'node:path'
 import type { Database, SqlValue } from 'sql.js'
 import schemaSql from './schema.sql?raw'
-import type { AppSettings, SettingsPatch } from '../../shared/api'
+import type { AppSettings, Note, NoteCreateInput, NoteUpdateInput, SettingsPatch } from '../../shared/api'
 
 const require = createRequire(__filename)
 
@@ -55,6 +56,18 @@ function mapSettings(row: Record<string, SqlValue>): AppSettings {
     reminderLeadDays: lead === 2 ? 2 : 1,
     homePhotoPath: typeof row.home_photo_path === 'string' ? row.home_photo_path : null,
     homePhotoVisible: Number(row.home_photo_visible) === 1,
+    updatedAt: String(row.updated_at)
+  }
+}
+
+function mapNote(row: Record<string, SqlValue>): Note {
+  return {
+    id: String(row.id),
+    title: String(row.title),
+    contentJson: String(row.content_json),
+    groupId: typeof row.group_id === 'string' ? row.group_id : null,
+    coverImagePath: typeof row.cover_image_path === 'string' ? row.cover_image_path : null,
+    createdAt: String(row.created_at),
     updatedAt: String(row.updated_at)
   }
 }
@@ -158,6 +171,49 @@ export class AppDatabase {
       }
     }
     return refs
+  }
+
+  listNotes(): Note[] {
+    return this.all<Record<string, SqlValue>>('SELECT * FROM notes ORDER BY updated_at DESC').map(
+      mapNote
+    )
+  }
+
+  getNote(id: string): Note {
+    const row = this.get<Record<string, SqlValue>>('SELECT * FROM notes WHERE id = ?', [id])
+    if (!row) {
+      throw new Error('Note not found')
+    }
+    return mapNote(row)
+  }
+
+  createNote(input: NoteCreateInput = {}): Note {
+    const id = randomUUID()
+    const timestamp = nowIso()
+    this.run(
+      `INSERT INTO notes (id, title, content_json, group_id, cover_image_path, created_at, updated_at)
+       VALUES (?, 'Untitled', '', ?, NULL, ?, ?)`,
+      [id, input.groupId ?? null, timestamp, timestamp]
+    )
+    return this.getNote(id)
+  }
+
+  updateNote(input: NoteUpdateInput): Note {
+    const current = this.getNote(input.id)
+    const title =
+      input.title !== undefined ? (input.title.trim() === '' ? 'Untitled' : input.title) : current.title
+    const contentJson = input.contentJson ?? current.contentJson
+    const groupId = input.groupId === undefined ? current.groupId : input.groupId
+
+    this.run(
+      'UPDATE notes SET title = ?, content_json = ?, group_id = ?, updated_at = ? WHERE id = ?',
+      [title, contentJson, groupId, nowIso(), input.id]
+    )
+    return this.getNote(input.id)
+  }
+
+  deleteNote(id: string): void {
+    this.run('DELETE FROM notes WHERE id = ?', [id])
   }
 }
 

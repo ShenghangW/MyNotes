@@ -11,6 +11,28 @@ export type SettingsPatch = Partial<
   Pick<AppSettings, 'reminderLeadDays' | 'homePhotoPath' | 'homePhotoVisible'>
 >
 
+export type Note = {
+  id: string
+  title: string
+  /** Plain text for now — will hold a BlockNote JSON document in a later phase. */
+  contentJson: string
+  groupId: string | null
+  coverImagePath: string | null
+  createdAt: string
+  updatedAt: string
+}
+
+export type NoteCreateInput = {
+  groupId?: string | null
+}
+
+export type NoteUpdateInput = {
+  id: string
+  title?: string
+  contentJson?: string
+  groupId?: string | null
+}
+
 export type AppApi = {
   settings: {
     get: () => Promise<IpcResult<AppSettings>>
@@ -23,11 +45,11 @@ export type AppApi = {
     delete: (payload: unknown) => Promise<IpcResult<unknown>>
   }
   notes: {
-    list: () => Promise<IpcResult<unknown>>
-    get: (payload: unknown) => Promise<IpcResult<unknown>>
-    create: (payload: unknown) => Promise<IpcResult<unknown>>
-    update: (payload: unknown) => Promise<IpcResult<unknown>>
-    delete: (payload: unknown) => Promise<IpcResult<unknown>>
+    list: () => Promise<IpcResult<Note[]>>
+    get: (id: string) => Promise<IpcResult<Note>>
+    create: (input?: NoteCreateInput) => Promise<IpcResult<Note>>
+    update: (input: NoteUpdateInput) => Promise<IpcResult<Note>>
+    delete: (id: string) => Promise<IpcResult<null>>
     search: (payload: unknown) => Promise<IpcResult<unknown>>
     setCover: (payload: unknown) => Promise<IpcResult<unknown>>
     clearCover: (payload: unknown) => Promise<IpcResult<unknown>>

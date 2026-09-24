@@ -1,5 +1,5 @@
 import { ipcRenderer } from 'electron'
-import { IPC_CHANNELS, type AppApi } from '../shared/api'
+import { IPC_CHANNELS, type AppApi, type NoteCreateInput, type NoteUpdateInput } from '../shared/api'
 
 function invoke<T>(channel: string, ...args: unknown[]): Promise<T> {
   return ipcRenderer.invoke(channel, ...args) as Promise<T>
@@ -18,10 +18,10 @@ export const api: AppApi = {
   },
   notes: {
     list: () => invoke(IPC_CHANNELS.notesList),
-    get: (payload) => invoke(IPC_CHANNELS.notesGet, payload),
-    create: (payload) => invoke(IPC_CHANNELS.notesCreate, payload),
-    update: (payload) => invoke(IPC_CHANNELS.notesUpdate, payload),
-    delete: (payload) => invoke(IPC_CHANNELS.notesDelete, payload),
+    get: (id: string) => invoke(IPC_CHANNELS.notesGet, id),
+    create: (input: NoteCreateInput = {}) => invoke(IPC_CHANNELS.notesCreate, input),
+    update: (input: NoteUpdateInput) => invoke(IPC_CHANNELS.notesUpdate, input),
+    delete: (id: string) => invoke(IPC_CHANNELS.notesDelete, id),
     search: (payload) => invoke(IPC_CHANNELS.notesSearch, payload),
     setCover: (payload) => invoke(IPC_CHANNELS.notesSetCover, payload),
     clearCover: (payload) => invoke(IPC_CHANNELS.notesClearCover, payload)

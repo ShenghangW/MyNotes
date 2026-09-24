@@ -4,10 +4,6 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, describe, expect, it } from 'vitest'
 import { openDatabase, type AppDatabase } from './database'
-import { tmpdir } from 'node:os'
-import { join } from 'node:path'
-import { afterEach, describe, expect, it } from 'vitest'
-import { openDatabase, type AppDatabase } from './database'
 
 describe('database', () => {
   let db: AppDatabase | undefined
