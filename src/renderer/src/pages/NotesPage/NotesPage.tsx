@@ -23,12 +23,21 @@ function formatDate(iso: string): string {
 
 type NoteCardProps = {
   note: NoteSummary
+  groups: NoteGroup[]
   mode: ViewMode
   onOpen: (id: string) => void
   onDelete: (note: NoteSummary) => void
+  onMove: (note: NoteSummary, groupId: string | null) => void
 }
 
-function NoteCard({ note, mode, onOpen, onDelete }: NoteCardProps): React.JSX.Element {
+function NoteCard({
+  note,
+  groups,
+  mode,
+  onOpen,
+  onDelete,
+  onMove
+}: NoteCardProps): React.JSX.Element {
   return (
     <article
       tabIndex={0}
@@ -68,9 +77,36 @@ function NoteCard({ note, mode, onOpen, onDelete }: NoteCardProps): React.JSX.El
         </p>
       </div>
 
-      <span className={cn('text-xs text-text-muted', mode === 'grid' ? 'px-3 pb-3' : 'shrink-0')}>
-        {formatDate(note.updatedAt)}
-      </span>
+      <div
+        className={cn(
+          'flex items-center gap-2',
+          mode === 'grid' ? 'justify-between px-3 pb-3' : 'shrink-0'
+        )}
+      >
+        <span className="text-xs text-text-muted">{formatDate(note.updatedAt)}</span>
+        {groups.length > 0 ? (
+          <select
+            aria-label={`Group for ${note.title}`}
+            title="Move to group"
+            value={note.groupId ?? ''}
+            className="h-7 max-w-[8.5rem] min-w-0 truncate rounded-sm border border-border bg-bg px-1.5 text-xs text-text-muted outline-none hover:border-accent focus:border-accent"
+            // The card opens on double-click / Enter, so keep the dropdown's own events local.
+            onClick={(event) => event.stopPropagation()}
+            onDoubleClick={(event) => event.stopPropagation()}
+            onKeyDown={(event) => event.stopPropagation()}
+            onChange={(event) =>
+              onMove(note, event.target.value === '' ? null : event.target.value)
+            }
+          >
+            <option value="">No group</option>
+            {groups.map((group) => (
+              <option key={group.id} value={group.id}>
+                {group.name}
+              </option>
+            ))}
+          </select>
+        ) : null}
+      </div>
 
       <button
         type="button"
@@ -96,7 +132,7 @@ export default function NotesPage({
   const [selection, setSelection] = useState<GroupSelection>('all')
   const filter: NotesFilter =
     selection === 'all' ? {} : { groupId: selection === 'ungrouped' ? null : selection }
-  const { notes, loading, error, query, setQuery, refresh, createNote, deleteNote } =
+  const { notes, loading, error, query, setQuery, refresh, createNote, deleteNote, moveToGroup } =
     useNotes(filter)
   const groupApi = useNoteGroups()
   const [openNoteId, setOpenNoteId] = useState<string | null>(null)
@@ -259,8 +295,10 @@ export default function NotesPage({
               <NoteCard
                 key={note.id}
                 note={note}
+                groups={groupApi.groups}
                 mode={mode}
                 onOpen={setOpenNoteId}
+                onMove={(target, groupId) => void moveToGroup(target.id, groupId)}
                 onDelete={(target) => void handleDelete(target)}
               />
             ))}

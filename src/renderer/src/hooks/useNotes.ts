@@ -13,6 +13,7 @@ export function useNotes(filter: NotesFilter = {}): {
   refresh: () => Promise<void>
   createNote: (groupId?: string | null) => Promise<Note | null>
   deleteNote: (id: string) => Promise<boolean>
+  moveToGroup: (id: string, groupId: string | null) => Promise<boolean>
 } {
   const [notes, setNotes] = useState<NoteSummary[]>([])
   const [loading, setLoading] = useState(true)
@@ -89,5 +90,30 @@ export function useNotes(filter: NotesFilter = {}): {
     [load]
   )
 
-  return { notes, loading, error, query, setQuery, refresh: load, createNote, deleteNote }
+  const moveToGroup = useCallback(
+    async (id: string, groupId: string | null): Promise<boolean> => {
+      try {
+        unwrap(await window.api.notes.update({ id, groupId }))
+        // The note may no longer belong in the current filter, so reload the list.
+        await load()
+        return true
+      } catch (caught) {
+        setError(errorMessage(caught))
+        return false
+      }
+    },
+    [load]
+  )
+
+  return {
+    notes,
+    loading,
+    error,
+    query,
+    setQuery,
+    refresh: load,
+    createNote,
+    deleteNote,
+    moveToGroup
+  }
 }

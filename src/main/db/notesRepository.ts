@@ -148,13 +148,16 @@ export function updateNote(db: AppDatabase, input: NoteUpdateInput): Note {
     assertDocument(contentJson)
   }
   assertGroupExists(db, input.groupId)
+  const title = input.title === undefined ? current.title : normalizeTitle(input.title)
+  // Only real edits bump "last edited"; re-filing a note into another group does not.
+  const edited = title !== current.title || contentJson !== current.contentJson
   db.run(
     'UPDATE notes SET title = ?, content_json = ?, group_id = ?, updated_at = ? WHERE id = ?',
     [
-      input.title === undefined ? current.title : normalizeTitle(input.title),
+      title,
       contentJson,
       input.groupId === undefined ? current.groupId : input.groupId,
-      nowIso(),
+      edited ? nowIso() : current.updatedAt,
       input.id
     ]
   )

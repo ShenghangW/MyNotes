@@ -12,7 +12,7 @@ export function registerIpc(db: AppDatabase, userDataRoot: string): void {
   registerSettingsHandlers(db)
   registerNoteGroupsHandlers(db)
   registerNotesHandlers(db, userDataRoot)
-  registerTodoHandlers()
+  registerTodoHandlers(db)
   registerCalendarHandlers()
   registerTimetableHandlers()
   registerImageHandlers(userDataRoot)

@@ -37,7 +37,7 @@ export function createMockApi(overrides: Partial<AppApi> = {}): AppApi {
       clearCover: notImplemented
     },
     todos: {
-      list: notImplemented,
+      list: async () => ({ ok: true, data: [] }),
       create: notImplemented,
       update: notImplemented,
       delete: notImplemented,

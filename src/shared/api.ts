@@ -60,6 +60,28 @@ export type NoteSearchInput = NotesFilter & { query: string }
 export type NoteIdInput = { id: string }
 export type NoteSetCoverInput = { id: string; coverImagePath: string }
 
+export type Todo = {
+  id: string
+  text: string
+  done: boolean
+  /** `YYYY-MM-DD` (local calendar date) or null. */
+  dueDate: string | null
+  sortOrder: number
+  createdAt: string
+  updatedAt: string
+}
+
+export type TodoCreateInput = { text: string; dueDate?: string | null }
+export type TodoUpdateInput = {
+  id: string
+  text?: string
+  done?: boolean
+  /** null clears the due date; omit to keep it. */
+  dueDate?: string | null
+}
+export type TodoIdInput = { id: string }
+export type TodoReorderInput = { ids: string[] }
+
 export type AppApi = {
   settings: {
     get: () => Promise<IpcResult<AppSettings>>
@@ -83,11 +105,12 @@ export type AppApi = {
     clearCover: (payload: NoteIdInput) => Promise<IpcResult<Note>>
   }
   todos: {
-    list: () => Promise<IpcResult<unknown>>
-    create: (payload: unknown) => Promise<IpcResult<unknown>>
-    update: (payload: unknown) => Promise<IpcResult<unknown>>
-    delete: (payload: unknown) => Promise<IpcResult<unknown>>
-    reorder: (payload: unknown) => Promise<IpcResult<unknown>>
+    list: () => Promise<IpcResult<Todo[]>>
+    create: (payload: TodoCreateInput) => Promise<IpcResult<Todo>>
+    update: (payload: TodoUpdateInput) => Promise<IpcResult<Todo>>
+    delete: (payload: TodoIdInput) => Promise<IpcResult<null>>
+    /** Listed ids come first in the given order; any others keep their order after them. */
+    reorder: (payload: TodoReorderInput) => Promise<IpcResult<Todo[]>>
   }
   events: {
     list: () => Promise<IpcResult<unknown>>

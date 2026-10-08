@@ -27,11 +27,12 @@ function group(id: string, name: string): NoteGroup {
 describe('Notes page groups', () => {
   const school = group('g1', 'School')
   const work = group('g2', 'Work')
-  const all = [note('1', 'Essay', 'g1'), note('2', 'Report', 'g2'), note('3', 'Loose', null)]
+  let all: NoteSummary[]
   let groups: NoteGroup[]
 
   beforeEach(() => {
     groups = [school, work]
+    all = [note('1', 'Essay', 'g1'), note('2', 'Report', 'g2'), note('3', 'Loose', null)]
     const base = createMockApi()
     const pick = (filter?: NotesFilter): NoteSummary[] =>
       all.filter((n) => (filter?.groupId === undefined ? true : n.groupId === filter.groupId))
@@ -157,5 +158,52 @@ describe('Notes page groups', () => {
     fireEvent.click(screen.getByRole('button', { name: 'New note' }))
     await screen.findByTestId('editor')
     expect(window.api.notes.create).toHaveBeenCalledWith({ groupId: 'g2' })
+  })
+
+  it('moves a note to another group from its card without opening it', async () => {
+    window.api.notes.update = vi.fn(async () => ({
+      ok: true as const,
+      data: { ...note('3', 'Loose', 'g2'), contentJson: '[]' }
+    }))
+    render(<NotesPage />)
+    const select = (await screen.findByLabelText('Group for Loose')) as HTMLSelectElement
+    expect(select.value).toBe('')
+
+    fireEvent.doubleClick(select)
+    fireEvent.change(select, { target: { value: 'g2' } })
+
+    await waitFor(() =>
+      expect(window.api.notes.update).toHaveBeenCalledWith({ id: '3', groupId: 'g2' })
+    )
+    expect(screen.queryByTestId('editor')).toBeNull()
+  })
+
+  it('removes a note from its group with "No group"', async () => {
+    window.api.notes.update = vi.fn(async () => ({
+      ok: true as const,
+      data: { ...note('1', 'Essay', null), contentJson: '[]' }
+    }))
+    render(<NotesPage />)
+    const select = (await screen.findByLabelText('Group for Essay')) as HTMLSelectElement
+    expect(select.value).toBe('g1')
+
+    fireEvent.change(select, { target: { value: '' } })
+    await waitFor(() =>
+      expect(window.api.notes.update).toHaveBeenCalledWith({ id: '1', groupId: null })
+    )
+  })
+
+  it('reloads the list after a move so a note leaves a filtered view', async () => {
+    window.api.notes.update = vi.fn(async () => {
+      all[0] = note('1', 'Essay', 'g2')
+      return { ok: true as const, data: { ...all[0], contentJson: '[]' } }
+    })
+    render(<NotesPage />)
+    fireEvent.click(await screen.findByRole('button', { name: 'School' }))
+    const select = (await screen.findByLabelText('Group for Essay')) as HTMLSelectElement
+
+    fireEvent.change(select, { target: { value: 'g2' } })
+
+    await waitFor(() => expect(screen.queryByText('Essay')).toBeNull())
   })
 })
