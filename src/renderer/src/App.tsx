@@ -7,9 +7,8 @@ import SettingsPage from '@renderer/pages/SettingsPage/SettingsPage'
 import TimetablePage from '@renderer/pages/TimetablePage/TimetablePage'
 import type { AppPage } from '@renderer/types'
 
-const PAGES: Record<AppPage, () => React.JSX.Element> = {
+const PAGES: Record<Exclude<AppPage, 'notes'>, () => React.JSX.Element> = {
   home: HomePage,
-  notes: NotesPage,
   calendar: CalendarPage,
   timetable: TimetablePage,
   settings: SettingsPage
@@ -18,6 +17,7 @@ const PAGES: Record<AppPage, () => React.JSX.Element> = {
 export default function App(): React.JSX.Element {
   const [page, setPage] = useState<AppPage>('home')
   const [collapsed, setCollapsed] = useState(false)
+  const [createNoteRequested, setCreateNoteRequested] = useState(false)
 
   const toggleCollapsed = useCallback(() => {
     setCollapsed((value) => !value)
@@ -25,6 +25,11 @@ export default function App(): React.JSX.Element {
 
   const addNote = useCallback(() => {
     setPage('notes')
+    setCreateNoteRequested(true)
+  }, [])
+
+  const handleCreateHandled = useCallback(() => {
+    setCreateNoteRequested(false)
   }, [])
 
   useEffect(() => {
@@ -38,7 +43,7 @@ export default function App(): React.JSX.Element {
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [toggleCollapsed])
 
-  const Page = PAGES[page]
+  const Page = page === 'notes' ? null : PAGES[page]
 
   return (
     <div className="flex h-full min-h-0 bg-bg">
@@ -50,7 +55,11 @@ export default function App(): React.JSX.Element {
         onAddNote={addNote}
       />
       <main className="min-w-0 flex-1 overflow-auto p-6">
-        <Page />
+        {Page ? (
+          <Page />
+        ) : (
+          <NotesPage createRequested={createNoteRequested} onCreateHandled={handleCreateHandled} />
+        )}
       </main>
     </div>
   )

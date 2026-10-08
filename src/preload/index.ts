@@ -10,6 +10,7 @@ if (process.contextIsolated) {
     console.error(error)
   }
 } else {
-  window.electron = electronAPI
-  window.api = api
+  const target = window as unknown as { electron: typeof electronAPI; api: typeof api }
+  target.electron = electronAPI
+  target.api = api
 }

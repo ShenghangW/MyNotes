@@ -70,10 +70,11 @@ export function IconSettings({ className }: IconProps): React.JSX.Element {
   )
 }
 
-export function IconChevronLeft({ className }: IconProps): React.JSX.Element {
+export function IconSearch({ className }: IconProps): React.JSX.Element {
   return (
     <svg className={className} width="18" height="18" viewBox="0 0 24 24" aria-hidden {...stroke}>
-      <path d="M15 5 8 12l7 7" />
+      <circle cx="11" cy="11" r="6" />
+      <path d="m20 20-4.2-4.2" />
     </svg>
   )
 }
@@ -81,7 +82,39 @@ export function IconChevronLeft({ className }: IconProps): React.JSX.Element {
 export function IconTrash({ className }: IconProps): React.JSX.Element {
   return (
     <svg className={className} width="18" height="18" viewBox="0 0 24 24" aria-hidden {...stroke}>
-      <path d="M5 7h14M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m-8 0 1 13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1l1-13" />
+      <path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-12M9 7V4h6v3" />
+    </svg>
+  )
+}
+
+export function IconGrid({ className }: IconProps): React.JSX.Element {
+  return (
+    <svg className={className} width="18" height="18" viewBox="0 0 24 24" aria-hidden {...stroke}>
+      <path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z" />
+    </svg>
+  )
+}
+
+export function IconList({ className }: IconProps): React.JSX.Element {
+  return (
+    <svg className={className} width="18" height="18" viewBox="0 0 24 24" aria-hidden {...stroke}>
+      <path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01" />
+    </svg>
+  )
+}
+
+export function IconArrowLeft({ className }: IconProps): React.JSX.Element {
+  return (
+    <svg className={className} width="18" height="18" viewBox="0 0 24 24" aria-hidden {...stroke}>
+      <path d="M19 12H5M11 6l-6 6 6 6" />
+    </svg>
+  )
+}
+
+export function IconImage({ className }: IconProps): React.JSX.Element {
+  return (
+    <svg className={className} width="18" height="18" viewBox="0 0 24 24" aria-hidden {...stroke}>
+      <path d="M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1ZM3 16l5-5 4 4 3-3 6 6M9 9h.01" />
     </svg>
   )
 }

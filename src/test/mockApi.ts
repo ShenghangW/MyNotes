@@ -58,7 +58,8 @@ export function createMockApi(overrides: Partial<AppApi> = {}): AppApi {
       delete: notImplemented
     },
     images: {
-      saveFromPath: notImplemented
+      saveFromPath: notImplemented,
+      pathForFile: () => ''
     },
     app: {
       getUserDataPath: async () => ({ ok: true, data: TEST_USER_DATA_PATH }),

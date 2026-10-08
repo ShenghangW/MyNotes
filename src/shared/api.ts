@@ -11,27 +11,37 @@ export type SettingsPatch = Partial<
   Pick<AppSettings, 'reminderLeadDays' | 'homePhotoPath' | 'homePhotoVisible'>
 >
 
-export type Note = {
+export type NoteSummary = {
   id: string
   title: string
-  /** Plain text for now — will hold a BlockNote JSON document in a later phase. */
-  contentJson: string
+  /** Plain-text excerpt of the body, for list/grid cards. */
+  preview: string
   groupId: string | null
+  /** Relative path under userData, e.g. `images/{uuid}.png`. */
   coverImagePath: string | null
   createdAt: string
   updatedAt: string
 }
 
+export type Note = NoteSummary & {
+  /** BlockNote document JSON (array of blocks). */
+  contentJson: string
+}
+
 export type NoteCreateInput = {
-  groupId?: string | null
+  title?: string
+  contentJson?: string
 }
 
 export type NoteUpdateInput = {
   id: string
   title?: string
   contentJson?: string
-  groupId?: string | null
 }
+
+export type NoteSearchInput = { query: string }
+export type NoteIdInput = { id: string }
+export type NoteSetCoverInput = { id: string; coverImagePath: string }
 
 export type AppApi = {
   settings: {
@@ -45,14 +55,14 @@ export type AppApi = {
     delete: (payload: unknown) => Promise<IpcResult<unknown>>
   }
   notes: {
-    list: () => Promise<IpcResult<Note[]>>
-    get: (id: string) => Promise<IpcResult<Note>>
-    create: (input?: NoteCreateInput) => Promise<IpcResult<Note>>
-    update: (input: NoteUpdateInput) => Promise<IpcResult<Note>>
-    delete: (id: string) => Promise<IpcResult<null>>
-    search: (payload: unknown) => Promise<IpcResult<unknown>>
-    setCover: (payload: unknown) => Promise<IpcResult<unknown>>
-    clearCover: (payload: unknown) => Promise<IpcResult<unknown>>
+    list: () => Promise<IpcResult<NoteSummary[]>>
+    get: (payload: NoteIdInput) => Promise<IpcResult<Note>>
+    create: (payload?: NoteCreateInput) => Promise<IpcResult<Note>>
+    update: (payload: NoteUpdateInput) => Promise<IpcResult<Note>>
+    delete: (payload: NoteIdInput) => Promise<IpcResult<null>>
+    search: (payload: NoteSearchInput) => Promise<IpcResult<NoteSummary[]>>
+    setCover: (payload: NoteSetCoverInput) => Promise<IpcResult<Note>>
+    clearCover: (payload: NoteIdInput) => Promise<IpcResult<Note>>
   }
   todos: {
     list: () => Promise<IpcResult<unknown>>
@@ -76,7 +86,14 @@ export type AppApi = {
     delete: (payload: unknown) => Promise<IpcResult<unknown>>
   }
   images: {
-    saveFromPath: (sourcePath: string) => Promise<IpcResult<string>>
+    /**
+     * Copies an image into userData/images and returns its relative path.
+     * With no argument, the main process shows the native file picker
+     * (resolves to `null` if the user cancels).
+     */
+    saveFromPath: (sourcePath?: string) => Promise<IpcResult<string | null>>
+    /** Absolute path of a File chosen in the UI (drag-drop / <input>). Empty if it has none. */
+    pathForFile: (file: File) => string
   }
   app: {
     getUserDataPath: () => Promise<IpcResult<string>>
