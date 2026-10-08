@@ -1,24 +1,20 @@
-# myNotes
+# myNote
 
-A free, local-first note-taking and planning app that runs on your own computer. Think of it as a lightweight Notion for localhost: write Markdown notes, fold sections away, plan your week on a 7-day timetable, and tick off a to-do list. No account, no cloud, no subscription.
+A free, local-first desktop app for notes, to-dos, a calendar and a weekly timetable. Inspired by Notion, but everything stays on your own computer: no account, no cloud, no subscription.
 
-> **Status: in active development.** The design and project structure are in place and features are being built step by step. See the [Roadmap](#roadmap) for what is done and what is next.
+> **Status: in active development.** The app shell, local database and installer packaging are working. The note editor, to-do list, calendar and timetable pages are being built step by step. See the [Roadmap](#roadmap). Full requirements are in the [PRD](./PRD.md).
 
-## Why this project
-
-Most note apps want an account, an internet connection or a paid plan. myNotes keeps everything on your machine, so it is fast, private and always available. It is also my hands-on project for practising full-stack development, automated testing and CI.
-
-## Features
+## Planned features
 
 | Feature | What it does |
 | --- | --- |
-| **Markdown notes** | Write in Markdown, see it formatted as you type |
-| **Foldable sections** | Collapse and expand headings to keep long notes tidy, like Notion |
-| **Auto-save** | Changes are saved in the background while you type |
-| **Manual save** | Save on demand (Ctrl/Cmd + S) for peace of mind |
+| **Block-based notes** | A Notion-style editor with headings, lists and formatting |
+| **Foldable sections** | Collapse and expand headings to keep long notes tidy |
+| **Auto-save + manual save** | Changes are saved in the background, or on demand |
 | **7-day timetable** | Plan your week as time blocks across seven days |
 | **To-do list** | Add, tick off and remove tasks |
-| **Local only** | Runs on `localhost`, data stays on your computer |
+| **Calendar** | Events with optional reminders |
+| **Local only** | All data is stored on your computer in a SQLite file |
 
 ## Screenshots
 
@@ -26,54 +22,65 @@ _Coming soon._
 
 ## Quick start
 
-Requires [Node.js](https://nodejs.org) 20 or newer.
+Requires [Node.js](https://nodejs.org) 22 or newer.
 
 ```bash
-git clone https://github.com/ShenghangW/myNotes.git
-cd myNotes
+git clone https://github.com/ShenghangW/myNote.git
+cd myNote
 npm install
 npm run dev
 ```
 
-Then open `http://localhost:3000`.
+To build a Windows installer: `npm run build:win`
 
 ## Tech stack
 
-- **React + TypeScript** for the interface
-- **Markdown** for note content
-- **SQLite** for local storage
-- **Vitest + Testing Library** for tests
-- **GitHub Actions** for continuous integration (lint, type-check and tests on every push)
+- **Electron** for the desktop app
+- **React + TypeScript + Tailwind CSS** for the interface
+- **BlockNote** for the rich-text editor
+- **SQLite** (via sql.js) for local storage
+- **Vitest + React Testing Library** for automated tests
+- **GitHub Actions** for continuous integration (lint, type-check, test and build on every push)
 
 ## Project structure
 
 ```
-myNotes/
-├── src/          # React pages, components and editor
-├── server/       # Local storage and save logic
-├── tests/        # Unit and component tests
-├── docs/         # Requirements and design notes
-└── .github/      # CI workflow
+myNote/
+├── src/
+│   ├── main/        # Electron main process: database, storage, IPC handlers
+│   ├── preload/     # Safe bridge between main process and UI
+│   ├── renderer/    # React interface: pages, components
+│   └── shared/      # Types shared by both sides
+├── .github/         # CI workflow
+├── PRD.md           # Product requirements
+└── electron-builder.yml
 ```
+
+## Documentation
+
+- [Product Requirements Document (PRD)](./PRD.md): what myNote is for, the features planned, design language, testing standards and tech stack.
 
 ## Roadmap
 
-- [x] Project setup and design
+- [x] App shell with sidebar navigation (Home, Notes, Calendar, Timetable, Settings)
+- [x] Local SQLite database with schema and settings
+- [x] Image storage
+- [x] Automated tests (Vitest)
+- [x] Windows installer packaging
+- [ ] GitHub Actions CI
 - [ ] Notes: create, edit, delete
-- [ ] Markdown editor
-- [ ] Foldable headings
+- [ ] Block editor with foldable headings
 - [ ] Auto-save and manual save
 - [ ] 7-day timetable
 - [ ] To-do list
-- [ ] GitHub Actions CI pipeline
-- [ ] Backup and export
+- [ ] Calendar with reminders
 
 ## Development
 
 ```bash
 npm run lint        # code style
 npm run typecheck   # type checking
-npm test            # tests
+npm test            # automated tests
 npm run build       # production build
 ```
 
