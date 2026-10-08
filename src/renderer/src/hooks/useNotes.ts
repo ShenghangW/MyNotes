@@ -1,17 +1,17 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import type { Note, NoteSummary } from '@shared/api'
+import type { Note, NotesFilter, NoteSummary } from '@shared/api'
 import { errorMessage, unwrap } from '@renderer/lib/ipc'
 
 const SEARCH_DEBOUNCE_MS = 200
 
-export function useNotes(): {
+export function useNotes(filter: NotesFilter = {}): {
   notes: NoteSummary[]
   loading: boolean
   error: string | null
   query: string
   setQuery: (query: string) => void
   refresh: () => Promise<void>
-  createNote: () => Promise<Note | null>
+  createNote: (groupId?: string | null) => Promise<Note | null>
   deleteNote: (id: string) => Promise<boolean>
 } {
   const [notes, setNotes] = useState<NoteSummary[]>([])
@@ -20,14 +20,20 @@ export function useNotes(): {
   const [query, setQuery] = useState('')
 
   const queryRef = useRef(query)
+  const filterRef = useRef(filter)
   const requestRef = useRef(0)
+  // undefined = all, null = ungrouped, string = one group
+  const filterKey = filter.groupId === undefined ? 'all' : (filter.groupId ?? 'ungrouped')
 
   const load = useCallback(async (): Promise<void> => {
     const requestId = ++requestRef.current
     const trimmed = queryRef.current.trim()
+    const scope = { groupId: filterRef.current.groupId }
     try {
       const result = unwrap(
-        trimmed ? await window.api.notes.search({ query: trimmed }) : await window.api.notes.list()
+        trimmed
+          ? await window.api.notes.search({ query: trimmed, ...scope })
+          : await window.api.notes.list(scope)
       )
       if (requestId === requestRef.current) {
         setNotes(result)
@@ -46,6 +52,9 @@ export function useNotes(): {
 
   useEffect(() => {
     queryRef.current = query
+    filterRef.current = {
+      groupId: filterKey === 'all' ? undefined : filterKey === 'ungrouped' ? null : filterKey
+    }
     const timer = setTimeout(
       () => {
         void load()
@@ -53,11 +62,11 @@ export function useNotes(): {
       query.trim() === '' ? 0 : SEARCH_DEBOUNCE_MS
     )
     return () => clearTimeout(timer)
-  }, [query, load])
+  }, [query, filterKey, load])
 
-  const createNote = useCallback(async (): Promise<Note | null> => {
+  const createNote = useCallback(async (groupId?: string | null): Promise<Note | null> => {
     try {
-      const note = unwrap(await window.api.notes.create())
+      const note = unwrap(await window.api.notes.create(groupId ? { groupId } : undefined))
       setError(null)
       return note
     } catch (caught) {

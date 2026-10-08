@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { AppSettings } from '@shared/api'
+import NoteGroupManager from '@renderer/components/NoteGroupManager'
 
 export default function SettingsPage(): React.JSX.Element {
   const [dataPath, setDataPath] = useState<string | null>(null)
@@ -39,8 +40,7 @@ export default function SettingsPage(): React.JSX.Element {
     <section>
       <h1 className="text-[20px] font-medium tracking-tight">Settings</h1>
       <p className="mt-2 max-w-xl text-sm text-text-muted">
-        Note groups and reminder controls come next. Your data stays in this folder on this
-        computer.
+        Reminder controls come next. Your data stays in this folder on this computer.
       </p>
 
       {error ? (
@@ -63,6 +63,14 @@ export default function SettingsPage(): React.JSX.Element {
           </dd>
         </div>
       </dl>
+
+      <div className="mt-6 max-w-2xl rounded-md border border-border bg-surface p-4">
+        <h2 className="text-xs uppercase tracking-wide text-text-muted">Note groups</h2>
+        <p className="mt-1 mb-3 text-sm text-text-muted">
+          Deleting a group keeps its notes; they become ungrouped.
+        </p>
+        <NoteGroupManager />
+      </div>
     </section>
   )
 }

@@ -10,7 +10,7 @@ import { registerTodoHandlers } from './todoHandlers'
 
 export function registerIpc(db: AppDatabase, userDataRoot: string): void {
   registerSettingsHandlers(db)
-  registerNoteGroupsHandlers()
+  registerNoteGroupsHandlers(db)
   registerNotesHandlers(db, userDataRoot)
   registerTodoHandlers()
   registerCalendarHandlers()

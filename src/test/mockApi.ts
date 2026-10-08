@@ -21,7 +21,7 @@ export function createMockApi(overrides: Partial<AppApi> = {}): AppApi {
       update: notImplemented
     },
     groups: {
-      list: notImplemented,
+      list: async () => ({ ok: true, data: [] }),
       create: notImplemented,
       rename: notImplemented,
       delete: notImplemented

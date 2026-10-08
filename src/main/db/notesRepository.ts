@@ -1,6 +1,12 @@
 import { randomUUID } from 'node:crypto'
 import type { SqlValue } from 'sql.js'
-import type { Note, NoteCreateInput, NoteSummary, NoteUpdateInput } from '../../shared/api'
+import type {
+  Note,
+  NoteCreateInput,
+  NotesFilter,
+  NoteSummary,
+  NoteUpdateInput
+} from '../../shared/api'
 import { extractInlineImagePaths } from '../../shared/imageUrl'
 import { extractPlainText, makePreview } from '../../shared/noteText'
 import type { AppDatabase } from './database'
@@ -58,25 +64,53 @@ function toSummary(row: NoteRow): NoteSummary {
   return summary
 }
 
-/** Most recently edited first. */
-export function listNotes(db: AppDatabase): NoteSummary[] {
-  return db
-    .all<NoteRow>(`SELECT ${COLUMNS} FROM notes ORDER BY updated_at DESC, created_at DESC`)
-    .map(toSummary)
+function filterClause(filter: NotesFilter): { where: string; params: SqlValue[] } {
+  if (filter.groupId === undefined) {
+    return { where: '', params: [] }
+  }
+  if (filter.groupId === null) {
+    return { where: 'WHERE group_id IS NULL', params: [] }
+  }
+  return { where: 'WHERE group_id = ?', params: [filter.groupId] }
+}
+
+function selectNotes(db: AppDatabase, filter: NotesFilter): NoteRow[] {
+  const { where, params } = filterClause(filter)
+  return db.all<NoteRow>(
+    `SELECT ${COLUMNS} FROM notes ${where} ORDER BY updated_at DESC, created_at DESC`,
+    params
+  )
+}
+
+function assertGroupExists(db: AppDatabase, groupId: string | null | undefined): void {
+  if (
+    typeof groupId === 'string' &&
+    !db.get('SELECT id FROM note_groups WHERE id = ?', [groupId])
+  ) {
+    throw new Error('Group not found')
+  }
+}
+
+/** Most recently edited first, optionally limited to one group (or ungrouped). */
+export function listNotes(db: AppDatabase, filter: NotesFilter = {}): NoteSummary[] {
+  return selectNotes(db, filter).map(toSummary)
 }
 
 /**
  * Case-insensitive search over title + visible body text. Every word must match.
  * Matching runs on the extracted text (not raw JSON) so words like "paragraph"
- * or "props" don't hit BlockNote's own field names.
+ * or "props" don't hit BlockNote's own field names. Combines with the group filter.
  */
-export function searchNotes(db: AppDatabase, query: string): NoteSummary[] {
+export function searchNotes(
+  db: AppDatabase,
+  query: string,
+  filter: NotesFilter = {}
+): NoteSummary[] {
   const terms = query.toLowerCase().split(/\s+/).filter(Boolean)
   if (terms.length === 0) {
-    return listNotes(db)
+    return listNotes(db, filter)
   }
-  return db
-    .all<NoteRow>(`SELECT ${COLUMNS} FROM notes ORDER BY updated_at DESC, created_at DESC`)
+  return selectNotes(db, filter)
     .filter((row) => {
       const haystack =
         `${String(row.title)}\n${extractPlainText(String(row.content_json))}`.toLowerCase()
@@ -96,12 +130,13 @@ export function getNote(db: AppDatabase, id: string): Note {
 export function createNote(db: AppDatabase, input: NoteCreateInput = {}): Note {
   const contentJson = input.contentJson ?? EMPTY_DOC
   assertDocument(contentJson)
+  assertGroupExists(db, input.groupId)
   const id = randomUUID()
   const now = nowIso()
   db.run(
     `INSERT INTO notes (id, title, content_json, group_id, cover_image_path, created_at, updated_at)
-     VALUES (?, ?, ?, NULL, NULL, ?, ?)`,
-    [id, normalizeTitle(input.title), contentJson, now, now]
+     VALUES (?, ?, ?, ?, NULL, ?, ?)`,
+    [id, normalizeTitle(input.title), contentJson, input.groupId ?? null, now, now]
   )
   return getNote(db, id)
 }
@@ -112,12 +147,17 @@ export function updateNote(db: AppDatabase, input: NoteUpdateInput): Note {
   if (input.contentJson !== undefined) {
     assertDocument(contentJson)
   }
-  db.run('UPDATE notes SET title = ?, content_json = ?, updated_at = ? WHERE id = ?', [
-    input.title === undefined ? current.title : normalizeTitle(input.title),
-    contentJson,
-    nowIso(),
-    input.id
-  ])
+  assertGroupExists(db, input.groupId)
+  db.run(
+    'UPDATE notes SET title = ?, content_json = ?, group_id = ?, updated_at = ? WHERE id = ?',
+    [
+      input.title === undefined ? current.title : normalizeTitle(input.title),
+      contentJson,
+      input.groupId === undefined ? current.groupId : input.groupId,
+      nowIso(),
+      input.id
+    ]
+  )
   return getNote(db, input.id)
 }
 

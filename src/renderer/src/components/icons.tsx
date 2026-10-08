@@ -118,3 +118,11 @@ export function IconImage({ className }: IconProps): React.JSX.Element {
     </svg>
   )
 }
+
+export function IconPencil({ className }: IconProps): React.JSX.Element {
+  return (
+    <svg className={className} width="18" height="18" viewBox="0 0 24 24" aria-hidden {...stroke}>
+      <path d="M4 20h4L19 9a2.1 2.1 0 0 0-3-3L5 17l-1 3ZM14 7l3 3" />
+    </svg>
+  )
+}

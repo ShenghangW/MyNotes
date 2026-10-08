@@ -2,6 +2,7 @@ import { ipcMain } from 'electron'
 import type {
   NoteCreateInput,
   NoteIdInput,
+  NotesFilter,
   NoteSearchInput,
   NoteSetCoverInput,
   NoteUpdateInput
@@ -36,7 +37,9 @@ function cleanupImages(
 }
 
 export function registerNotesHandlers(db: AppDatabase, userDataRoot: string): void {
-  ipcMain.handle(IPC_CHANNELS.notesList, () => wrap(() => listNotes(db)))
+  ipcMain.handle(IPC_CHANNELS.notesList, (_event, payload?: NotesFilter) =>
+    wrap(() => listNotes(db, { groupId: payload?.groupId }))
+  )
   ipcMain.handle(IPC_CHANNELS.notesGet, (_event, payload: NoteIdInput) =>
     wrap(() => getNote(db, payload.id))
   )
@@ -54,7 +57,7 @@ export function registerNotesHandlers(db: AppDatabase, userDataRoot: string): vo
     })
   )
   ipcMain.handle(IPC_CHANNELS.notesSearch, (_event, payload: NoteSearchInput) =>
-    wrap(() => searchNotes(db, payload?.query ?? ''))
+    wrap(() => searchNotes(db, payload?.query ?? '', { groupId: payload?.groupId }))
   )
   ipcMain.handle(IPC_CHANNELS.notesSetCover, (_event, payload: NoteSetCoverInput) =>
     wrap(() => {

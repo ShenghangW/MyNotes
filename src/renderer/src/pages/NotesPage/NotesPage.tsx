@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import type { NoteSummary } from '@shared/api'
+import type { NoteGroup, NoteSummary, NotesFilter } from '@shared/api'
 import { toAppImageUrl } from '@shared/imageUrl'
 import { IconGrid, IconList, IconPlus, IconSearch, IconTrash } from '@renderer/components/icons'
+import { useNoteGroups } from '@renderer/hooks/useNoteGroups'
 import { useNotes } from '@renderer/hooks/useNotes'
 import { cn } from '@renderer/lib/cn'
 import NoteEditor from './NoteEditor'
+import NoteGroupList, { type GroupSelection } from './NoteGroupList'
 
 type ViewMode = 'grid' | 'list'
 
@@ -91,17 +93,24 @@ export default function NotesPage({
   createRequested = false,
   onCreateHandled
 }: NotesPageProps): React.JSX.Element {
-  const { notes, loading, error, query, setQuery, refresh, createNote, deleteNote } = useNotes()
+  const [selection, setSelection] = useState<GroupSelection>('all')
+  const filter: NotesFilter =
+    selection === 'all' ? {} : { groupId: selection === 'ungrouped' ? null : selection }
+  const { notes, loading, error, query, setQuery, refresh, createNote, deleteNote } =
+    useNotes(filter)
+  const groupApi = useNoteGroups()
   const [openNoteId, setOpenNoteId] = useState<string | null>(null)
   const [mode, setMode] = useState<ViewMode>('grid')
   const createHandledRef = useRef(false)
 
   const createAndOpen = useCallback(async (): Promise<void> => {
-    const note = await createNote()
+    // New notes inherit the group currently being viewed.
+    const note = await createNote(filter.groupId)
     if (note) {
       setOpenNoteId(note.id)
     }
-  }, [createNote])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [createNote, selection])
 
   useEffect(() => {
     if (!createRequested) {
@@ -120,6 +129,18 @@ export default function NotesPage({
   const closeEditor = (): void => {
     setOpenNoteId(null)
     void refresh()
+  }
+
+  const handleDeleteGroup = async (group: NoteGroup): Promise<void> => {
+    if (!window.confirm(`Delete group "${group.name}"? Its notes are kept and become ungrouped.`)) {
+      return
+    }
+    if (await groupApi.deleteGroup(group.id)) {
+      if (selection === group.id) {
+        setSelection('all')
+      }
+      await refresh()
+    }
   }
 
   const handleDelete = async (note: NoteSummary): Promise<void> => {
@@ -155,75 +176,96 @@ export default function NotesPage({
         </button>
       </div>
 
-      <div className="mt-4 flex items-center gap-3">
-        <label className="relative block max-w-sm flex-1">
-          <span className="sr-only">Search notes</span>
-          <IconSearch className="pointer-events-none absolute top-1/2 left-2.5 h-4 w-4 -translate-y-1/2 text-text-muted" />
-          <input
-            type="search"
-            value={query}
-            placeholder="Search title and content"
-            className="h-9 w-full rounded-sm border border-border bg-surface pr-3 pl-8 text-sm text-text outline-none placeholder:text-text-muted focus:border-accent"
-            onChange={(event) => setQuery(event.target.value)}
-          />
-        </label>
+      <div className="mt-4 flex gap-6">
+        <NoteGroupList
+          groups={groupApi.groups}
+          selected={selection}
+          error={groupApi.error}
+          onSelect={(next) => {
+            groupApi.clearError()
+            setSelection(next)
+          }}
+          onCreate={groupApi.createGroup}
+          onRename={groupApi.renameGroup}
+          onDelete={(group) => void handleDeleteGroup(group)}
+        />
 
-        <div className="flex gap-1" role="group" aria-label="View mode">
-          {(
-            [
-              ['grid', 'Grid view', IconGrid],
-              ['list', 'List view', IconList]
-            ] as const
-          ).map(([value, label, Icon]) => (
-            <button
-              key={value}
-              type="button"
-              aria-label={label}
-              aria-pressed={mode === value}
-              title={label}
-              className={cn(
-                'flex h-9 w-9 items-center justify-center rounded-sm border',
-                mode === value
-                  ? 'border-accent text-accent'
-                  : 'border-border text-text-muted hover:text-text'
-              )}
-              onClick={() => setMode(value)}
-            >
-              <Icon className="h-4 w-4" />
-            </button>
-          ))}
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-3">
+            <label className="relative block max-w-sm flex-1">
+              <span className="sr-only">Search notes</span>
+              <IconSearch className="pointer-events-none absolute top-1/2 left-2.5 h-4 w-4 -translate-y-1/2 text-text-muted" />
+              <input
+                type="search"
+                value={query}
+                placeholder="Search title and content"
+                className="h-9 w-full rounded-sm border border-border bg-surface pr-3 pl-8 text-sm text-text outline-none placeholder:text-text-muted focus:border-accent"
+                onChange={(event) => setQuery(event.target.value)}
+              />
+            </label>
+
+            <div className="flex gap-1" role="group" aria-label="View mode">
+              {(
+                [
+                  ['grid', 'Grid view', IconGrid],
+                  ['list', 'List view', IconList]
+                ] as const
+              ).map(([value, label, Icon]) => (
+                <button
+                  key={value}
+                  type="button"
+                  aria-label={label}
+                  aria-pressed={mode === value}
+                  title={label}
+                  className={cn(
+                    'flex h-9 w-9 items-center justify-center rounded-sm border',
+                    mode === value
+                      ? 'border-accent text-accent'
+                      : 'border-border text-text-muted hover:text-text'
+                  )}
+                  onClick={() => setMode(value)}
+                >
+                  <Icon className="h-4 w-4" />
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {error ? (
+            <p className="mt-4 text-sm text-text" role="alert">
+              {error}
+            </p>
+          ) : null}
+
+          {!loading && !error && notes.length === 0 ? (
+            <p className="mt-6 text-sm text-text-muted">
+              {searching
+                ? 'No notes match your search.'
+                : selection === 'all'
+                  ? 'No notes yet. Create your first one.'
+                  : 'No notes in this view yet.'}
+            </p>
+          ) : null}
+
+          <div
+            className={cn(
+              'mt-4',
+              mode === 'grid'
+                ? 'grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-4'
+                : 'flex flex-col gap-2'
+            )}
+          >
+            {notes.map((note) => (
+              <NoteCard
+                key={note.id}
+                note={note}
+                mode={mode}
+                onOpen={setOpenNoteId}
+                onDelete={(target) => void handleDelete(target)}
+              />
+            ))}
+          </div>
         </div>
-      </div>
-
-      {error ? (
-        <p className="mt-4 text-sm text-text" role="alert">
-          {error}
-        </p>
-      ) : null}
-
-      {!loading && !error && notes.length === 0 ? (
-        <p className="mt-6 text-sm text-text-muted">
-          {searching ? 'No notes match your search.' : 'No notes yet. Create your first one.'}
-        </p>
-      ) : null}
-
-      <div
-        className={cn(
-          'mt-4',
-          mode === 'grid'
-            ? 'grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-4'
-            : 'flex flex-col gap-2'
-        )}
-      >
-        {notes.map((note) => (
-          <NoteCard
-            key={note.id}
-            note={note}
-            mode={mode}
-            onOpen={setOpenNoteId}
-            onDelete={(target) => void handleDelete(target)}
-          />
-        ))}
       </div>
     </section>
   )

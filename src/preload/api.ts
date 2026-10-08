@@ -17,7 +17,7 @@ export const api: AppApi = {
     delete: (payload) => invoke(IPC_CHANNELS.groupsDelete, payload)
   },
   notes: {
-    list: () => invoke(IPC_CHANNELS.notesList),
+    list: (payload) => invoke(IPC_CHANNELS.notesList, payload),
     get: (payload) => invoke(IPC_CHANNELS.notesGet, payload),
     create: (payload) => invoke(IPC_CHANNELS.notesCreate, payload),
     update: (payload) => invoke(IPC_CHANNELS.notesUpdate, payload),

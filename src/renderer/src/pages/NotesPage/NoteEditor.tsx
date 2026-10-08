@@ -14,6 +14,7 @@ import type { Note } from '@shared/api'
 import { toAppImageUrl } from '@shared/imageUrl'
 import { IconArrowLeft, IconTrash } from '@renderer/components/icons'
 import { useAutosave, type SaveStatus } from '@renderer/hooks/useAutosave'
+import { useNoteGroups } from '@renderer/hooks/useNoteGroups'
 import { errorMessage, unwrap } from '@renderer/lib/ipc'
 import NoteCover from './NoteCover'
 
@@ -23,7 +24,7 @@ import NoteCover from './NoteCover'
 const { table, codeBlock, video, audio, file, ...allowedBlocks } = defaultBlockSpecs
 const noteSchema = BlockNoteSchema.create({ blockSpecs: allowedBlocks })
 
-type NotePatch = { title: string; contentJson: string }
+type NotePatch = { title: string; contentJson: string; groupId: string | null }
 
 const STATUS_LABEL: Record<SaveStatus, string> = {
   idle: '',
@@ -81,6 +82,8 @@ type LoadedProps = {
 function LoadedNoteEditor({ note, onBack, onDeleted }: LoadedProps): React.JSX.Element {
   const [title, setTitle] = useState(note.title)
   const [coverImagePath, setCoverImagePath] = useState(note.coverImagePath)
+  const [groupId, setGroupId] = useState(note.groupId)
+  const { groups } = useNoteGroups()
   const [actionError, setActionError] = useState<string | null>(null)
 
   const save = useCallback(
@@ -110,6 +113,12 @@ function LoadedNoteEditor({ note, onBack, onDeleted }: LoadedProps): React.JSX.E
   const handleTitleChange = (value: string): void => {
     setTitle(value)
     schedule({ title: value })
+  }
+
+  const handleGroupChange = (value: string): void => {
+    const next = value === '' ? null : value
+    setGroupId(next)
+    schedule({ groupId: next })
   }
 
   const handleTitleBlur = (): void => {
@@ -203,6 +212,23 @@ function LoadedNoteEditor({ note, onBack, onDeleted }: LoadedProps): React.JSX.E
         }}
         onBlur={handleTitleBlur}
       />
+
+      <label className="flex items-center gap-2 px-[54px] text-sm text-text-muted">
+        Group
+        <select
+          aria-label="Note group"
+          value={groupId ?? ''}
+          className="h-8 rounded-sm border border-border bg-surface px-2 text-sm text-text outline-none focus:border-accent"
+          onChange={(event) => handleGroupChange(event.target.value)}
+        >
+          <option value="">No group</option>
+          {groups.map((group) => (
+            <option key={group.id} value={group.id}>
+              {group.name}
+            </option>
+          ))}
+        </select>
+      </label>
 
       <div className="min-h-[50vh] rounded-md bg-surface py-3">
         <BlockNoteView

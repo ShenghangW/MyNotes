@@ -11,6 +11,21 @@ export type SettingsPatch = Partial<
   Pick<AppSettings, 'reminderLeadDays' | 'homePhotoPath' | 'homePhotoVisible'>
 >
 
+export type NoteGroup = {
+  id: string
+  name: string
+  sortOrder: number
+  createdAt: string
+  updatedAt: string
+}
+
+export type GroupNameInput = { name: string }
+export type GroupRenameInput = { id: string; name: string }
+export type GroupIdInput = { id: string }
+
+/** undefined = all notes, null = ungrouped only, string = that group's notes. */
+export type NotesFilter = { groupId?: string | null }
+
 export type NoteSummary = {
   id: string
   title: string
@@ -31,15 +46,17 @@ export type Note = NoteSummary & {
 export type NoteCreateInput = {
   title?: string
   contentJson?: string
+  groupId?: string | null
 }
 
 export type NoteUpdateInput = {
   id: string
   title?: string
   contentJson?: string
+  groupId?: string | null
 }
 
-export type NoteSearchInput = { query: string }
+export type NoteSearchInput = NotesFilter & { query: string }
 export type NoteIdInput = { id: string }
 export type NoteSetCoverInput = { id: string; coverImagePath: string }
 
@@ -49,13 +66,14 @@ export type AppApi = {
     update: (patch: SettingsPatch) => Promise<IpcResult<AppSettings>>
   }
   groups: {
-    list: () => Promise<IpcResult<unknown>>
-    create: (payload: unknown) => Promise<IpcResult<unknown>>
-    rename: (payload: unknown) => Promise<IpcResult<unknown>>
-    delete: (payload: unknown) => Promise<IpcResult<unknown>>
+    list: () => Promise<IpcResult<NoteGroup[]>>
+    create: (payload: GroupNameInput) => Promise<IpcResult<NoteGroup>>
+    rename: (payload: GroupRenameInput) => Promise<IpcResult<NoteGroup>>
+    /** Notes in the group are kept and become ungrouped. */
+    delete: (payload: GroupIdInput) => Promise<IpcResult<null>>
   }
   notes: {
-    list: () => Promise<IpcResult<NoteSummary[]>>
+    list: (payload?: NotesFilter) => Promise<IpcResult<NoteSummary[]>>
     get: (payload: NoteIdInput) => Promise<IpcResult<Note>>
     create: (payload?: NoteCreateInput) => Promise<IpcResult<Note>>
     update: (payload: NoteUpdateInput) => Promise<IpcResult<Note>>
