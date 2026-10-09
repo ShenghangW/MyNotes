@@ -415,6 +415,8 @@ Copied from PRD §9 — every phase gate includes these:
 
 **Tests:** Recent notes order by `updated_at`; photo hidden flag persists.
 
+**Status:** Done. Notes: Home now has a clock + date widget (24-hour, paper-desk style; the timer is still to come), a to-do list, a "Next 7 days" list (events plus unfinished due to-dos; a to-do an event created shows once, as the event), recent notes (latest 5 by edit time, click opens the note) and a single hideable photo (Hide keeps the file; Remove deletes it unless a note uses it). Clicking a day in "Next 7 days" opens the Calendar (it opens on the current month; it does not jump to the clicked date). The sidebar now starts minimized.
+
 **Gate:** Home is useful as a morning dashboard. Hide photo, relaunch, still hidden.
 
 ---

@@ -2,6 +2,13 @@ import { useCallback, useEffect, useState } from 'react'
 import type { Todo, TodoUpdateInput } from '@shared/api'
 import { errorMessage, unwrap } from '@renderer/lib/ipc'
 
+/** Fired after a to-do is added, edited, or deleted, so other lists on screen can reload. */
+export const TODOS_CHANGED = 'mynote:todos-changed'
+
+function notifyChanged(): void {
+  window.dispatchEvent(new Event(TODOS_CHANGED))
+}
+
 export function useTodos(): {
   todos: Todo[]
   loading: boolean
@@ -40,6 +47,7 @@ export function useTodos(): {
       const created = unwrap(await window.api.todos.create({ text, dueDate }))
       setTodos((current) => [...current, created])
       setError(null)
+      notifyChanged()
       return true
     } catch (caught) {
       setError(errorMessage(caught))
@@ -66,6 +74,7 @@ export function useTodos(): {
         const saved = unwrap(await window.api.todos.update(patch))
         setTodos((current) => current.map((todo) => (todo.id === saved.id ? saved : todo)))
         setError(null)
+        notifyChanged()
         return true
       } catch (caught) {
         setError(errorMessage(caught))
@@ -82,6 +91,7 @@ export function useTodos(): {
         unwrap(await window.api.todos.delete({ id }))
         setTodos((current) => current.filter((todo) => todo.id !== id))
         setError(null)
+        notifyChanged()
         return true
       } catch (caught) {
         setError(errorMessage(caught))

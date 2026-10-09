@@ -9,7 +9,7 @@ import { registerTimetableHandlers } from './timetableHandlers'
 import { registerTodoHandlers } from './todoHandlers'
 
 export function registerIpc(db: AppDatabase, userDataRoot: string): void {
-  registerSettingsHandlers(db)
+  registerSettingsHandlers(db, userDataRoot)
   registerNoteGroupsHandlers(db)
   registerNotesHandlers(db, userDataRoot)
   registerTodoHandlers(db)

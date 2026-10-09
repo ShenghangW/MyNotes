@@ -65,6 +65,26 @@ describe('database', () => {
     expect(db.getSettings().homeTitle).toBe('My week')
   })
 
+  it('keeps the Home photo and its hidden flag after closing and reopening', async () => {
+    const dir = mkdtempSync(join(tmpdir(), 'mynote-photo-'))
+    db = await openDatabase(dir)
+    db.updateSettings({ homePhotoPath: 'images/me.png', homePhotoVisible: true })
+    db.updateSettings({ homePhotoVisible: false })
+    db.close()
+
+    db = await openDatabase(dir)
+    expect(db.getSettings()).toMatchObject({
+      homePhotoPath: 'images/me.png',
+      homePhotoVisible: false
+    })
+    expect(db.referencedImagePaths().has('images/me.png')).toBe(true)
+
+    db.updateSettings({ homePhotoPath: null })
+    expect(db.getSettings().homePhotoPath).toBeNull()
+    expect(() => db?.updateSettings({ homePhotoPath: '../secret.png' })).toThrow('saved by the app')
+    expect(() => db?.updateSettings({ homePhotoPath: 'C:/x.png' })).toThrow('saved by the app')
+  })
+
   it('upgrades an existing v1 database without losing data', async () => {
     const dir = mkdtempSync(join(tmpdir(), 'mynote-migrate-'))
     const require = createRequire(__filename)

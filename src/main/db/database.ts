@@ -198,6 +198,13 @@ export class AppDatabase {
       updatedAt: nowIso()
     }
 
+    if (
+      next.homePhotoPath !== null &&
+      (!next.homePhotoPath.startsWith('images/') || next.homePhotoPath.includes('..'))
+    ) {
+      throw new Error('Home photo must be an image saved by the app')
+    }
+
     if (next.reminderLeadDays !== 1 && next.reminderLeadDays !== 2) {
       throw new Error('reminderLeadDays must be 1 or 2')
     }

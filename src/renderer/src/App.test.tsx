@@ -31,15 +31,23 @@ describe('App shell', () => {
     expect(screen.getByRole('heading', { name: 'Notes' })).toBeTruthy()
   })
 
-  it('collapses to icon-only navigation', () => {
+  it('starts minimized to icon-only navigation', () => {
     render(<App />)
-
-    fireEvent.click(screen.getByRole('button', { name: 'Collapse sidebar' }))
 
     expect(screen.queryByText('Add new note')).toBeNull()
     expect(screen.getByRole('button', { name: 'Expand sidebar' })).toBeTruthy()
     expect(screen.getByRole('button', { name: 'Timetable' })).toBeTruthy()
     expect(screen.getByRole('heading', { name: 'Home' })).toBeTruthy()
+  })
+
+  it('expands and collapses again from the menu button', () => {
+    render(<App />)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Expand sidebar' }))
+    expect(screen.getByText('Add new note')).toBeTruthy()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Collapse sidebar' }))
+    expect(screen.queryByText('Add new note')).toBeNull()
   })
 
   it('puts Settings at the bottom of the sidebar, apart from the main links', () => {

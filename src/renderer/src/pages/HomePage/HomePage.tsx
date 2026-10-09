@@ -1,20 +1,29 @@
 import { useEffect, useState } from 'react'
-import { DEFAULT_HOME_TITLE } from '@shared/api'
+import { DEFAULT_HOME_TITLE, type AppSettings, type SettingsPatch } from '@shared/api'
 import EditableTitle from '@renderer/components/EditableTitle'
 import { errorMessage, unwrap } from '@renderer/lib/ipc'
+import ClockWidget from './ClockWidget'
+import PhotoWidget from './PhotoWidget'
+import RecentNotesWidget from './RecentNotesWidget'
 import TodoWidget from './TodoWidget'
+import UpcomingWidget from './UpcomingWidget'
 
-export default function HomePage(): React.JSX.Element {
-  const [title, setTitle] = useState(DEFAULT_HOME_TITLE)
+type HomePageProps = {
+  onOpenNote?: (id: string) => void
+  onOpenCalendar?: () => void
+}
+
+export default function HomePage({ onOpenNote, onOpenCalendar }: HomePageProps): React.JSX.Element {
+  const [settings, setSettings] = useState<AppSettings | null>(null)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     let cancelled = false
     const load = async (): Promise<void> => {
       try {
-        const settings = unwrap(await window.api.settings.get())
+        const loaded = unwrap(await window.api.settings.get())
         if (!cancelled) {
-          setTitle(settings.homeTitle)
+          setSettings(loaded)
         }
       } catch (caught) {
         if (!cancelled) {
@@ -28,10 +37,9 @@ export default function HomePage(): React.JSX.Element {
     }
   }, [])
 
-  const saveTitle = async (next: string): Promise<boolean> => {
+  const saveSettings = async (patch: SettingsPatch): Promise<boolean> => {
     try {
-      const saved = unwrap(await window.api.settings.update({ homeTitle: next }))
-      setTitle(saved.homeTitle)
+      setSettings(unwrap(await window.api.settings.update(patch)))
       setError(null)
       return true
     } catch (caught) {
@@ -42,7 +50,10 @@ export default function HomePage(): React.JSX.Element {
 
   return (
     <section>
-      <EditableTitle value={title} onSave={saveTitle} />
+      <EditableTitle
+        value={settings?.homeTitle ?? DEFAULT_HOME_TITLE}
+        onSave={(next) => saveSettings({ homeTitle: next })}
+      />
 
       {error ? (
         <p className="mt-2 text-sm text-text" role="alert">
@@ -50,8 +61,22 @@ export default function HomePage(): React.JSX.Element {
         </p>
       ) : null}
 
-      <div className="mt-6 max-w-xl">
-        <TodoWidget />
+      <div className="mt-6 grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,22rem)]">
+        <div className="space-y-4">
+          <TodoWidget />
+          <RecentNotesWidget onOpenNote={onOpenNote} />
+        </div>
+        <div className="space-y-4">
+          <ClockWidget />
+          <UpcomingWidget onOpenCalendar={onOpenCalendar} />
+          {settings ? (
+            <PhotoWidget
+              photoPath={settings.homePhotoPath}
+              visible={settings.homePhotoVisible}
+              onChange={saveSettings}
+            />
+          ) : null}
+        </div>
       </div>
     </section>
   )

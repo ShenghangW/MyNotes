@@ -9,8 +9,7 @@ import TimetablePage from '@renderer/pages/TimetablePage/TimetablePage'
 import { useNavigationHistory } from '@renderer/hooks/useNavigationHistory'
 import type { AppPage } from '@renderer/types'
 
-const PAGES: Record<Exclude<AppPage, 'notes'>, () => React.JSX.Element> = {
-  home: HomePage,
+const PAGES: Record<Exclude<AppPage, 'notes' | 'home'>, () => React.JSX.Element> = {
   calendar: CalendarPage,
   timetable: TimetablePage,
   settings: SettingsPage
@@ -24,7 +23,8 @@ export default function App(): React.JSX.Element {
     (noteId: string | null) => navigate({ page: 'notes', noteId }),
     [navigate]
   )
-  const [collapsed, setCollapsed] = useState(false)
+  // The sidebar starts minimized; the menu button or Ctrl+\ expands it.
+  const [collapsed, setCollapsed] = useState(true)
   const [createNoteRequested, setCreateNoteRequested] = useState(false)
 
   const toggleCollapsed = useCallback(() => {
@@ -109,7 +109,7 @@ export default function App(): React.JSX.Element {
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [toggleCollapsed])
 
-  const Page = page === 'notes' ? null : PAGES[page]
+  const Page = page === 'notes' || page === 'home' ? null : PAGES[page]
 
   return (
     <div className="flex h-full min-h-0 bg-bg">
@@ -123,6 +123,8 @@ export default function App(): React.JSX.Element {
       <main className="min-w-0 flex-1 overflow-auto p-6">
         {Page ? (
           <Page />
+        ) : page === 'home' ? (
+          <HomePage onOpenNote={setOpenNote} onOpenCalendar={() => setPage('calendar')} />
         ) : (
           <NotesPage
             createRequested={createNoteRequested}
