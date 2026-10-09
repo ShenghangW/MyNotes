@@ -1,72 +1,117 @@
-import { useEffect, useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { eventColorHex } from '@shared/eventColors'
-import { TODOS_CHANGED, useTodos } from '@renderer/hooks/useTodos'
+import { IconChevronDown } from '@renderer/components/icons'
 import { useEvents } from '@renderer/hooks/useEvents'
+import { usePersistedFlag } from '@renderer/hooks/usePersistedFlag'
+import { cn } from '@renderer/lib/cn'
 import { toLocalIsoDate } from '@renderer/lib/date'
-import { buildUpcoming, dayLabel } from '@renderer/lib/upcoming'
+import { describeUpcoming, listUpcomingEvents } from '@renderer/lib/upcoming'
+
+/** How many upcoming events Home shows until the list is expanded. */
+export const COLLAPSED_EVENTS = 3
 
 type UpcomingWidgetProps = { onOpenCalendar?: () => void }
 
-/** The next 7 days: events plus unfinished to-dos that are due. Click a day to open the Calendar. */
+/** Every event still to come, soonest first. Click one to open the Calendar. */
 export default function UpcomingWidget({ onOpenCalendar }: UpcomingWidgetProps): React.JSX.Element {
-  const { events } = useEvents()
-  const { todos, reload } = useTodos()
-
-  // The to-do list beside this widget can change a to-do's state; keep up with it.
-  useEffect(() => {
-    const onChange = (): void => void reload()
-    window.addEventListener(TODOS_CHANGED, onChange)
-    return () => window.removeEventListener(TODOS_CHANGED, onChange)
-  }, [reload])
+  const { events, loading } = useEvents()
+  const [expanded, setExpanded] = useState(false)
+  const [folded, toggleFolded] = usePersistedFlag('home.upcoming.folded', false)
 
   const today = toLocalIsoDate()
-  const days = useMemo(() => buildUpcoming(events, todos, today), [events, todos, today])
+  const upcoming = useMemo(() => listUpcomingEvents(events, today), [events, today])
+  const visible = expanded ? upcoming : upcoming.slice(0, COLLAPSED_EVENTS)
+  const hiddenCount = upcoming.length - visible.length
 
   return (
     <section
       aria-labelledby="upcoming-heading"
       className="rounded-md border border-border bg-surface p-4"
     >
-      <h2 id="upcoming-heading" className="text-sm font-medium text-text">
-        Next 7 days
-      </h2>
-      <ul className="mt-3 space-y-1">
-        {days.map((day) => (
-          <li key={day.date}>
-            <button
-              type="button"
-              aria-label={`${dayLabel(day.date, today)}: open calendar`}
-              className="w-full rounded-sm px-2 py-1.5 text-left hover:bg-bg"
-              onClick={onOpenCalendar}
-            >
-              <span className="text-xs font-medium text-text-muted">
-                {dayLabel(day.date, today)}
-              </span>
-              {day.items.length === 0 ? (
-                <span className="block text-sm text-text-muted opacity-60">Nothing planned</span>
-              ) : (
-                <span className="mt-0.5 block space-y-0.5">
-                  {day.items.map((item) => (
-                    <span key={item.key} className="flex items-center gap-2 text-sm text-text">
-                      <span
-                        aria-hidden
-                        className="h-2 w-2 shrink-0 rounded-full border border-border"
-                        style={
-                          item.color ? { backgroundColor: eventColorHex(item.color) } : undefined
-                        }
-                      />
-                      <span className="min-w-0 flex-1 truncate">{item.title}</span>
-                      <span className="shrink-0 text-xs text-text-muted">
-                        {item.kind === 'todo' ? 'To-do' : item.when}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-1">
+          <button
+            type="button"
+            aria-label={folded ? 'Unfold upcoming events' : 'Fold upcoming events'}
+            title={folded ? 'Unfold' : 'Fold'}
+            aria-expanded={!folded}
+            className="flex h-7 w-7 items-center justify-center rounded-sm text-text-muted hover:text-accent"
+            onClick={toggleFolded}
+          >
+            <IconChevronDown
+              className={cn('h-4 w-4 transition-transform', !folded && 'rotate-180')}
+            />
+          </button>
+          <h2 id="upcoming-heading" className="text-sm font-medium text-text">
+            Upcoming events
+          </h2>
+        </div>
+        {folded && upcoming.length > 0 ? (
+          <span className="text-xs text-text-muted">{upcoming.length} upcoming</span>
+        ) : null}
+      </div>
+
+      {folded ? null : (
+        <>
+          {!loading && upcoming.length === 0 ? (
+            <p className="mt-3 text-sm text-text-muted">No upcoming events.</p>
+          ) : null}
+
+          <ul className="mt-3 space-y-1">
+            {visible.map((event) => {
+              const info = describeUpcoming(event, today)
+              return (
+                <li key={event.id}>
+                  <button
+                    type="button"
+                    aria-label={`${event.title}: open calendar`}
+                    className="flex w-full items-start gap-2 rounded-sm px-2 py-1.5 text-left hover:bg-bg"
+                    onClick={onOpenCalendar}
+                  >
+                    <span
+                      aria-hidden
+                      className="mt-1.5 h-2 w-2 shrink-0 rounded-full"
+                      style={{ backgroundColor: eventColorHex(event.color) }}
+                    />
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-sm text-text">{event.title}</span>
+                      <span className="block text-xs text-text-muted">
+                        {info.dates} · {info.time}
                       </span>
                     </span>
-                  ))}
-                </span>
-              )}
+                    <span
+                      className={cn(
+                        'shrink-0 text-xs',
+                        info.label === 'Today' ? 'font-medium text-accent' : 'text-text-muted'
+                      )}
+                    >
+                      {info.label}
+                    </span>
+                  </button>
+                </li>
+              )
+            })}
+          </ul>
+
+          {upcoming.length > COLLAPSED_EVENTS ? (
+            <button
+              type="button"
+              aria-expanded={expanded}
+              aria-label={
+                expanded ? 'Show fewer events' : `Show all ${upcoming.length} upcoming events`
+              }
+              title={expanded ? 'Show fewer' : 'Show all'}
+              className="mx-auto mt-2 flex items-center gap-1 rounded-sm px-2 py-1 text-xs text-text-muted hover:text-accent"
+              onClick={() => setExpanded((current) => !current)}
+            >
+              {expanded ? null : <span>{hiddenCount} more</span>}
+              <IconChevronDown
+                className={cn('h-4 w-4 transition-transform', expanded && 'rotate-180')}
+              />
             </button>
-          </li>
-        ))}
-      </ul>
+          ) : null}
+        </>
+      )}
     </section>
   )
 }

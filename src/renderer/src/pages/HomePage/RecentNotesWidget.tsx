@@ -1,13 +1,9 @@
 import { useNotes } from '@renderer/hooks/useNotes'
+import { formatShortDate } from '@renderer/lib/date'
 
 const RECENT_COUNT = 5
 
 type RecentNotesWidgetProps = { onOpenNote?: (id: string) => void }
-
-function formatDate(iso: string): string {
-  const date = new Date(iso)
-  return Number.isNaN(date.getTime()) ? '' : date.toLocaleDateString()
-}
 
 /** The notes you touched most recently, newest first. Click one to jump back into it. */
 export default function RecentNotesWidget({
@@ -46,7 +42,7 @@ export default function RecentNotesWidget({
                   ) : null}
                 </span>
                 <span className="shrink-0 text-xs text-text-muted">
-                  {formatDate(note.updatedAt)}
+                  {formatShortDate(note.updatedAt)}
                 </span>
               </button>
             </li>

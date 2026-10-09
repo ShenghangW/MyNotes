@@ -126,3 +126,11 @@ export function IconPencil({ className }: IconProps): React.JSX.Element {
     </svg>
   )
 }
+
+export function IconChevronDown({ className }: IconProps): React.JSX.Element {
+  return (
+    <svg className={className} width="18" height="18" viewBox="0 0 24 24" aria-hidden {...stroke}>
+      <path d="m6 9 6 6 6-6" />
+    </svg>
+  )
+}

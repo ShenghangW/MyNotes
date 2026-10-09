@@ -18,10 +18,15 @@ function todo(id: string, text: string, extra: Partial<Todo> = {}): Todo {
   }
 }
 
+const openForm = (): void => {
+  fireEvent.click(screen.getByRole('button', { name: 'Add to-do' }))
+}
+
 describe('To-do widget on Home', () => {
   let store: Todo[]
 
   beforeEach(() => {
+    window.localStorage.clear()
     store = [todo('1', 'Buy milk'), todo('2', 'Old task', { done: true })]
     const base = createMockApi()
     window.api = createMockApi({
@@ -63,9 +68,31 @@ describe('To-do widget on Home', () => {
     expect(screen.getByTestId('todo-remaining').textContent).toBe('1 remaining')
   })
 
-  it('adds a to-do with Enter, with an optional due date, and clears the form', async () => {
+  it('hides the add form until the + icon is clicked', async () => {
     render(<HomePage />)
     await screen.findByText('Buy milk')
+    expect(screen.queryByLabelText('New to-do')).toBeNull()
+
+    openForm()
+    expect(screen.getByLabelText('New to-do')).toBeTruthy()
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel' }))
+    expect(screen.queryByLabelText('New to-do')).toBeNull()
+  })
+
+  it('Escape closes the add form without saving', async () => {
+    render(<HomePage />)
+    await screen.findByText('Buy milk')
+    openForm()
+    fireEvent.change(screen.getByLabelText('New to-do'), { target: { value: 'Nope' } })
+    fireEvent.keyDown(screen.getByLabelText('New to-do'), { key: 'Escape' })
+    expect(screen.queryByLabelText('New to-do')).toBeNull()
+    expect(window.api.todos.create).not.toHaveBeenCalled()
+  })
+
+  it('adds a to-do with Enter, with an optional due date, then closes the form', async () => {
+    render(<HomePage />)
+    await screen.findByText('Buy milk')
+    openForm()
 
     const input = screen.getByLabelText('New to-do') as HTMLInputElement
     fireEvent.change(input, { target: { value: '  Hand in essay ' } })
@@ -79,14 +106,15 @@ describe('To-do widget on Home', () => {
       text: '  Hand in essay ',
       dueDate: '2099-01-02'
     })
-    expect(input.value).toBe('')
-    expect(screen.getByTestId('todo-due').textContent).toContain('Jan')
+    await waitFor(() => expect(screen.queryByLabelText('New to-do')).toBeNull())
+    expect(screen.getByTestId('todo-due').textContent).toContain('02/01/2099')
   })
 
   it('does not add an empty to-do', async () => {
     render(<HomePage />)
     await screen.findByText('Buy milk')
-    const addButton = screen.getByRole('button', { name: 'Add to-do' }) as HTMLButtonElement
+    openForm()
+    const addButton = screen.getByRole('button', { name: 'Save' }) as HTMLButtonElement
     expect(addButton.disabled).toBe(true)
 
     fireEvent.change(screen.getByLabelText('New to-do'), { target: { value: '   ' } })
@@ -154,5 +182,71 @@ describe('To-do widget on Home', () => {
         false
       )
     )
+  })
+
+  describe('long lists', () => {
+    beforeEach(() => {
+      store = Array.from({ length: 8 }, (_, i) => todo(`${i + 1}`, `Task ${i + 1}`))
+    })
+
+    it('shows only 5 to-dos until expanded', async () => {
+      render(<HomePage />)
+      await screen.findByText('Task 1')
+      expect(screen.getByText('Task 5')).toBeTruthy()
+      expect(screen.queryByText('Task 6')).toBeNull()
+      expect(screen.getByText('3 more')).toBeTruthy()
+    })
+
+    it('the chevron expands to show every to-do and collapses again', async () => {
+      render(<HomePage />)
+      await screen.findByText('Task 1')
+      fireEvent.click(screen.getByRole('button', { name: 'Show all 8 to-dos' }))
+      expect(screen.getByText('Task 8')).toBeTruthy()
+      fireEvent.click(screen.getByRole('button', { name: 'Show fewer to-dos' }))
+      expect(screen.queryByText('Task 8')).toBeNull()
+    })
+
+    it('has no expand control for 5 or fewer', async () => {
+      store = store.slice(0, 5)
+      render(<HomePage />)
+      await screen.findByText('Task 1')
+      expect(screen.queryByRole('button', { name: /Show all/ })).toBeNull()
+    })
+  })
+
+  describe('folding', () => {
+    it('folds the whole list away and unfolds it again', async () => {
+      render(<HomePage />)
+      await screen.findByText('Buy milk')
+
+      fireEvent.click(screen.getByRole('button', { name: 'Fold to-do list' }))
+      expect(screen.queryByText('Buy milk')).toBeNull()
+      expect(screen.getByRole('heading', { name: 'To-do' })).toBeTruthy()
+      expect(screen.getByTestId('todo-remaining').textContent).toBe('1 remaining')
+
+      fireEvent.click(screen.getByRole('button', { name: 'Unfold to-do list' }))
+      expect(screen.getByText('Buy milk')).toBeTruthy()
+    })
+
+    it('remembers being folded when Home is opened again', async () => {
+      const first = render(<HomePage />)
+      await screen.findByText('Buy milk')
+      fireEvent.click(screen.getByRole('button', { name: 'Fold to-do list' }))
+      first.unmount()
+
+      render(<HomePage />)
+      expect(await screen.findByRole('button', { name: 'Unfold to-do list' })).toBeTruthy()
+      expect(screen.queryByText('Buy milk')).toBeNull()
+    })
+
+    it('the + icon unfolds the list and opens the add form', async () => {
+      render(<HomePage />)
+      await screen.findByText('Buy milk')
+      fireEvent.click(screen.getByRole('button', { name: 'Fold to-do list' }))
+
+      fireEvent.click(screen.getByRole('button', { name: 'Add to-do' }))
+      expect(screen.getByText('Buy milk')).toBeTruthy()
+      expect(screen.getByLabelText('New to-do')).toBeTruthy()
+    })
   })
 })

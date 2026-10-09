@@ -100,10 +100,22 @@ export default function App(): React.JSX.Element {
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent): void => {
-      if (event.ctrlKey && event.key === '\\') {
-        event.preventDefault()
-        toggleCollapsed()
+      const isToggleKey =
+        ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'b') ||
+        (event.ctrlKey && event.key === '\\')
+      if (!isToggleKey) {
+        return
       }
+      // Inside the note editor Ctrl+B means bold, so leave it alone there.
+      const target = event.target instanceof HTMLElement ? event.target : null
+      if (
+        event.key.toLowerCase() === 'b' &&
+        target?.closest('.bn-editor, [contenteditable="true"]')
+      ) {
+        return
+      }
+      event.preventDefault()
+      toggleCollapsed()
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)

@@ -85,6 +85,9 @@ function createWindow(): void {
   }
 }
 
+// Keep Chromium's own UI (date pickers etc.) in English, with day/month/year order.
+app.commandLine.appendSwitch('lang', 'en-AU')
+
 app.whenReady().then(async () => {
   electronApp.setAppUserModelId('com.mynote.app')
   const userDataRoot = ensureUserDataDirs()

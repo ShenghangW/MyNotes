@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { toLocalTime } from '@renderer/lib/date'
+import { UI_LOCALE, formatNumericDate, toLocalTime } from '@renderer/lib/date'
 
 /** Current time (24-hour) with the full date above it, styled like a paper desk calendar. */
 export default function ClockWidget(): React.JSX.Element {
@@ -10,8 +10,8 @@ export default function ClockWidget(): React.JSX.Element {
     return () => window.clearInterval(id)
   }, [])
 
-  const weekday = now.toLocaleDateString(undefined, { weekday: 'long' })
-  const date = now.toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' })
+  const weekday = now.toLocaleDateString(UI_LOCALE, { weekday: 'long' })
+  const date = formatNumericDate(now)
 
   return (
     <section

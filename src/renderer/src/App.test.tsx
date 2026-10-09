@@ -108,4 +108,25 @@ describe('App shell', () => {
       expect(screen.getByRole('heading', { name: 'Calendar' })).toBeTruthy()
     })
   })
+
+  describe('Ctrl+B', () => {
+    it('expands and collapses the sidebar', () => {
+      render(<App />)
+      expect(screen.queryByText('Add new note')).toBeNull()
+      fireEvent.keyDown(window, { key: 'b', ctrlKey: true })
+      expect(screen.getByText('Add new note')).toBeTruthy()
+      fireEvent.keyDown(window, { key: 'b', ctrlKey: true })
+      expect(screen.queryByText('Add new note')).toBeNull()
+    })
+
+    it('is left alone inside an editable area so Bold still works there', () => {
+      render(<App />)
+      const editable = document.createElement('div')
+      editable.setAttribute('contenteditable', 'true')
+      document.body.appendChild(editable)
+      fireEvent.keyDown(editable, { key: 'b', ctrlKey: true })
+      expect(screen.queryByText('Add new note')).toBeNull()
+      editable.remove()
+    })
+  })
 })

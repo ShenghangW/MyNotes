@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import type { CalendarEvent, Todo } from '@shared/api'
-import { buildUpcoming, dayLabel } from './upcoming'
+import type { CalendarEvent } from '@shared/api'
+import { describeUpcoming, listUpcomingEvents } from './upcoming'
 
 function event(id: string, title: string, extra: Partial<CalendarEvent> = {}): CalendarEvent {
   return {
@@ -20,84 +20,77 @@ function event(id: string, title: string, extra: Partial<CalendarEvent> = {}): C
   }
 }
 
-function todo(id: string, text: string, extra: Partial<Todo> = {}): Todo {
-  return {
-    id,
-    text,
-    done: false,
-    dueDate: '2026-10-09',
-    sortOrder: 0,
-    createdAt: '',
-    updatedAt: '',
-    ...extra
-  }
-}
+const TODAY = '2026-10-09'
 
-describe('buildUpcoming', () => {
-  it('covers seven days starting today', () => {
-    const days = buildUpcoming([], [], '2026-10-09')
-    expect(days.map((day) => day.date)).toEqual([
-      '2026-10-09',
-      '2026-10-10',
-      '2026-10-11',
-      '2026-10-12',
-      '2026-10-13',
-      '2026-10-14',
-      '2026-10-15'
-    ])
-    expect(days.every((day) => day.items.length === 0)).toBe(true)
+describe('listUpcomingEvents', () => {
+  it('keeps every event that has not finished, however far away', () => {
+    const list = listUpcomingEvents(
+      [
+        event('far', 'Far away', { startDate: '2027-06-01', endDate: '2027-06-01' }),
+        event('now', 'Today'),
+        event('past', 'Finished', { startDate: '2026-10-01', endDate: '2026-10-02' })
+      ],
+      TODAY
+    )
+    expect(list.map((e) => e.id)).toEqual(['now', 'far'])
   })
 
-  it('lists events and unfinished to-dos on their day, all-day first then by time', () => {
-    const days = buildUpcoming(
+  it('includes events already under way and puts them first', () => {
+    const list = listUpcomingEvents(
+      [
+        event('soon', 'Soon', { startDate: '2026-10-10', endDate: '2026-10-10' }),
+        event('camp', 'Camp', { startDate: '2026-10-05', endDate: '2026-10-12', allDay: true })
+      ],
+      TODAY
+    )
+    expect(list.map((e) => e.id)).toEqual(['camp', 'soon'])
+  })
+
+  it('orders by date, then all-day before timed, then start time', () => {
+    const list = listUpcomingEvents(
       [
         event('late', 'Late', { startTime: '15:00', endTime: '16:00' }),
-        event('early', 'Early', { startTime: '08:30', endTime: '09:00' }),
-        event('all', 'Holiday', { allDay: true, startTime: null, endTime: null })
+        event('early', 'Early', { startTime: '08:00', endTime: '09:00' }),
+        event('all', 'All day', { allDay: true, startTime: null, endTime: null })
       ],
-      [todo('t1', 'Hand in essay'), todo('t2', 'Done already', { done: true })],
-      '2026-10-09'
+      TODAY
     )
-    expect(days[0].items.map((item) => [item.title, item.when])).toEqual([
-      ['Holiday', 'All day'],
-      ['Early', '08:30'],
-      ['Late', '15:00'],
-      ['Hand in essay', null]
-    ])
-  })
-
-  it('shows a multi-day event on every day it covers', () => {
-    const days = buildUpcoming(
-      [event('camp', 'Camp', { endDate: '2026-10-11', endTime: '12:00' })],
-      [],
-      '2026-10-09'
-    )
-    expect(days.slice(0, 4).map((day) => day.items.map((item) => item.when))).toEqual([
-      ['10:00'],
-      ['Ongoing'],
-      ['Ongoing'],
-      []
-    ])
-  })
-
-  it('ignores items outside the week and shows a to-do an event created only as the event', () => {
-    const days = buildUpcoming(
-      [
-        event('e1', 'Exam', { todoId: 't1' }),
-        event('old', 'Past', { startDate: '2026-10-01', endDate: '2026-10-01' })
-      ],
-      [todo('t1', 'Exam'), todo('far', 'Next month', { dueDate: '2026-11-20' })],
-      '2026-10-09'
-    )
-    const titles = days.flatMap((day) => day.items.map((item) => item.title))
-    expect(titles).toEqual(['Exam'])
+    expect(list.map((e) => e.id)).toEqual(['all', 'early', 'late'])
   })
 })
 
-describe('dayLabel', () => {
-  it('says Today and Tomorrow, then a short date', () => {
-    expect(dayLabel('2026-10-09', '2026-10-09')).toBe('Today')
-    expect(dayLabel('2026-10-10', '2026-10-09')).toBe('Tomorrow')
-    expect(dayLabel('2026-10-12', '2026-10-09')).toMatch(/12/)
+describe('describeUpcoming', () => {
+  it('words how soon it is', () => {
+    expect(describeUpcoming(event('a', 'A'), TODAY).label).toBe('Today')
+    expect(
+      describeUpcoming(event('a', 'A', { startDate: '2026-10-10', endDate: '2026-10-10' }), TODAY)
+        .label
+    ).toBe('Tomorrow')
+    expect(
+      describeUpcoming(event('a', 'A', { startDate: '2026-10-14', endDate: '2026-10-14' }), TODAY)
+        .label
+    ).toBe('In 5 days')
+    expect(
+      describeUpcoming(event('a', 'A', { startDate: '2026-10-05', endDate: '2026-10-12' }), TODAY)
+        .label
+    ).toBe('Ongoing')
+  })
+
+  it('shows dates as day/month/year and a time range or All day', () => {
+    expect(describeUpcoming(event('a', 'A'), TODAY)).toMatchObject({
+      dates: '09/10/2026',
+      time: '10:00–11:00'
+    })
+    const span = describeUpcoming(
+      event('b', 'B', {
+        startDate: '2026-10-20',
+        endDate: '2026-12-05',
+        allDay: true,
+        startTime: null,
+        endTime: null
+      }),
+      TODAY
+    )
+    expect(span).toMatchObject({ dates: '20/10/2026 – 05/12/2026', time: 'All day' })
   })
 })

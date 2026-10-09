@@ -5,6 +5,7 @@ import { IconGrid, IconList, IconPlus, IconSearch, IconTrash } from '@renderer/c
 import { useNoteGroups } from '@renderer/hooks/useNoteGroups'
 import { useNotes } from '@renderer/hooks/useNotes'
 import { cn } from '@renderer/lib/cn'
+import { formatShortDate } from '@renderer/lib/date'
 import NoteEditor from './NoteEditor'
 import NoteGroupList, { type GroupSelection } from './NoteGroupList'
 
@@ -17,11 +18,6 @@ type NotesPageProps = {
   /** Controlled open note (so the app's back/forward history can include it). Omit to let the page manage it. */
   openNoteId?: string | null
   onOpenNoteChange?: (id: string | null) => void
-}
-
-function formatDate(iso: string): string {
-  const date = new Date(iso)
-  return Number.isNaN(date.getTime()) ? '' : date.toLocaleDateString()
 }
 
 type NoteCardProps = {
@@ -86,7 +82,7 @@ function NoteCard({
           mode === 'grid' ? 'justify-between px-3 pb-3' : 'shrink-0'
         )}
       >
-        <span className="text-xs text-text-muted">{formatDate(note.updatedAt)}</span>
+        <span className="text-xs text-text-muted">{formatShortDate(note.updatedAt)}</span>
         {groups.length > 0 ? (
           <select
             aria-label={`Group for ${note.title}`}
@@ -211,11 +207,11 @@ export default function NotesPage({
 
   return (
     <section>
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div>
         <h1 className="text-[20px] font-medium tracking-tight">Notes</h1>
         <button
           type="button"
-          className="inline-flex h-9 items-center gap-2 rounded-sm border border-border bg-surface px-3 text-sm text-text hover:border-accent hover:text-accent"
+          className="mt-3 inline-flex h-9 items-center gap-2 rounded-sm border border-border bg-surface px-3 text-sm text-text hover:border-accent hover:text-accent"
           onClick={() => void createAndOpen()}
         >
           <IconPlus className="h-4 w-4" />
