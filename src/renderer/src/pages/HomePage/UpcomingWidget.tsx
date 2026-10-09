@@ -65,7 +65,7 @@ export default function UpcomingWidget({ onOpenCalendar }: UpcomingWidgetProps):
                   <button
                     type="button"
                     aria-label={`${event.title}: open calendar`}
-                    className="flex w-full items-start gap-2 rounded-sm px-2 py-1.5 text-left hover:bg-bg"
+                    className="flex w-full items-start gap-2 rounded-sm px-2 py-1.5 text-left hover:bg-hover"
                     onClick={onOpenCalendar}
                   >
                     <span

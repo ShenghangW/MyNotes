@@ -36,14 +36,14 @@ export default function Sidebar({
   return (
     <aside
       className={cn(
-        'flex h-full shrink-0 flex-col border-r border-border bg-surface py-3',
+        'flex h-full shrink-0 flex-col border-r border-border bg-sidebar py-3',
         collapsed ? 'w-14 px-2' : 'w-[220px] px-3'
       )}
     >
       <div className={cn('mb-3 flex items-center', collapsed ? 'justify-center' : 'gap-2')}>
         <button
           type="button"
-          className="flex h-8 w-8 items-center justify-center rounded-sm text-text-muted hover:bg-bg hover:text-text"
+          className="flex h-8 w-8 items-center justify-center rounded-sm text-text-muted hover:bg-hover hover:text-text"
           aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
           aria-expanded={!collapsed}
           onClick={onToggleCollapsed}
@@ -58,8 +58,8 @@ export default function Sidebar({
       <button
         type="button"
         className={cn(
-          'mb-4 flex h-9 items-center justify-center gap-2 rounded-sm border border-border bg-bg text-sm text-text hover:border-accent hover:text-accent',
-          collapsed ? 'px-0' : 'px-3'
+          'mb-3 flex h-8 items-center gap-2 rounded-sm text-sm text-text-muted hover:bg-hover hover:text-text',
+          collapsed ? 'justify-center px-0' : 'px-2'
         )}
         aria-label="Add new note"
         title="Add new note"
@@ -81,11 +81,11 @@ export default function Sidebar({
               aria-label={item.label}
               title={collapsed ? item.label : undefined}
               className={cn(
-                'flex h-9 items-center rounded-sm text-sm',
+                'flex h-8 items-center rounded-sm text-sm',
                 collapsed ? 'justify-center' : 'gap-2 px-2',
                 active
-                  ? 'bg-bg font-medium text-accent'
-                  : 'text-text-muted hover:bg-bg hover:text-text'
+                  ? 'bg-hover font-medium text-text'
+                  : 'text-text-muted hover:bg-hover hover:text-text'
               )}
               onClick={() => onNavigate(item.id)}
             >
@@ -109,11 +109,11 @@ export default function Sidebar({
               aria-label={item.label}
               title={collapsed ? item.label : undefined}
               className={cn(
-                'flex h-9 items-center rounded-sm text-sm',
+                'flex h-8 items-center rounded-sm text-sm',
                 collapsed ? 'justify-center' : 'gap-2 px-2',
                 active
-                  ? 'bg-bg font-medium text-accent'
-                  : 'text-text-muted hover:bg-bg hover:text-text'
+                  ? 'bg-hover font-medium text-text'
+                  : 'text-text-muted hover:bg-hover hover:text-text'
               )}
               onClick={() => onNavigate(item.id)}
             >

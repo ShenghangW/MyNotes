@@ -266,7 +266,7 @@ export default function EventModal({
               <div className="flex items-center gap-2">
                 <button
                   type="button"
-                  className="h-9 rounded-sm border border-accent px-3 text-sm text-accent hover:bg-bg"
+                  className="h-9 rounded-sm border border-accent px-3 text-sm text-accent hover:bg-hover"
                   onClick={() => void remove()}
                 >
                   Confirm delete
@@ -303,7 +303,7 @@ export default function EventModal({
             <button
               type="button"
               disabled={!canSave}
-              className="h-9 rounded-sm bg-accent px-4 text-sm text-white disabled:opacity-40"
+              className="h-9 rounded-sm bg-accent px-4 text-sm text-on-accent disabled:opacity-40"
               onClick={() => void save()}
             >
               Save

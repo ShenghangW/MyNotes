@@ -32,7 +32,7 @@ export default function RecentNotesWidget({
             <li key={note.id}>
               <button
                 type="button"
-                className="flex w-full items-baseline gap-3 rounded-sm px-2 py-1.5 text-left hover:bg-bg"
+                className="flex w-full items-baseline gap-3 rounded-sm px-2 py-1.5 text-left hover:bg-hover"
                 onClick={() => onOpenNote?.(note.id)}
               >
                 <span className="min-w-0 flex-1">

@@ -112,7 +112,7 @@ export default function ClassModal({
                   className={cn(
                     'h-8 rounded-sm border px-2.5 text-sm',
                     draft.days.includes(day)
-                      ? 'border-accent bg-accent text-white'
+                      ? 'border-accent bg-accent text-on-accent'
                       : 'border-border bg-bg text-text hover:border-accent'
                   )}
                   onClick={() => toggleDay(day)}
@@ -193,7 +193,7 @@ export default function ClassModal({
               <div className="flex items-center gap-2">
                 <button
                   type="button"
-                  className="h-9 rounded-sm border border-accent px-3 text-sm text-accent hover:bg-bg"
+                  className="h-9 rounded-sm border border-accent px-3 text-sm text-accent hover:bg-hover"
                   onClick={() => void remove()}
                 >
                   Confirm delete
@@ -230,7 +230,7 @@ export default function ClassModal({
             <button
               type="button"
               disabled={!canSave}
-              className="h-9 rounded-sm bg-accent px-4 text-sm text-white disabled:opacity-40"
+              className="h-9 rounded-sm bg-accent px-4 text-sm text-on-accent disabled:opacity-40"
               onClick={() => void save()}
             >
               Save

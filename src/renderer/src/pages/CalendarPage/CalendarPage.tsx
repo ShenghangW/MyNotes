@@ -159,7 +159,7 @@ export default function CalendarPage(): React.JSX.Element {
   return (
     <section>
       <div className="flex items-center justify-between">
-        <h1 className="text-[20px] font-medium tracking-tight">Calendar</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Calendar</h1>
         <button
           type="button"
           className="flex h-9 items-center gap-2 rounded-sm border border-border bg-surface px-3 text-sm text-text hover:border-accent hover:text-accent"

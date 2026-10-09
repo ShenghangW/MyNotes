@@ -208,7 +208,7 @@ export default function NotesPage({
   return (
     <section>
       <div>
-        <h1 className="text-[20px] font-medium tracking-tight">Notes</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Notes</h1>
         <button
           type="button"
           className="mt-3 inline-flex h-9 items-center gap-2 rounded-sm border border-border bg-surface px-3 text-sm text-text hover:border-accent hover:text-accent"

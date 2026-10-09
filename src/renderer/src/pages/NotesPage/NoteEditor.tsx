@@ -12,6 +12,7 @@ import {
   type FilePanelProps
 } from '@blocknote/react'
 import { BlockNoteView } from '@blocknote/mantine'
+import { useAppearance } from '@renderer/hooks/useAppearance'
 import '@blocknote/core/fonts/inter.css'
 import '@blocknote/mantine/style.css'
 import type { Note } from '@shared/api'
@@ -98,6 +99,7 @@ function LoadedNoteEditor({ note, onBack, onDeleted }: LoadedProps): React.JSX.E
     [note.id]
   )
   const { schedule, flush, status, error: saveError } = useAutosave<NotePatch>(save)
+  const { resolvedMode } = useAppearance()
 
   const initialContent = useMemo(() => parseInitialContent(note.contentJson), [note.contentJson])
   const editor = useCreateBlockNote(
@@ -240,7 +242,7 @@ function LoadedNoteEditor({ note, onBack, onDeleted }: LoadedProps): React.JSX.E
       >
         <BlockNoteView
           editor={editor}
-          theme="light"
+          theme={resolvedMode}
           filePanel={false}
           sideMenu={false}
           onChange={handleEditorChange}

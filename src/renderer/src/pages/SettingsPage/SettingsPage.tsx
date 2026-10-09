@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react'
 import type { AppSettings } from '@shared/api'
 import NoteGroupManager from '@renderer/components/NoteGroupManager'
+import { useAppearance } from '@renderer/hooks/useAppearance'
 import { EVENTS_CHANGED } from '@renderer/hooks/useEvents'
+import { COLOR_MODES, THEMES } from '@renderer/lib/appearance'
+import { cn } from '@renderer/lib/cn'
 import { errorMessage, unwrap } from '@renderer/lib/ipc'
 
 const SHORTCUTS: { keys: string; action: string }[] = [
@@ -17,6 +20,7 @@ export default function SettingsPage(): React.JSX.Element {
   const [settings, setSettings] = useState<AppSettings | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
+  const { appearance, setTheme, setMode } = useAppearance()
 
   useEffect(() => {
     let cancelled = false
@@ -70,7 +74,7 @@ export default function SettingsPage(): React.JSX.Element {
 
   return (
     <section>
-      <h1 className="text-[20px] font-medium tracking-tight">Settings</h1>
+      <h1 className="text-2xl font-semibold tracking-tight">Settings</h1>
       <p className="mt-2 max-w-xl text-sm text-text-muted">
         Everything is stored locally on this computer. Changes save automatically.
       </p>
@@ -82,6 +86,60 @@ export default function SettingsPage(): React.JSX.Element {
       ) : null}
 
       <div className="mt-6 max-w-2xl rounded-md border border-border bg-surface p-4">
+        <h2 className="text-xs uppercase tracking-wide text-text-muted">Appearance</h2>
+        <div className="mt-3 flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <p className="text-sm text-text" id="theme-label">
+              Theme
+            </p>
+            <p className="text-sm text-text-muted">More themes will be added later.</p>
+          </div>
+          <div role="group" aria-labelledby="theme-label" className="flex gap-2">
+            {THEMES.map((theme) => (
+              <button
+                key={theme.id}
+                type="button"
+                aria-pressed={appearance.theme === theme.id}
+                title={theme.description}
+                className={cn(
+                  'h-8 rounded-sm border px-3 text-sm',
+                  appearance.theme === theme.id
+                    ? 'border-accent bg-hover font-medium text-text'
+                    : 'border-border text-text-muted hover:bg-hover hover:text-text'
+                )}
+                onClick={() => setTheme(theme.id)}
+              >
+                {theme.label}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+          <p className="text-sm text-text" id="mode-label">
+            Colour mode
+          </p>
+          <div role="group" aria-labelledby="mode-label" className="flex gap-2">
+            {COLOR_MODES.map((mode) => (
+              <button
+                key={mode.id}
+                type="button"
+                aria-pressed={appearance.mode === mode.id}
+                className={cn(
+                  'h-8 rounded-sm border px-3 text-sm',
+                  appearance.mode === mode.id
+                    ? 'border-accent bg-hover font-medium text-text'
+                    : 'border-border text-text-muted hover:bg-hover hover:text-text'
+                )}
+                onClick={() => setMode(mode.id)}
+              >
+                {mode.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-4 max-w-2xl rounded-md border border-border bg-surface p-4">
         <h2 className="text-xs uppercase tracking-wide text-text-muted">Reminders</h2>
         <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
           <label htmlFor="reminder-lead-select" className="text-sm text-text">

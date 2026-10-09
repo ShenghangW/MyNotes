@@ -16,14 +16,14 @@ export default function ClockWidget(): React.JSX.Element {
   return (
     <section
       aria-label="Clock"
-      className="overflow-hidden rounded-md border border-[#e4dcc6] bg-[#fbf7ea] text-center"
+      className="overflow-hidden rounded-md border border-border bg-bg text-center"
     >
-      <div className="border-b border-dashed border-[#d8cfb4] px-4 py-2">
-        <p className="text-xs tracking-wide text-[#8a7f62] uppercase">{weekday}</p>
-        <p className="text-sm text-[#5d5440]">{date}</p>
+      <div className="border-b border-border px-4 py-2">
+        <p className="text-xs tracking-wide text-text-muted uppercase">{weekday}</p>
+        <p className="text-sm text-text">{date}</p>
       </div>
       <p
-        className="px-4 py-4 text-5xl font-light tracking-tight text-[#3d3626] tabular-nums"
+        className="px-4 py-4 text-5xl font-light tracking-tight text-text tabular-nums"
         data-testid="clock-time"
       >
         {toLocalTime(now)}

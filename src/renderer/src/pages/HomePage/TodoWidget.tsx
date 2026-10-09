@@ -124,7 +124,7 @@ export default function TodoWidget(): React.JSX.Element {
           <button
             type="button"
             disabled={text.trim() === ''}
-            className="h-9 rounded-sm bg-accent px-3 text-sm text-white disabled:opacity-40"
+            className="h-9 rounded-sm bg-accent px-3 text-sm text-on-accent disabled:opacity-40"
             onClick={() => void handleAdd()}
           >
             Save

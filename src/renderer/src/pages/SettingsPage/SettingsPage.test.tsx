@@ -72,6 +72,18 @@ describe('SettingsPage', () => {
     expect((await screen.findByRole('alert')).textContent).toBe('Could not open folder')
   })
 
+  it('switches colour mode from the Appearance card', () => {
+    render(<SettingsPage />)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Dark' }))
+    expect(document.documentElement.dataset.theme).toBe('dark')
+    expect(screen.getByRole('button', { name: 'Dark' }).getAttribute('aria-pressed')).toBe('true')
+
+    fireEvent.click(screen.getByRole('button', { name: 'Light' }))
+    expect(document.documentElement.dataset.theme).toBe('light')
+    expect(screen.getByRole('button', { name: 'Notion' }).getAttribute('aria-pressed')).toBe('true')
+  })
+
   it('lists the keyboard shortcuts', () => {
     render(<SettingsPage />)
     const list = screen.getByTestId('shortcuts')
