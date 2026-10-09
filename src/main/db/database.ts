@@ -3,7 +3,12 @@ import { createRequire } from 'node:module'
 import { dirname, join } from 'node:path'
 import type { Database, SqlValue } from 'sql.js'
 import schemaSql from './schema.sql?raw'
-import type { AppSettings, SettingsPatch } from '../../shared/api'
+import {
+  DEFAULT_HOME_TITLE,
+  MAX_HOME_TITLE_LENGTH,
+  type AppSettings,
+  type SettingsPatch
+} from '../../shared/api'
 import { extractInlineImagePaths } from '../../shared/imageUrl'
 
 const require = createRequire(__filename)
@@ -14,7 +19,7 @@ type SqlJsStatic = {
 
 type InitSqlJs = (config?: { locateFile?: (file: string) => string }) => Promise<SqlJsStatic>
 
-const SCHEMA_VERSION = 1
+const SCHEMA_VERSION = 3
 
 function nowIso(): string {
   return new Date().toISOString()
@@ -38,22 +43,61 @@ function userVersion(db: Database): number {
 
 function applySchema(db: Database): void {
   db.run('PRAGMA foreign_keys = ON')
-  if (userVersion(db) >= SCHEMA_VERSION) {
+  const version = userVersion(db)
+  if (version >= SCHEMA_VERSION) {
     return
   }
-  db.run(schemaSql)
-  db.run(
-    `INSERT OR IGNORE INTO app_settings (id, reminder_lead_days, home_photo_path, home_photo_visible, updated_at)
-     VALUES (1, 1, NULL, 1, ?)`,
-    [nowIso()]
-  )
+  if (version === 0) {
+    // Brand-new database: schema.sql already describes the latest shape.
+    db.run(schemaSql)
+    db.run(
+      `INSERT OR IGNORE INTO app_settings (id, reminder_lead_days, home_photo_path, home_photo_visible, updated_at)
+       VALUES (1, 1, NULL, 1, ?)`,
+      [nowIso()]
+    )
+    db.run(`PRAGMA user_version = ${SCHEMA_VERSION}`)
+    return
+  }
+  if (version < 2) {
+    // v1 -> v2: editable Home title.
+    db.run(
+      `ALTER TABLE app_settings ADD COLUMN home_title TEXT NOT NULL DEFAULT '${DEFAULT_HOME_TITLE}'`
+    )
+  }
+  if (version < 3) {
+    // v2 -> v3: events get an end, times, a colour and an optional linked to-do.
+    // Existing events become single-day, all-day events.
+    db.run('ALTER TABLE events ADD COLUMN end_date TEXT')
+    db.run('ALTER TABLE events ADD COLUMN start_time TEXT')
+    db.run('ALTER TABLE events ADD COLUMN end_time TEXT')
+    db.run('ALTER TABLE events ADD COLUMN all_day INTEGER NOT NULL DEFAULT 1')
+    db.run("ALTER TABLE events ADD COLUMN color TEXT NOT NULL DEFAULT 'blue'")
+    db.run('ALTER TABLE events ADD COLUMN todo_id TEXT')
+    db.run('UPDATE events SET end_date = event_date WHERE end_date IS NULL')
+  }
   db.run(`PRAGMA user_version = ${SCHEMA_VERSION}`)
+}
+
+/** Trims the Home title; an empty title resets to the default instead of leaving a blank heading. */
+function cleanHomeTitle(value: string): string {
+  const trimmed = value.trim()
+  if (trimmed === '') {
+    return DEFAULT_HOME_TITLE
+  }
+  if (trimmed.length > MAX_HOME_TITLE_LENGTH) {
+    throw new Error(`Title must be ${MAX_HOME_TITLE_LENGTH} characters or fewer`)
+  }
+  return trimmed
 }
 
 function mapSettings(row: Record<string, SqlValue>): AppSettings {
   const lead = Number(row.reminder_lead_days)
   return {
     reminderLeadDays: lead === 2 ? 2 : 1,
+    homeTitle:
+      typeof row.home_title === 'string' && row.home_title.trim() !== ''
+        ? row.home_title
+        : DEFAULT_HOME_TITLE,
     homePhotoPath: typeof row.home_photo_path === 'string' ? row.home_photo_path : null,
     homePhotoVisible: Number(row.home_photo_visible) === 1,
     updatedAt: String(row.updated_at)
@@ -110,7 +154,7 @@ export class AppDatabase {
 
   getSettings(): AppSettings {
     const row = this.get<Record<string, SqlValue>>(
-      'SELECT reminder_lead_days, home_photo_path, home_photo_visible, updated_at FROM app_settings WHERE id = 1'
+      'SELECT reminder_lead_days, home_title, home_photo_path, home_photo_visible, updated_at FROM app_settings WHERE id = 1'
     )
     if (!row) {
       throw new Error('app_settings row is missing')
@@ -122,7 +166,10 @@ export class AppDatabase {
     const current = this.getSettings()
     const next: AppSettings = {
       reminderLeadDays: patch.reminderLeadDays ?? current.reminderLeadDays,
-      homePhotoPath: patch.homePhotoPath === undefined ? current.homePhotoPath : patch.homePhotoPath,
+      homeTitle:
+        patch.homeTitle === undefined ? current.homeTitle : cleanHomeTitle(patch.homeTitle),
+      homePhotoPath:
+        patch.homePhotoPath === undefined ? current.homePhotoPath : patch.homePhotoPath,
       homePhotoVisible: patch.homePhotoVisible ?? current.homePhotoVisible,
       updatedAt: nowIso()
     }
@@ -133,10 +180,11 @@ export class AppDatabase {
 
     this.run(
       `UPDATE app_settings
-       SET reminder_lead_days = ?, home_photo_path = ?, home_photo_visible = ?, updated_at = ?
+       SET reminder_lead_days = ?, home_title = ?, home_photo_path = ?, home_photo_visible = ?, updated_at = ?
        WHERE id = 1`,
       [
         next.reminderLeadDays,
+        next.homeTitle,
         next.homePhotoPath,
         next.homePhotoVisible ? 1 : 0,
         next.updatedAt

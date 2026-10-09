@@ -21,3 +21,8 @@ export function formatDueDate(dueDate: string): string {
     day: 'numeric'
   })
 }
+
+/** Local 24-hour time as HH:MM. */
+export function toLocalTime(date: Date): string {
+  return `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`
+}

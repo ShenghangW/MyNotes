@@ -14,6 +14,9 @@ type NotesPageProps = {
   /** Set by the sidebar's "Add new note"; the page creates a note and opens it. */
   createRequested?: boolean
   onCreateHandled?: () => void
+  /** Controlled open note (so the app's back/forward history can include it). Omit to let the page manage it. */
+  openNoteId?: string | null
+  onOpenNoteChange?: (id: string | null) => void
 }
 
 function formatDate(iso: string): string {
@@ -127,7 +130,9 @@ function NoteCard({
 
 export default function NotesPage({
   createRequested = false,
-  onCreateHandled
+  onCreateHandled,
+  openNoteId: controlledOpenNoteId,
+  onOpenNoteChange
 }: NotesPageProps): React.JSX.Element {
   const [selection, setSelection] = useState<GroupSelection>('all')
   const filter: NotesFilter =
@@ -135,7 +140,13 @@ export default function NotesPage({
   const { notes, loading, error, query, setQuery, refresh, createNote, deleteNote, moveToGroup } =
     useNotes(filter)
   const groupApi = useNoteGroups()
-  const [openNoteId, setOpenNoteId] = useState<string | null>(null)
+  const [localOpenNoteId, setLocalOpenNoteId] = useState<string | null>(null)
+  // When the app shell owns navigation, the open note is part of its back/forward history.
+  const openNoteId = controlledOpenNoteId === undefined ? localOpenNoteId : controlledOpenNoteId
+  const setOpenNoteId = (id: string | null): void => {
+    setLocalOpenNoteId(id)
+    onOpenNoteChange?.(id)
+  }
   const [mode, setMode] = useState<ViewMode>('grid')
   const createHandledRef = useRef(false)
 

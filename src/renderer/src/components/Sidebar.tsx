@@ -69,8 +69,8 @@ export default function Sidebar({
         {!collapsed ? <span>Add new note</span> : null}
       </button>
 
-      <nav className="flex flex-1 flex-col gap-1" aria-label="Main">
-        {APP_PAGES.map((item) => {
+      <nav className="flex flex-col gap-1" aria-label="Main">
+        {APP_PAGES.filter((item) => item.id !== 'settings').map((item) => {
           const Icon = ICONS[item.id]
           const active = currentPage === item.id
           return (
@@ -95,6 +95,34 @@ export default function Sidebar({
           )
         })}
       </nav>
+
+      {/* Settings lives at the bottom-left, where people expect it. */}
+      <div className="mt-auto flex flex-col gap-1 border-t border-border pt-3">
+        {APP_PAGES.filter((item) => item.id === 'settings').map((item) => {
+          const Icon = ICONS[item.id]
+          const active = currentPage === item.id
+          return (
+            <button
+              key={item.id}
+              type="button"
+              aria-current={active ? 'page' : undefined}
+              aria-label={item.label}
+              title={collapsed ? item.label : undefined}
+              className={cn(
+                'flex h-9 items-center rounded-sm text-sm',
+                collapsed ? 'justify-center' : 'gap-2 px-2',
+                active
+                  ? 'bg-bg font-medium text-accent'
+                  : 'text-text-muted hover:bg-bg hover:text-text'
+              )}
+              onClick={() => onNavigate(item.id)}
+            >
+              <Icon />
+              {!collapsed ? <span>{item.label}</span> : null}
+            </button>
+          )
+        })}
+      </div>
     </aside>
   )
 }

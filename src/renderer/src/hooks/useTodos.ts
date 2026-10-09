@@ -9,6 +9,8 @@ export function useTodos(): {
   addTodo: (text: string, dueDate: string | null) => Promise<boolean>
   updateTodo: (patch: TodoUpdateInput) => Promise<boolean>
   deleteTodo: (id: string) => Promise<boolean>
+  /** Re-reads the saved to-dos (e.g. after the calendar created a linked one). */
+  reload: () => Promise<void>
 } {
   const [todos, setTodos] = useState<Todo[]>([])
   const [loading, setLoading] = useState(true)
@@ -90,5 +92,7 @@ export function useTodos(): {
     [refresh]
   )
 
-  return { todos, loading, error, addTodo, updateTodo, deleteTodo }
+  const reload = useCallback(() => refresh(), [refresh])
+
+  return { todos, loading, error, addTodo, updateTodo, deleteTodo, reload }
 }

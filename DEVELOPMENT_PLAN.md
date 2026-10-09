@@ -100,6 +100,7 @@ Main process (Electron)
 |---|---|---|
 | `id` | INTEGER PK | Always 1 |
 | `reminder_lead_days` | INTEGER | 1 or 2 |
+| `home_title` | TEXT | Editable Home heading, default `Home` (added in schema v2) |
 | `home_photo_path` | TEXT NULL | Relative path under `userdata/images` |
 | `home_photo_visible` | INTEGER | 0/1 |
 | `updated_at` | TEXT | ISO timestamp |
@@ -371,6 +372,8 @@ Copied from PRD §9 — every phase gate includes these:
 **Files:** `calendarHandlers.ts`, `CalendarPage.tsx`, `EventModal.tsx`, `ReminderPopup.tsx`, reminder util + test
 
 **Tests:** Pure reminder function: 2-day lead, event in 2 days → due; event in 3 days → not due; dismissed today → not due; event yesterday → not due.
+
+**Status:** Done. Notes: FullCalendar is pinned to v6 across all packages (`@fullcalendar/react` 7 needs core 7, which doesn't match daygrid/interaction 6). A "New event" button also opens the modal. Reminder popup re-checks on launch, every 20 min, on window focus, and after any event change. Home title is now editable and the Home description was removed. Follow-up: events have start/end date + 24h time, all-day toggle, colours, multi-day spans, drag/resize, a Month/Week/Day view, a to-do panel on the open day, and an opt-in "Add to to-do list" link (schema v3). The UI auto-scales with window size (Ctrl +/-/0 adjusts).
 
 **Gate:** Create event with reminder, set lead to 1 day in DB, launch “today” with mocked clock in unit tests. Manual: create event tomorrow with reminder, see popup.
 

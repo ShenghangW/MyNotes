@@ -6,6 +6,8 @@ import { openDatabase, type AppDatabase } from './db/database'
 import { registerIpc } from './ipc/registerIpc'
 import { ensureUserDataDirs } from './userData'
 import { resolveImagePath } from './storage/imageProtocol'
+import { IPC_CHANNELS } from '../shared/api'
+import { computeZoomFactor, nextUserZoom } from './zoom'
 import { APP_IMAGE_SCHEME } from '../shared/imageUrl'
 
 // Must run before the app is ready. Lets <img src="app-image://..."> load local files
@@ -33,7 +35,41 @@ function createWindow(): void {
     }
   })
 
+  // The UI scales with the window (so a maximised window isn't tiny); Ctrl +/-/0 adjusts on top.
+  let userZoom = 1
+  const applyZoom = (): void => {
+    const [width, height] = mainWindow.getContentSize()
+    mainWindow.webContents.setZoomFactor(computeZoomFactor(width, height, userZoom))
+  }
+  mainWindow.on('resize', applyZoom)
+  mainWindow.on('maximize', applyZoom)
+  mainWindow.on('unmaximize', applyZoom)
+  mainWindow.on('enter-full-screen', applyZoom)
+  mainWindow.on('leave-full-screen', applyZoom)
+  // Windows reports the mouse side buttons (and browser keys) as app commands.
+  mainWindow.on('app-command', (_event, command) => {
+    if (command === 'browser-backward') {
+      mainWindow.webContents.send(IPC_CHANNELS.navCommand, 'back')
+    } else if (command === 'browser-forward') {
+      mainWindow.webContents.send(IPC_CHANNELS.navCommand, 'forward')
+    }
+  })
+  mainWindow.webContents.on('did-finish-load', applyZoom)
+  mainWindow.webContents.on('before-input-event', (event, input) => {
+    if (input.type !== 'keyDown' || !(input.control || input.meta)) {
+      return
+    }
+    const next = nextUserZoom(userZoom, input.key)
+    if (next !== null) {
+      event.preventDefault()
+      userZoom = next
+      applyZoom()
+    }
+  })
+  void mainWindow.webContents.setVisualZoomLevelLimits(1, 1)
+
   mainWindow.on('ready-to-show', () => {
+    applyZoom()
     mainWindow.show()
   })
 

@@ -3,6 +3,10 @@ import { BlockNoteSchema, defaultBlockSpecs } from '@blocknote/core'
 import {
   FilePanel,
   FilePanelController,
+  SideMenu,
+  SideMenuController,
+  AddBlockButton,
+  DragHandleButton,
   UploadTab,
   useCreateBlockNote,
   type FilePanelProps
@@ -17,6 +21,7 @@ import { useAutosave, type SaveStatus } from '@renderer/hooks/useAutosave'
 import { useNoteGroups } from '@renderer/hooks/useNoteGroups'
 import { errorMessage, unwrap } from '@renderer/lib/ipc'
 import NoteCover from './NoteCover'
+import { NoteDragHandleMenu } from './NoteBlockMenu'
 
 // V1 scope (PRD): no tables, code blocks, or video/audio. Removing the block specs also
 // removes their slash-menu entries.
@@ -161,7 +166,7 @@ function LoadedNoteEditor({ note, onBack, onDeleted }: LoadedProps): React.JSX.E
   const statusLabel = STATUS_LABEL[status]
 
   return (
-    <section className="mx-auto flex max-w-3xl flex-col gap-4">
+    <section className="mx-auto flex min-h-full w-full max-w-[1400px] flex-col gap-4">
       <div className="flex items-center justify-between">
         <button
           type="button"
@@ -230,14 +235,35 @@ function LoadedNoteEditor({ note, onBack, onDeleted }: LoadedProps): React.JSX.E
         </select>
       </label>
 
-      <div className="min-h-[50vh] rounded-md bg-surface py-3">
+      <div
+        className="mn-note-surface min-h-[50vh] flex-1 rounded-md bg-surface py-3"
+        onMouseDown={(event) => {
+          // Clicking the empty space below the text puts the cursor at the end, like a real page.
+          if (
+            event.target === event.currentTarget ||
+            (event.target as HTMLElement).classList.contains('bn-container')
+          ) {
+            event.preventDefault()
+            editor.focus()
+          }
+        }}
+      >
         <BlockNoteView
           editor={editor}
           theme="light"
           filePanel={false}
+          sideMenu={false}
           onChange={handleEditorChange}
         >
           <FilePanelController filePanel={UploadOnlyFilePanel} />
+          <SideMenuController
+            sideMenu={(props) => (
+              <SideMenu {...props}>
+                <AddBlockButton />
+                <DragHandleButton {...props} dragHandleMenu={NoteDragHandleMenu} />
+              </SideMenu>
+            )}
+          />
         </BlockNoteView>
       </div>
     </section>

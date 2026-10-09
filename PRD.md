@@ -24,6 +24,7 @@ This PRD supersedes the earlier "basic notes only" requirement list — the scop
 
 ## 2. Home Page
 - To-do list widget — add, check off, delete tasks
+- A time widget - Display hours/minutes, and day/month/year, with a timer feature
 - Mini calendar showing upcoming day(s)/events at a glance
 - List of most recently created/edited notes (quick jump-back-in)
 - Optional photo widget — upload a photo to display on the home page; can be shown or hidden whenever you like
@@ -63,10 +64,11 @@ This PRD supersedes the earlier "basic notes only" requirement list — the scop
 ---
 
 ## Judgment calls I made — flag anything you want changed
-- **Home page photo widget:** assumed it shows one photo at a time (not a rotating gallery/slideshow of multiple photos). Say the word if you want multiple photos cycling through.
+-**A time widget:** that displays the current hour and minutes, and the UI should look like a chill lo-fi style paper timer, and it should display day/month/year on top of the time widget, in the same kind of chill lo-fi art style. And there should be a timer feature(Button  on side?) that allows user to set a time, or time them selves in the pop up menu, and when user quit from the pop up, their should be a floating timer on the side bar maybe(Or even a dragable floating wiget that follows the users page) 
+- **Home page photo widget:** optional and should be decided whether or not to be added after finihsing everything else, assumed it shows one photo at a time and when users add more than one phot, it becomes a rotating gallery/slideshow of multiple photos. Say the word if you want multiple photos cycling through.
 - **Reminder pop-ups only work while the app is open.** Making it notify you even when the app is closed needs deeper OS-level integration — I'm treating that as a V2 upgrade, not part of this build.
-- **Assessments vs. general events:** treated as the same event type for now (both just "events" with an optional reminder). A visual distinction (e.g. different color for assessments) is an easy later addition if you want it.
-- **To-do list kept simple:** just task text + checkbox + optional due date. No priority levels or categories yet.
+- **Assessments vs. general events:** treated as the same event type for now (both just "events" with an optional reminder). But later i want A visual distinction (e.g. a unique icon for assessments) so its easily to be spot out from first glance, and we can talk about the icon later. 
+- **To-do list kept simple:** just task text + checkbox + optional due date. No priority levels(High/medium/low) or categories yet but will be implemented.
 - **Calendar default view:** month view. Week/day views can be added later if month view feels too zoomed-out for you.
 - **Note groups:** you can create as many groups as you want with any names — I used School, Work, and Games as examples since you mentioned them, but they're not hardcoded categories.
 

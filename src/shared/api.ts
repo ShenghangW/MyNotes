@@ -1,14 +1,21 @@
+import type { EventColorId } from './eventColors'
+
 export type IpcResult<T> = { ok: true; data: T } | { ok: false; error: string }
+
+export const DEFAULT_HOME_TITLE = 'Home'
+export const MAX_HOME_TITLE_LENGTH = 60
 
 export type AppSettings = {
   reminderLeadDays: 1 | 2
+  /** Heading shown at the top of the Home page. User-editable. */
+  homeTitle: string
   homePhotoPath: string | null
   homePhotoVisible: boolean
   updatedAt: string
 }
 
 export type SettingsPatch = Partial<
-  Pick<AppSettings, 'reminderLeadDays' | 'homePhotoPath' | 'homePhotoVisible'>
+  Pick<AppSettings, 'reminderLeadDays' | 'homeTitle' | 'homePhotoPath' | 'homePhotoVisible'>
 >
 
 export type NoteGroup = {
@@ -82,6 +89,49 @@ export type TodoUpdateInput = {
 export type TodoIdInput = { id: string }
 export type TodoReorderInput = { ids: string[] }
 
+export type CalendarEvent = {
+  id: string
+  title: string
+  /** `YYYY-MM-DD`. Events can span several days, weeks or months. */
+  startDate: string
+  /** 24-hour `HH:MM`, or null for an all-day event. */
+  startTime: string | null
+  endDate: string
+  endTime: string | null
+  allDay: boolean
+  color: EventColorId
+  reminderEnabled: boolean
+  /** Id of the to-do created from this event (shown on the Home list), or null. */
+  todoId: string | null
+  createdAt: string
+  updatedAt: string
+}
+
+export type EventCreateInput = {
+  title: string
+  startDate: string
+  /** Defaults to the start date. */
+  endDate?: string
+  startTime?: string | null
+  endTime?: string | null
+  /** Defaults to true when no start time is given. */
+  allDay?: boolean
+  color?: EventColorId
+  reminderEnabled?: boolean
+  /** Also create a to-do (due on the start date). Off by default. */
+  addToTodo?: boolean
+}
+export type EventUpdateInput = Partial<EventCreateInput> & { id: string }
+export type EventIdInput = { id: string }
+
+/** An event whose reminder popup should show today. */
+export type DueReminder = {
+  event: CalendarEvent
+  /** 0 = today, 1 = tomorrow, 2 = in two days. */
+  daysUntil: number
+}
+export type ReminderDismissInput = { eventId: string }
+
 export type AppApi = {
   settings: {
     get: () => Promise<IpcResult<AppSettings>>
@@ -113,13 +163,15 @@ export type AppApi = {
     reorder: (payload: TodoReorderInput) => Promise<IpcResult<Todo[]>>
   }
   events: {
-    list: () => Promise<IpcResult<unknown>>
-    get: (payload: unknown) => Promise<IpcResult<unknown>>
-    create: (payload: unknown) => Promise<IpcResult<unknown>>
-    update: (payload: unknown) => Promise<IpcResult<unknown>>
-    delete: (payload: unknown) => Promise<IpcResult<unknown>>
-    listDueReminders: () => Promise<IpcResult<unknown>>
-    dismissReminder: (payload: unknown) => Promise<IpcResult<unknown>>
+    list: () => Promise<IpcResult<CalendarEvent[]>>
+    get: (payload: EventIdInput) => Promise<IpcResult<CalendarEvent>>
+    create: (payload: EventCreateInput) => Promise<IpcResult<CalendarEvent>>
+    update: (payload: EventUpdateInput) => Promise<IpcResult<CalendarEvent>>
+    delete: (payload: EventIdInput) => Promise<IpcResult<null>>
+    /** Reminders due today (local date) that have not been dismissed today. */
+    listDueReminders: () => Promise<IpcResult<DueReminder[]>>
+    /** Hides this event's reminder for the rest of today (local date). */
+    dismissReminder: (payload: ReminderDismissInput) => Promise<IpcResult<null>>
   }
   timetable: {
     list: () => Promise<IpcResult<unknown>>
@@ -139,10 +191,13 @@ export type AppApi = {
   app: {
     getUserDataPath: () => Promise<IpcResult<string>>
     manualSave: () => Promise<IpcResult<null>>
+    /** Mouse side buttons / browser keys, reported by the OS. Returns an unsubscribe function. */
+    onNavigate: (listener: (direction: 'back' | 'forward') => void) => () => void
   }
 }
 
 export const IPC_CHANNELS = {
+  navCommand: 'nav:command',
   settingsGet: 'settings:get',
   settingsUpdate: 'settings:update',
   groupsList: 'groups:list',

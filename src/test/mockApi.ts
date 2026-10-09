@@ -7,6 +7,7 @@ const notImplemented = async (): Promise<IpcResult<never>> => ({
 
 const defaultSettings: AppSettings = {
   reminderLeadDays: 1,
+  homeTitle: 'Home',
   homePhotoPath: null,
   homePhotoVisible: true,
   updatedAt: '2026-01-01T00:00:00.000Z'
@@ -44,12 +45,12 @@ export function createMockApi(overrides: Partial<AppApi> = {}): AppApi {
       reorder: notImplemented
     },
     events: {
-      list: notImplemented,
+      list: async () => ({ ok: true, data: [] }),
       get: notImplemented,
       create: notImplemented,
       update: notImplemented,
       delete: notImplemented,
-      listDueReminders: notImplemented,
+      listDueReminders: async () => ({ ok: true, data: [] }),
       dismissReminder: notImplemented
     },
     timetable: {
@@ -63,7 +64,8 @@ export function createMockApi(overrides: Partial<AppApi> = {}): AppApi {
     },
     app: {
       getUserDataPath: async () => ({ ok: true, data: TEST_USER_DATA_PATH }),
-      manualSave: async () => ({ ok: true, data: null })
+      manualSave: async () => ({ ok: true, data: null }),
+      onNavigate: () => () => undefined
     },
     ...overrides
   }

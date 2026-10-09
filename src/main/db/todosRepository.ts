@@ -97,6 +97,8 @@ export function updateTodo(db: AppDatabase, input: TodoUpdateInput): Todo {
 
 export function deleteTodo(db: AppDatabase, id: string): void {
   getTodo(db, id)
+  // An event that created this to-do just stops being linked to it.
+  db.run('UPDATE events SET todo_id = NULL WHERE todo_id = ?', [id])
   db.run('DELETE FROM todos WHERE id = ?', [id])
 }
 

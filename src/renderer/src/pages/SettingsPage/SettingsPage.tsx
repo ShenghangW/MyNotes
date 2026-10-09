@@ -59,7 +59,9 @@ export default function SettingsPage(): React.JSX.Element {
         <div>
           <dt className="text-xs uppercase tracking-wide text-text-muted">Reminder lead time</dt>
           <dd className="mt-1 text-sm text-text" data-testid="reminder-lead">
-            {settings ? `${settings.reminderLeadDays} day${settings.reminderLeadDays === 1 ? '' : 's'}` : 'Loading…'}
+            {settings
+              ? `${settings.reminderLeadDays} day${settings.reminderLeadDays === 1 ? '' : 's'}`
+              : 'Loading…'}
           </dd>
         </div>
       </dl>

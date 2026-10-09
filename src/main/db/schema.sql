@@ -6,6 +6,7 @@ PRAGMA foreign_keys = ON;
 CREATE TABLE IF NOT EXISTS app_settings (
   id INTEGER PRIMARY KEY CHECK (id = 1),
   reminder_lead_days INTEGER NOT NULL CHECK (reminder_lead_days IN (1, 2)),
+  home_title TEXT NOT NULL DEFAULT 'Home',
   home_photo_path TEXT,
   home_photo_visible INTEGER NOT NULL CHECK (home_photo_visible IN (0, 1)) DEFAULT 1,
   updated_at TEXT NOT NULL
@@ -43,7 +44,13 @@ CREATE TABLE IF NOT EXISTS todos (
 CREATE TABLE IF NOT EXISTS events (
   id TEXT PRIMARY KEY,
   title TEXT NOT NULL,
-  event_date TEXT NOT NULL,
+  event_date TEXT NOT NULL, -- start date
+  end_date TEXT,
+  start_time TEXT,
+  end_time TEXT,
+  all_day INTEGER NOT NULL DEFAULT 1,
+  color TEXT NOT NULL DEFAULT 'blue',
+  todo_id TEXT,
   reminder_enabled INTEGER NOT NULL CHECK (reminder_enabled IN (0, 1)) DEFAULT 0,
   created_at TEXT NOT NULL,
   updated_at TEXT NOT NULL

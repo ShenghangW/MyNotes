@@ -53,6 +53,13 @@ export const api: AppApi = {
   },
   app: {
     getUserDataPath: () => invoke(IPC_CHANNELS.appGetUserDataPath),
-    manualSave: () => invoke(IPC_CHANNELS.appManualSave)
+    manualSave: () => invoke(IPC_CHANNELS.appManualSave),
+    onNavigate: (listener) => {
+      const handler = (_event: unknown, direction: 'back' | 'forward'): void => listener(direction)
+      ipcRenderer.on(IPC_CHANNELS.navCommand, handler)
+      return () => {
+        ipcRenderer.removeListener(IPC_CHANNELS.navCommand, handler)
+      }
+    }
   }
 }
