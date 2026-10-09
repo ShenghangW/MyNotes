@@ -132,6 +132,41 @@ export type DueReminder = {
 }
 export type ReminderDismissInput = { eventId: string }
 
+export type TimetableEntry = {
+  id: string
+  /** 0 = Monday … 6 = Sunday. */
+  dayOfWeek: number
+  /** 24-hour `HH:MM`. */
+  startTime: string
+  endTime: string
+  title: string
+  /** Optional extra detail, e.g. the room or lecturer. */
+  description: string | null
+  color: EventColorId
+  updatedAt: string
+}
+
+export type TimetableCreateInput = {
+  title: string
+  /** One entry is created per day (0 = Monday … 6 = Sunday). */
+  days: number[]
+  startTime: string
+  endTime: string
+  description?: string | null
+  color?: EventColorId
+}
+export type TimetableUpdateInput = {
+  id: string
+  title?: string
+  dayOfWeek?: number
+  startTime?: string
+  endTime?: string
+  /** null or empty clears the description; omit to keep it. */
+  description?: string | null
+  color?: EventColorId
+}
+export type TimetableIdInput = { id: string }
+
 export type AppApi = {
   settings: {
     get: () => Promise<IpcResult<AppSettings>>
@@ -174,9 +209,11 @@ export type AppApi = {
     dismissReminder: (payload: ReminderDismissInput) => Promise<IpcResult<null>>
   }
   timetable: {
-    list: () => Promise<IpcResult<unknown>>
-    upsert: (payload: unknown) => Promise<IpcResult<unknown>>
-    delete: (payload: unknown) => Promise<IpcResult<unknown>>
+    list: () => Promise<IpcResult<TimetableEntry[]>>
+    /** Adds the class on every selected day; returns the new entries. */
+    create: (payload: TimetableCreateInput) => Promise<IpcResult<TimetableEntry[]>>
+    update: (payload: TimetableUpdateInput) => Promise<IpcResult<TimetableEntry>>
+    delete: (payload: TimetableIdInput) => Promise<IpcResult<null>>
   }
   images: {
     /**
@@ -225,7 +262,8 @@ export const IPC_CHANNELS = {
   eventsListDueReminders: 'events:listDueReminders',
   eventsDismissReminder: 'events:dismissReminder',
   timetableList: 'timetable:list',
-  timetableUpsert: 'timetable:upsert',
+  timetableCreate: 'timetable:create',
+  timetableUpdate: 'timetable:update',
   timetableDelete: 'timetable:delete',
   imagesSaveFromPath: 'images:saveFromPath',
   appGetUserDataPath: 'app:getUserDataPath',

@@ -54,8 +54,9 @@ export function createMockApi(overrides: Partial<AppApi> = {}): AppApi {
       dismissReminder: notImplemented
     },
     timetable: {
-      list: notImplemented,
-      upsert: notImplemented,
+      list: async () => ({ ok: true, data: [] }),
+      create: notImplemented,
+      update: notImplemented,
       delete: notImplemented
     },
     images: {

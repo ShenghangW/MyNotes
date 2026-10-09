@@ -388,11 +388,13 @@ Copied from PRD §9 — every phase gate includes these:
 1. IPC `timetable:*`.
 2. Grid UI: days as columns, time slots as rows (defaults from **Q4**).
 3. Click slot → set title (and optional location); click existing → edit/delete.
-4. Overlap: V1 **reject overlap** on the same day (simpler than stacking).
+4. Overlap: allowed; overlapping classes are drawn side by side (changed from the original "reject overlap" plan).
 
 **Files:** `timetableHandlers.ts`, `TimetablePage.tsx`, `useTimetable.ts`
 
-**Tests:** Upsert two overlapping slots on Monday fails; non-overlap succeeds; data reloads.
+**Tests:** Overlapping classes on Monday are saved and laid out side by side; data reloads.
+
+**Status:** Done. Notes: the grid is positioned by time (like the uni timetable) rather than fixed slot rows, so classes at any start/end time fit; it shows 08:00–18:00 by default and widens to fit early/late classes. Each class has a title, day(s), 24h from/to time, an optional description (room, lecturer, notes) and a colour. Adding can pick several days at once (one entry per day); editing moves one entry. Click an empty spot to add at that day/time, click a class to edit/delete. Overlapping classes on the same day are allowed and drawn side by side. Schema v4: `location` became `description` and entries gained `color`.
 
 **Gate:** Fill a week, quit, relaunch, grid matches.
 

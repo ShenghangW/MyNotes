@@ -17,11 +17,11 @@ type EventModalProps = {
 const HOURS = Array.from({ length: 24 }, (_, hour) => String(hour).padStart(2, '0'))
 const FIVE_MINUTES = Array.from({ length: 12 }, (_, step) => String(step * 5).padStart(2, '0'))
 
-const FIELD =
+export const FIELD =
   'h-9 rounded-sm border border-border bg-bg px-2 text-sm text-text outline-none focus:border-accent'
 
 /** 24-hour time picker (two dropdowns) so the clock never switches to AM/PM. */
-function TimeSelect({
+export function TimeSelect({
   label,
   value,
   onChange

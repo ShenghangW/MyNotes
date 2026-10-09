@@ -50,6 +50,8 @@ This PRD supersedes the earlier "basic notes only" requirement list — the scop
 ## 5. Timetable Page
 - A fixed weekly grid (e.g. Monday–Sunday, time blocks) to log your recurring class/weekly schedule
 - Not tied to specific dates — a persistent reference table you can edit anytime, always visible in one place
+- Each class has a title, one or more days, a start and end time (24-hour), an optional description (room, lecturer, notes) and a colour; add, edit and delete anytime
+- Overlapping classes on the same day are allowed and shown side by side
 
 ## 6. Settings Page
 - Manage note groups (create, rename, delete)

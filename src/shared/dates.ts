@@ -53,3 +53,16 @@ export function addMinutes(
   const iso = new Date(utcMs(date, time) + minutes * 60_000).toISOString()
   return { date: iso.slice(0, 10), time: iso.slice(11, 16) }
 }
+
+/** `HH:MM` -> minutes after midnight. Assumes a valid 24-hour time. */
+export function timeToMinutes(time: string): number {
+  const [hour, minute] = time.split(':').map(Number)
+  return hour * 60 + minute
+}
+
+/** Minutes after midnight -> `HH:MM` (0-1439). */
+export function minutesToTime(minutes: number): string {
+  const hour = String(Math.floor(minutes / 60)).padStart(2, '0')
+  const minute = String(minutes % 60).padStart(2, '0')
+  return `${hour}:${minute}`
+}

@@ -19,7 +19,7 @@ type SqlJsStatic = {
 
 type InitSqlJs = (config?: { locateFile?: (file: string) => string }) => Promise<SqlJsStatic>
 
-const SCHEMA_VERSION = 3
+const SCHEMA_VERSION = 4
 
 function nowIso(): string {
   return new Date().toISOString()
@@ -74,6 +74,30 @@ function applySchema(db: Database): void {
     db.run("ALTER TABLE events ADD COLUMN color TEXT NOT NULL DEFAULT 'blue'")
     db.run('ALTER TABLE events ADD COLUMN todo_id TEXT')
     db.run('UPDATE events SET end_date = event_date WHERE end_date IS NULL')
+  }
+  if (version < 4) {
+    // v3 -> v4: timetable classes get a free-text description (was `location`) and a colour.
+    const stmt = db.prepare(
+      "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'timetable_entries'"
+    )
+    const exists = stmt.step()
+    stmt.free()
+    if (exists) {
+      db.run('ALTER TABLE timetable_entries RENAME COLUMN location TO description')
+      db.run("ALTER TABLE timetable_entries ADD COLUMN color TEXT NOT NULL DEFAULT 'blue'")
+    } else {
+      db.run(`CREATE TABLE timetable_entries (
+        id TEXT PRIMARY KEY,
+        day_of_week INTEGER NOT NULL CHECK (day_of_week BETWEEN 0 AND 6),
+        start_minutes INTEGER NOT NULL,
+        end_minutes INTEGER NOT NULL,
+        title TEXT NOT NULL,
+        description TEXT,
+        color TEXT NOT NULL DEFAULT 'blue',
+        updated_at TEXT NOT NULL,
+        CHECK (end_minutes > start_minutes)
+      )`)
+    }
   }
   db.run(`PRAGMA user_version = ${SCHEMA_VERSION}`)
 }

@@ -71,7 +71,7 @@ myNote/
 - [ ] Notes: create, edit, delete
 - [ ] Block editor with foldable headings
 - [ ] Auto-save and manual save
-- [ ] 7-day timetable
+- [x] 7-day timetable
 - [ ] To-do list
 - [ ] Calendar with reminders
 

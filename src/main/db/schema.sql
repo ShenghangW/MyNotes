@@ -62,7 +62,8 @@ CREATE TABLE IF NOT EXISTS timetable_entries (
   start_minutes INTEGER NOT NULL,
   end_minutes INTEGER NOT NULL,
   title TEXT NOT NULL,
-  location TEXT,
+  description TEXT,
+  color TEXT NOT NULL DEFAULT 'blue',
   updated_at TEXT NOT NULL,
   CHECK (end_minutes > start_minutes)
 );

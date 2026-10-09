@@ -44,7 +44,8 @@ export const api: AppApi = {
   },
   timetable: {
     list: () => invoke(IPC_CHANNELS.timetableList),
-    upsert: (payload) => invoke(IPC_CHANNELS.timetableUpsert, payload),
+    create: (payload) => invoke(IPC_CHANNELS.timetableCreate, payload),
+    update: (payload) => invoke(IPC_CHANNELS.timetableUpdate, payload),
     delete: (payload) => invoke(IPC_CHANNELS.timetableDelete, payload)
   },
   images: {
