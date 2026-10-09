@@ -232,11 +232,18 @@ export type AppApi = {
     openUserDataFolder: () => Promise<IpcResult<null>>
     /** Mouse side buttons / browser keys, reported by the OS. Returns an unsubscribe function. */
     onNavigate: (listener: (direction: 'back' | 'forward') => void) => () => void
+    /**
+     * Called when the window is about to close. The window waits for the returned promise
+     * (up to a short time limit) so unsaved edits can be flushed first.
+     */
+    onBeforeClose: (listener: () => Promise<void>) => () => void
   }
 }
 
 export const IPC_CHANNELS = {
   navCommand: 'nav:command',
+  beforeClose: 'app:before-close',
+  appCloseReady: 'app:close-ready',
   settingsGet: 'settings:get',
   settingsUpdate: 'settings:update',
   groupsList: 'groups:list',

@@ -62,6 +62,19 @@ export const api: AppApi = {
       return () => {
         ipcRenderer.removeListener(IPC_CHANNELS.navCommand, handler)
       }
+    },
+    onBeforeClose: (listener) => {
+      const handler = async (): Promise<void> => {
+        try {
+          await listener()
+        } finally {
+          ipcRenderer.send(IPC_CHANNELS.appCloseReady)
+        }
+      }
+      ipcRenderer.on(IPC_CHANNELS.beforeClose, handler)
+      return () => {
+        ipcRenderer.removeListener(IPC_CHANNELS.beforeClose, handler)
+      }
     }
   }
 }

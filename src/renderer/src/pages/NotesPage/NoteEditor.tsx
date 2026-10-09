@@ -133,17 +133,7 @@ function LoadedNoteEditor({ note, onBack, onDeleted }: LoadedProps): React.JSX.E
     }
   }
 
-  // Ctrl/Cmd+S flushes any pending autosave immediately.
-  useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent): void => {
-      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 's') {
-        event.preventDefault()
-        void flush().then(() => window.api.app.manualSave())
-      }
-    }
-    window.addEventListener('keydown', onKeyDown)
-    return () => window.removeEventListener('keydown', onKeyDown)
-  }, [flush])
+  // Ctrl/Cmd+S is handled app-wide by SaveIndicator, which flushes this editor's autosave.
 
   const handleBack = async (): Promise<void> => {
     await flush()

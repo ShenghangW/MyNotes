@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { registerSaver } from '@renderer/lib/pendingSaves'
 
 export type SaveStatus = 'idle' | 'pending' | 'saving' | 'saved' | 'error'
 
@@ -82,6 +83,20 @@ export function useAutosave<TPatch extends object>(
     },
     [delayMs, flush]
   )
+
+  // Let the app-wide Ctrl+S, save indicator and window-close flush reach this autosave.
+  const saverRef = useRef<ReturnType<typeof registerSaver> | null>(null)
+  useEffect(() => {
+    const saver = registerSaver(flush)
+    saverRef.current = saver
+    return () => {
+      saver.unregister()
+      saverRef.current = null
+    }
+  }, [flush])
+  useEffect(() => {
+    saverRef.current?.setPending(status === 'pending' || status === 'saving')
+  }, [status])
 
   // Save whatever is still pending when the editor goes away or the window closes.
   useEffect(() => {

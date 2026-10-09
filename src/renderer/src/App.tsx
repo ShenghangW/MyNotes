@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import ReminderPopup from '@renderer/components/ReminderPopup'
+import SaveIndicator from '@renderer/components/SaveIndicator'
 import Sidebar from '@renderer/components/Sidebar'
 import CalendarPage from '@renderer/pages/CalendarPage/CalendarPage'
 import HomePage from '@renderer/pages/HomePage/HomePage'
@@ -147,6 +148,7 @@ export default function App(): React.JSX.Element {
         )}
       </main>
       <ReminderPopup />
+      <SaveIndicator />
     </div>
   )
 }

@@ -1,5 +1,6 @@
 import { act, renderHook } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { flushAllSaves, hasPendingSaves } from '../lib/pendingSaves'
 import { useAutosave } from './useAutosave'
 
 type Patch = { title: string; contentJson: string }
@@ -50,6 +51,23 @@ describe('useAutosave', () => {
       await vi.advanceTimersByTimeAsync(5000)
     })
     expect(save).toHaveBeenCalledTimes(1)
+  })
+
+  it('is reachable through the app-wide registry (Ctrl+S / window close)', async () => {
+    const save = vi.fn<(patch: Patch) => Promise<void>>().mockResolvedValue(undefined)
+    const { result, unmount } = renderHook(() => useAutosave<Patch>(save))
+
+    act(() => result.current.schedule({ title: 'Typed' }))
+    expect(hasPendingSaves()).toBe(true)
+
+    await act(async () => {
+      await flushAllSaves()
+    })
+    expect(save).toHaveBeenCalledTimes(1)
+    expect(save).toHaveBeenCalledWith({ title: 'Typed' })
+    expect(hasPendingSaves()).toBe(false)
+
+    unmount()
   })
 
   it('flush with nothing pending does not call save', async () => {

@@ -6,7 +6,7 @@ import { errorMessage, unwrap } from '@renderer/lib/ipc'
 
 const SHORTCUTS: { keys: string; action: string }[] = [
   { keys: 'Ctrl+B or Ctrl+\\', action: 'Expand / collapse the sidebar' },
-  { keys: 'Ctrl+S', action: 'Save the open note now' },
+  { keys: 'Ctrl+S', action: 'Save everything now' },
   { keys: 'Ctrl + / Ctrl -', action: 'Zoom the app in / out' },
   { keys: 'Ctrl+0', action: 'Reset zoom' },
   { keys: 'Alt+← / Alt+→', action: 'Go back / forward' }

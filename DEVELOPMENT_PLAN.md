@@ -454,6 +454,8 @@ Copied from PRD §9 — every phase gate includes these:
 
 **Gate:** Type in a note, wait, kill app without Ctrl+S, content still there.
 
+**Status:** Done. Notes: most of this already existed (notes autosave with a 700ms debounce, the events modal, to-dos, timetable and settings save on their own action, and the DB file is written on every write; "Add new note" already creates a real note). New in this phase: a pending-saves registry (`lib/pendingSaves.ts`) that every autosave registers with; Ctrl/Cmd+S now works on every page (it flushes all pending saves, then `app:manualSave`); a small bottom-right pill shows "Unsaved changes…" only while edits are pending, or "Saved" / "Save failed" briefly after Ctrl+S; closing the window now waits (max 3s) for the page to flush unsaved edits first (`app:before-close` / `app:close-ready`).
+
 ---
 
 ### Phase 11 — Packaging, icon, final DoD pass

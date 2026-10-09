@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow, net, protocol } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, net, protocol, type IpcMainEvent } from 'electron'
 import { join } from 'path'
 import { pathToFileURL } from 'url'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
@@ -15,6 +15,9 @@ import { APP_IMAGE_SCHEME } from '../shared/imageUrl'
 protocol.registerSchemesAsPrivileged([
   { scheme: APP_IMAGE_SCHEME, privileges: { standard: true, secure: true, supportFetchAPI: true } }
 ])
+
+// Longest the window waits for the page to flush unsaved edits before closing anyway.
+const CLOSE_FLUSH_TIMEOUT_MS = 3000
 
 let db: AppDatabase | null = null
 
@@ -71,6 +74,43 @@ function createWindow(): void {
   mainWindow.on('ready-to-show', () => {
     applyZoom()
     mainWindow.show()
+  })
+
+  // Closing waits for the page to flush any unsaved edits (with a time limit so it can't hang).
+  let closeApproved = false
+  let closeRequested = false
+  let closeTimer: ReturnType<typeof setTimeout> | null = null
+  const approveClose = (): void => {
+    if (closeTimer !== null) {
+      clearTimeout(closeTimer)
+      closeTimer = null
+    }
+    if (!mainWindow.isDestroyed()) {
+      closeApproved = true
+      mainWindow.close()
+    }
+  }
+  const onCloseReady = (event: IpcMainEvent): void => {
+    if (event.sender === mainWindow.webContents) {
+      approveClose()
+    }
+  }
+  ipcMain.on(IPC_CHANNELS.appCloseReady, onCloseReady)
+  mainWindow.on('close', (event) => {
+    const page = mainWindow.webContents
+    if (closeApproved || page.isCrashed() || page.isLoading()) {
+      return
+    }
+    event.preventDefault()
+    if (closeRequested) {
+      return
+    }
+    closeRequested = true
+    page.send(IPC_CHANNELS.beforeClose)
+    closeTimer = setTimeout(approveClose, CLOSE_FLUSH_TIMEOUT_MS)
+  })
+  mainWindow.on('closed', () => {
+    ipcMain.removeListener(IPC_CHANNELS.appCloseReady, onCloseReady)
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
