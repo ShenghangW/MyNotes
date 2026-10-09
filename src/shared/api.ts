@@ -228,6 +228,8 @@ export type AppApi = {
   app: {
     getUserDataPath: () => Promise<IpcResult<string>>
     manualSave: () => Promise<IpcResult<null>>
+    /** Opens the data folder in the system file manager (Explorer on Windows). */
+    openUserDataFolder: () => Promise<IpcResult<null>>
     /** Mouse side buttons / browser keys, reported by the OS. Returns an unsubscribe function. */
     onNavigate: (listener: (direction: 'back' | 'forward') => void) => () => void
   }
@@ -267,5 +269,6 @@ export const IPC_CHANNELS = {
   timetableDelete: 'timetable:delete',
   imagesSaveFromPath: 'images:saveFromPath',
   appGetUserDataPath: 'app:getUserDataPath',
-  appManualSave: 'app:manualSave'
+  appManualSave: 'app:manualSave',
+  appOpenUserDataFolder: 'app:openUserDataFolder'
 } as const

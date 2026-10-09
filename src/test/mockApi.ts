@@ -66,6 +66,7 @@ export function createMockApi(overrides: Partial<AppApi> = {}): AppApi {
     app: {
       getUserDataPath: async () => ({ ok: true, data: TEST_USER_DATA_PATH }),
       manualSave: async () => ({ ok: true, data: null }),
+      openUserDataFolder: async () => ({ ok: true, data: null }),
       onNavigate: () => () => undefined
     },
     ...overrides

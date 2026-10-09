@@ -55,6 +55,7 @@ export const api: AppApi = {
   app: {
     getUserDataPath: () => invoke(IPC_CHANNELS.appGetUserDataPath),
     manualSave: () => invoke(IPC_CHANNELS.appManualSave),
+    openUserDataFolder: () => invoke(IPC_CHANNELS.appOpenUserDataFolder),
     onNavigate: (listener) => {
       const handler = (_event: unknown, direction: 'back' | 'forward'): void => listener(direction)
       ipcRenderer.on(IPC_CHANNELS.navCommand, handler)

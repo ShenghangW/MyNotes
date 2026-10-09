@@ -433,6 +433,8 @@ Copied from PRD §9 — every phase gate includes these:
 
 **Tests:** Updating lead days changes `listDueReminders` results in DB tests.
 
+**Status:** Done. Notes: Settings has a Reminders card (dropdown: 1 or 2 days before; saving it makes the reminder popup re-check straight away), a Data folder card (read-only path plus an "Open folder" button using the new `app:openUserDataFolder` channel and `shell.openPath`), the Note groups manager, and a Keyboard shortcuts list.
+
 **Gate:** Changing lead time is visible on next reminder check without a full reinstall.
 
 ---

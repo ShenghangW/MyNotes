@@ -1,5 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
+import { EVENTS_CHANGED } from '../../hooks/useEvents'
 import SettingsPage from './SettingsPage'
 import { TEST_USER_DATA_PATH, createMockApi } from '../../../../test/mockApi'
 
@@ -10,7 +11,73 @@ describe('SettingsPage', () => {
     await waitFor(() => {
       expect(screen.getByTestId('data-path').textContent).toBe(TEST_USER_DATA_PATH)
     })
-    expect(screen.getByTestId('reminder-lead').textContent).toBe('1 day')
+    const select = (await screen.findByLabelText('Remind me before an event')) as HTMLSelectElement
+    expect(select.value).toBe('1')
+  })
+
+  it('saves a new reminder lead time and tells the reminder popup to re-check', async () => {
+    const base = createMockApi()
+    const update = vi.fn(async (patch: { reminderLeadDays?: 1 | 2 }) => ({
+      ok: true as const,
+      data: {
+        reminderLeadDays: patch.reminderLeadDays ?? 1,
+        homeTitle: 'Home',
+        homePhotoPath: null,
+        homePhotoVisible: true,
+        updatedAt: ''
+      }
+    }))
+    window.api = createMockApi({ settings: { ...base.settings, update } })
+    const onChanged = vi.fn()
+    window.addEventListener(EVENTS_CHANGED, onChanged)
+
+    render(<SettingsPage />)
+    const select = (await screen.findByLabelText('Remind me before an event')) as HTMLSelectElement
+    await waitFor(() => expect(select.disabled).toBe(false))
+    fireEvent.change(select, { target: { value: '2' } })
+
+    await waitFor(() => expect(update).toHaveBeenCalledWith({ reminderLeadDays: 2 }))
+    await waitFor(() => expect(select.value).toBe('2'))
+    expect(onChanged).toHaveBeenCalledTimes(1)
+    window.removeEventListener(EVENTS_CHANGED, onChanged)
+  })
+
+  it('opens the data folder from the Open folder button', async () => {
+    const base = createMockApi()
+    const openUserDataFolder = vi.fn(async () => ({ ok: true as const, data: null }))
+    window.api = createMockApi({ app: { ...base.app, openUserDataFolder } })
+
+    render(<SettingsPage />)
+    const button = screen.getByRole('button', { name: 'Open folder' }) as HTMLButtonElement
+    await waitFor(() => expect(button.disabled).toBe(false))
+    fireEvent.click(button)
+
+    await waitFor(() => expect(openUserDataFolder).toHaveBeenCalledTimes(1))
+  })
+
+  it('shows an error when the folder cannot be opened', async () => {
+    const base = createMockApi()
+    window.api = createMockApi({
+      app: {
+        ...base.app,
+        openUserDataFolder: async () => ({ ok: false as const, error: 'Could not open folder' })
+      }
+    })
+
+    render(<SettingsPage />)
+    const button = screen.getByRole('button', { name: 'Open folder' }) as HTMLButtonElement
+    await waitFor(() => expect(button.disabled).toBe(false))
+    fireEvent.click(button)
+
+    expect((await screen.findByRole('alert')).textContent).toBe('Could not open folder')
+  })
+
+  it('lists the keyboard shortcuts', () => {
+    render(<SettingsPage />)
+    const list = screen.getByTestId('shortcuts')
+    expect(list.textContent).toContain('Ctrl+B')
+    expect(list.textContent).toContain('Ctrl+S')
+    expect(list.textContent).toContain('Ctrl+0')
   })
 
   it('manages note groups from Settings', async () => {
