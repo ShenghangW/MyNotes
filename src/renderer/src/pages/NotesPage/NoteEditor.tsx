@@ -1,13 +1,15 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { BlockNoteSchema, defaultBlockSpecs } from '@blocknote/core'
+import { BlockNoteSchema, defaultBlockSpecs, filterSuggestionItems } from '@blocknote/core'
 import {
   FilePanel,
   FilePanelController,
   SideMenu,
   SideMenuController,
+  SuggestionMenuController,
   AddBlockButton,
   DragHandleButton,
   UploadTab,
+  getDefaultReactSlashMenuItems,
   useCreateBlockNote,
   type FilePanelProps
 } from '@blocknote/react'
@@ -17,10 +19,11 @@ import '@blocknote/core/fonts/inter.css'
 import '@blocknote/mantine/style.css'
 import type { Note } from '@shared/api'
 import { toAppImageUrl } from '@shared/imageUrl'
-import { IconArrowLeft, IconTrash } from '@renderer/components/icons'
+import { IconArrowLeft, IconDownload, IconPencil, IconTrash } from '@renderer/components/icons'
 import { useAutosave, type SaveStatus } from '@renderer/hooks/useAutosave'
 import { useNoteGroups } from '@renderer/hooks/useNoteGroups'
 import { errorMessage, unwrap } from '@renderer/lib/ipc'
+import DrawDialog, { type DrawingResult } from './DrawDialog'
 import NoteCover from './NoteCover'
 import { NoteDragHandleMenu } from './NoteBlockMenu'
 
@@ -91,6 +94,10 @@ function LoadedNoteEditor({ note, onBack, onDeleted }: LoadedProps): React.JSX.E
   const [groupId, setGroupId] = useState(note.groupId)
   const { groups } = useNoteGroups()
   const [actionError, setActionError] = useState<string | null>(null)
+  const [notice, setNotice] = useState<string | null>(null)
+  const [exporting, setExporting] = useState(false)
+  // The block the "Draw" menu item was chosen on (the drawing goes in after it).
+  const [drawBlockId, setDrawBlockId] = useState<string | null>(null)
 
   const save = useCallback(
     async (patch: NotePatch): Promise<void> => {
@@ -155,6 +162,62 @@ function LoadedNoteEditor({ note, onBack, onDeleted }: LoadedProps): React.JSX.E
     }
   }
 
+  const handleExportPdf = async (): Promise<void> => {
+    setActionError(null)
+    setNotice(null)
+    setExporting(true)
+    try {
+      // Folded (toggle) blocks are exported expanded, like normal text.
+      const html = editor.blocksToHTMLLossy(editor.document)
+      const saved = unwrap(
+        await window.api.notes.exportPdf({ title: title.trim() || 'Untitled', html })
+      )
+      if (saved) {
+        setNotice('PDF saved')
+      }
+    } catch (caught) {
+      setActionError(errorMessage(caught))
+    } finally {
+      setExporting(false)
+    }
+  }
+
+  const insertDrawing = async (drawing: DrawingResult): Promise<void> => {
+    const bytes = new Uint8Array(await drawing.blob.arrayBuffer())
+    const relative = unwrap(await window.api.images.saveFromBytes(bytes))
+    const imageBlock = {
+      type: 'image' as const,
+      props: {
+        url: toAppImageUrl(relative),
+        name: 'Drawing',
+        previewWidth: Math.min(700, Math.max(80, Math.round(drawing.width * 0.6)))
+      }
+    }
+    const target =
+      (drawBlockId ? editor.getBlock(drawBlockId) : undefined) ??
+      editor.document[editor.document.length - 1]
+    const isEmptyParagraph =
+      target.type === 'paragraph' &&
+      Array.isArray(target.content) &&
+      target.content.length === 0 &&
+      target.children.length === 0
+    if (isEmptyParagraph) {
+      editor.replaceBlocks([target], [imageBlock])
+    } else {
+      editor.insertBlocks([imageBlock], target, 'after')
+    }
+    setDrawBlockId(null)
+  }
+
+  const drawMenuItem = {
+    title: 'Draw',
+    subtext: 'Sketch maths, graphs or a signature with mouse, touch or pen',
+    aliases: ['draw', 'sketch', 'handwriting', 'signature', 'graph', 'maths'],
+    group: 'Media',
+    icon: <IconPencil className="h-4 w-4" />,
+    onItemClick: (): void => setDrawBlockId(editor.getTextCursorPosition().block.id)
+  }
+
   const statusLabel = STATUS_LABEL[status]
 
   return (
@@ -169,9 +232,23 @@ function LoadedNoteEditor({ note, onBack, onDeleted }: LoadedProps): React.JSX.E
           Back to notes
         </button>
         <div className="flex items-center gap-3">
+          {notice ? (
+            <span className="text-xs text-text-muted" role="status">
+              {notice}
+            </span>
+          ) : null}
           <span className="text-xs text-text-muted" aria-live="polite" data-testid="save-status">
             {statusLabel}
           </span>
+          <button
+            type="button"
+            className="inline-flex h-8 items-center gap-1.5 rounded-sm border border-border bg-surface px-2.5 text-xs text-text-muted hover:border-accent hover:text-accent disabled:opacity-50"
+            disabled={exporting}
+            onClick={() => void handleExportPdf()}
+          >
+            <IconDownload className="h-4 w-4" />
+            {exporting ? 'Exporting…' : 'Export PDF'}
+          </button>
           <button
             type="button"
             className="inline-flex h-8 items-center gap-1.5 rounded-sm border border-border bg-surface px-2.5 text-xs text-text-muted hover:border-accent hover:text-accent"
@@ -245,9 +322,16 @@ function LoadedNoteEditor({ note, onBack, onDeleted }: LoadedProps): React.JSX.E
           theme={resolvedMode}
           filePanel={false}
           sideMenu={false}
+          slashMenu={false}
           onChange={handleEditorChange}
         >
           <FilePanelController filePanel={UploadOnlyFilePanel} />
+          <SuggestionMenuController
+            triggerCharacter="/"
+            getItems={async (query) =>
+              filterSuggestionItems([...getDefaultReactSlashMenuItems(editor), drawMenuItem], query)
+            }
+          />
           <SideMenuController
             sideMenu={(props) => (
               <SideMenu {...props}>
@@ -258,6 +342,10 @@ function LoadedNoteEditor({ note, onBack, onDeleted }: LoadedProps): React.JSX.E
           />
         </BlockNoteView>
       </div>
+
+      {drawBlockId !== null ? (
+        <DrawDialog onCancel={() => setDrawBlockId(null)} onInsert={insertDrawing} />
+      ) : null}
     </section>
   )
 }

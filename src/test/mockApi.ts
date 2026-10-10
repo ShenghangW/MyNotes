@@ -35,7 +35,8 @@ export function createMockApi(overrides: Partial<AppApi> = {}): AppApi {
       delete: notImplemented,
       search: notImplemented,
       setCover: notImplemented,
-      clearCover: notImplemented
+      clearCover: notImplemented,
+      exportPdf: notImplemented
     },
     todos: {
       list: async () => ({ ok: true, data: [] }),
@@ -61,6 +62,7 @@ export function createMockApi(overrides: Partial<AppApi> = {}): AppApi {
     },
     images: {
       saveFromPath: notImplemented,
+      saveFromBytes: notImplemented,
       pathForFile: () => ''
     },
     app: {

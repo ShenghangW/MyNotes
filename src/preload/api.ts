@@ -24,7 +24,8 @@ export const api: AppApi = {
     delete: (payload) => invoke(IPC_CHANNELS.notesDelete, payload),
     search: (payload) => invoke(IPC_CHANNELS.notesSearch, payload),
     setCover: (payload) => invoke(IPC_CHANNELS.notesSetCover, payload),
-    clearCover: (payload) => invoke(IPC_CHANNELS.notesClearCover, payload)
+    clearCover: (payload) => invoke(IPC_CHANNELS.notesClearCover, payload),
+    exportPdf: (payload) => invoke(IPC_CHANNELS.notesExportPdf, payload)
   },
   todos: {
     list: () => invoke(IPC_CHANNELS.todosList),
@@ -50,6 +51,7 @@ export const api: AppApi = {
   },
   images: {
     saveFromPath: (sourcePath) => invoke(IPC_CHANNELS.imagesSaveFromPath, sourcePath),
+    saveFromBytes: (bytes) => invoke(IPC_CHANNELS.imagesSaveFromBytes, bytes),
     pathForFile: (file) => webUtils.getPathForFile(file)
   },
   app: {

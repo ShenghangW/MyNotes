@@ -29,6 +29,8 @@
 
 :root {
   color-scheme: light;
+  /* What sits behind everything: a plain canvas, or an ambient glow in the glass theme. */
+  --canvas: var(--color-surface);
 }
 
 :root[data-appearance='notion'][data-theme='dark'] {
@@ -45,6 +47,63 @@
   --color-today: rgba(35, 131, 226, 0.14);
 }
 
+/*
+ * Apple Glass: translucent, blurred panels over an ambient glow, with rounder corners.
+ * Colours only; the layout and every feature are identical to the Notion theme.
+ */
+:root[data-appearance='glass'] {
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Helvetica Neue',
+    'Segoe UI Variable', 'Segoe UI', sans-serif;
+  --color-bg: rgba(255, 255, 255, 0.5);
+  --color-surface: rgba(255, 255, 255, 0.62);
+  --color-sidebar: rgba(255, 255, 255, 0.48);
+  --color-hover: rgba(23, 32, 38, 0.07);
+  --color-border: rgba(23, 32, 38, 0.12);
+  --color-text: #172026;
+  --color-text-muted: #51606b;
+  --color-accent: #0071e3;
+  --color-on-accent: #ffffff;
+  --color-today: rgba(0, 113, 227, 0.1);
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --glass-blur: blur(22px) saturate(1.6);
+  --glass-shadow: 0 8px 28px rgba(23, 32, 38, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  --canvas:
+    radial-gradient(60% 55% at 12% 8%, #b9d7e6 0%, transparent 70%),
+    radial-gradient(55% 50% at 92% 18%, #f1d5c0 0%, transparent 70%),
+    radial-gradient(60% 60% at 70% 100%, #c9d9cf 0%, transparent 70%), #d9dddc;
+}
+
+:root[data-appearance='glass'][data-theme='dark'] {
+  color-scheme: dark;
+  --color-bg: rgba(255, 255, 255, 0.07);
+  --color-surface: rgba(34, 40, 48, 0.58);
+  --color-sidebar: rgba(28, 33, 40, 0.5);
+  --color-hover: rgba(255, 255, 255, 0.09);
+  --color-border: rgba(255, 255, 255, 0.13);
+  --color-text: #eef2f5;
+  --color-text-muted: #a3b0ba;
+  --color-accent: #0a84ff;
+  --color-on-accent: #ffffff;
+  --color-today: rgba(10, 132, 255, 0.18);
+  --glass-shadow: 0 8px 28px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  --canvas:
+    radial-gradient(60% 55% at 12% 8%, #1d4257 0%, transparent 70%),
+    radial-gradient(55% 50% at 92% 18%, #4a3326 0%, transparent 70%),
+    radial-gradient(60% 60% at 70% 100%, #1f3a33 0%, transparent 70%), #101418;
+}
+
+:root[data-appearance='glass'] .bg-surface,
+:root[data-appearance='glass'] .bg-sidebar {
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+}
+
+:root[data-appearance='glass'] .rounded-md.bg-surface {
+  box-shadow: var(--glass-shadow);
+}
+
 html,
 body,
 #root {
@@ -53,7 +112,8 @@ body,
 
 body {
   margin: 0;
-  background: var(--color-surface);
+  background: var(--canvas);
+  background-attachment: fixed;
   color: var(--color-text);
   font-family: var(--font-sans);
   line-height: 1.5;

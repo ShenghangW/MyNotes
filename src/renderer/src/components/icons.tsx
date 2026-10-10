@@ -127,6 +127,14 @@ export function IconPencil({ className }: IconProps): React.JSX.Element {
   )
 }
 
+export function IconDownload({ className }: IconProps): React.JSX.Element {
+  return (
+    <svg className={className} width="18" height="18" viewBox="0 0 24 24" aria-hidden {...stroke}>
+      <path d="M12 4v11m0 0-4-4m4 4 4-4M5 20h14" />
+    </svg>
+  )
+}
+
 export function IconChevronDown({ className }: IconProps): React.JSX.Element {
   return (
     <svg className={className} width="18" height="18" viewBox="0 0 24 24" aria-hidden {...stroke}>

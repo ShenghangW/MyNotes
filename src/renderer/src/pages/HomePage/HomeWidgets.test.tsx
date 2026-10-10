@@ -52,6 +52,7 @@ describe('Home widgets', () => {
       todos: { ...base.todos, list: vi.fn(async () => ({ ok: true as const, data: todos })) },
       images: {
         saveFromPath: vi.fn(async () => ({ ok: true as const, data: 'images/new.png' })),
+        saveFromBytes: base.images.saveFromBytes,
         pathForFile: () => ''
       }
     })

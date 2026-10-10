@@ -66,6 +66,8 @@ export type NoteUpdateInput = {
 export type NoteSearchInput = NotesFilter & { query: string }
 export type NoteIdInput = { id: string }
 export type NoteSetCoverInput = { id: string; coverImagePath: string }
+/** `html` is the note body as plain HTML (from the editor); main wraps it and prints the PDF. */
+export type NoteExportPdfInput = { title: string; html: string }
 
 export type Todo = {
   id: string
@@ -188,6 +190,8 @@ export type AppApi = {
     search: (payload: NoteSearchInput) => Promise<IpcResult<NoteSummary[]>>
     setCover: (payload: NoteSetCoverInput) => Promise<IpcResult<Note>>
     clearCover: (payload: NoteIdInput) => Promise<IpcResult<Note>>
+    /** Asks where to save, then writes the note as a PDF. Resolves to the file path, or `null` if cancelled. */
+    exportPdf: (payload: NoteExportPdfInput) => Promise<IpcResult<string | null>>
   }
   todos: {
     list: () => Promise<IpcResult<Todo[]>>
@@ -222,6 +226,8 @@ export type AppApi = {
      * (resolves to `null` if the user cancels).
      */
     saveFromPath: (sourcePath?: string) => Promise<IpcResult<string | null>>
+    /** Saves PNG bytes (e.g. a drawing) into userData/images and returns the relative path. */
+    saveFromBytes: (bytes: Uint8Array) => Promise<IpcResult<string>>
     /** Absolute path of a File chosen in the UI (drag-drop / <input>). Empty if it has none. */
     pathForFile: (file: File) => string
   }
@@ -255,6 +261,7 @@ export const IPC_CHANNELS = {
   notesCreate: 'notes:create',
   notesUpdate: 'notes:update',
   notesDelete: 'notes:delete',
+  notesExportPdf: 'notes:exportPdf',
   notesSearch: 'notes:search',
   notesSetCover: 'notes:setCover',
   notesClearCover: 'notes:clearCover',
@@ -275,6 +282,7 @@ export const IPC_CHANNELS = {
   timetableUpdate: 'timetable:update',
   timetableDelete: 'timetable:delete',
   imagesSaveFromPath: 'images:saveFromPath',
+  imagesSaveFromBytes: 'images:saveFromBytes',
   appGetUserDataPath: 'app:getUserDataPath',
   appManualSave: 'app:manualSave',
   appOpenUserDataFolder: 'app:openUserDataFolder'

@@ -84,6 +84,19 @@ describe('SettingsPage', () => {
     expect(screen.getByRole('button', { name: 'Notion' }).getAttribute('aria-pressed')).toBe('true')
   })
 
+  it('switches the theme from the Appearance card', () => {
+    render(<SettingsPage />)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Apple Glass' }))
+    expect(document.documentElement.dataset.appearance).toBe('glass')
+    expect(screen.getByRole('button', { name: 'Apple Glass' }).getAttribute('aria-pressed')).toBe(
+      'true'
+    )
+
+    fireEvent.click(screen.getByRole('button', { name: 'Notion' }))
+    expect(document.documentElement.dataset.appearance).toBe('notion')
+  })
+
   it('lists the keyboard shortcuts', () => {
     render(<SettingsPage />)
     const list = screen.getByTestId('shortcuts')

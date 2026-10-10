@@ -63,6 +63,16 @@ describe('appearance', () => {
     expect(getAppearance()).toEqual({ theme: 'notion', mode: 'light' })
   })
 
+  it('switches to the Apple Glass theme and remembers it', async () => {
+    const first = await load()
+    first.setAppearance({ theme: 'glass', mode: 'dark' })
+    expect(document.documentElement.dataset.appearance).toBe('glass')
+    expect(document.documentElement.dataset.theme).toBe('dark')
+
+    const second = await load()
+    expect(second.getAppearance()).toEqual({ theme: 'glass', mode: 'dark' })
+  })
+
   it('notifies subscribers when the appearance changes', async () => {
     const { setAppearance, subscribeAppearance } = await load()
     const listener = vi.fn()

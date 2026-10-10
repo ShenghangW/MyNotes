@@ -92,7 +92,7 @@ export default function SettingsPage(): React.JSX.Element {
             <p className="text-sm text-text" id="theme-label">
               Theme
             </p>
-            <p className="text-sm text-text-muted">More themes will be added later.</p>
+            <p className="text-sm text-text-muted">Only the look changes, never your data.</p>
           </div>
           <div role="group" aria-labelledby="theme-label" className="flex gap-2">
             {THEMES.map((theme) => (

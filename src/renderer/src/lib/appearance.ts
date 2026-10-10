@@ -4,13 +4,14 @@
  * data attributes on <html>, so it never touches notes, events or any other data.
  * New themes only need an entry in THEMES plus a CSS block in app.css.
  */
-export type ThemeId = 'notion'
+export type ThemeId = 'notion' | 'glass'
 export type ColorMode = 'light' | 'dark' | 'system'
 export type ResolvedMode = 'light' | 'dark'
 export type Appearance = { theme: ThemeId; mode: ColorMode }
 
 export const THEMES: { id: ThemeId; label: string; description: string }[] = [
-  { id: 'notion', label: 'Notion', description: 'Flat, quiet and compact, like Notion' }
+  { id: 'notion', label: 'Notion', description: 'Flat, quiet and compact, like Notion' },
+  { id: 'glass', label: 'Apple Glass', description: 'Frosted translucent panels over a soft glow' }
 ]
 
 export const COLOR_MODES: { id: ColorMode; label: string }[] = [

@@ -1,5 +1,6 @@
 import type { AppDatabase } from '../db/database'
 import { registerAppHandlers } from './appHandlers'
+import { registerExportHandlers } from '../export/exportHandlers'
 import { registerCalendarHandlers } from './calendarHandlers'
 import { registerImageHandlers } from './imagesHandlers'
 import { registerNoteGroupsHandlers } from './noteGroupsHandlers'
@@ -16,5 +17,6 @@ export function registerIpc(db: AppDatabase, userDataRoot: string): void {
   registerCalendarHandlers(db)
   registerTimetableHandlers(db)
   registerImageHandlers(userDataRoot)
+  registerExportHandlers(userDataRoot)
   registerAppHandlers(userDataRoot, db)
 }

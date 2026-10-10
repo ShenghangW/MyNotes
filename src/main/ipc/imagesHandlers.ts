@@ -1,6 +1,6 @@
 import { BrowserWindow, dialog, ipcMain } from 'electron'
 import { IPC_CHANNELS } from '../../shared/api'
-import { saveImageFromPath } from '../storage/imageStorage'
+import { saveImageFromBytes, saveImageFromPath } from '../storage/imageStorage'
 import { fail, ok } from './result'
 
 const IMAGE_FILTER = {
@@ -25,6 +25,13 @@ export function registerImageHandlers(userDataRoot: string): void {
         chosen = result.filePaths[0]
       }
       return ok<string | null>(saveImageFromPath(userDataRoot, chosen))
+    } catch (error) {
+      return fail(error)
+    }
+  })
+  ipcMain.handle(IPC_CHANNELS.imagesSaveFromBytes, (_event, bytes: unknown) => {
+    try {
+      return ok(saveImageFromBytes(userDataRoot, bytes as Uint8Array))
     } catch (error) {
       return fail(error)
     }
