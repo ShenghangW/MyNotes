@@ -190,7 +190,7 @@ export default function DrawDialog({ onCancel, onInsert }: DrawDialogProps): Rea
     cn(
       'h-8 rounded-sm border px-2.5 text-sm disabled:opacity-50',
       active
-        ? 'border-accent bg-hover font-medium text-text'
+        ? 'border-accent bg-active font-medium text-text'
         : 'border-border text-text-muted hover:bg-hover hover:text-text'
     )
 

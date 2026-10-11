@@ -37,7 +37,7 @@ export default function InlineNameInput({
       value={value}
       placeholder={placeholder}
       maxLength={60}
-      className="h-8 w-full rounded-sm border border-accent bg-surface px-2 text-sm text-text outline-none"
+      className="h-8 w-full rounded-sm border border-accent bg-solid px-2 text-sm text-text outline-none"
       onChange={(event) => setValue(event.target.value)}
       onKeyDown={(event) => {
         if (event.key === 'Enter') {

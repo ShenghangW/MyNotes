@@ -12,7 +12,7 @@ type PhotoWidgetProps = {
 }
 
 const buttonClass =
-  'inline-flex h-8 items-center gap-1.5 rounded-sm border border-border bg-surface px-2.5 text-xs text-text-muted hover:border-accent hover:text-accent disabled:opacity-40'
+  'inline-flex h-8 items-center gap-1.5 rounded-sm border border-border bg-solid px-2.5 text-xs text-text-muted hover:border-accent hover:text-accent disabled:opacity-40'
 
 /** One photo on the Home page. Hiding it keeps the file; removing it deletes the file. */
 export default function PhotoWidget({

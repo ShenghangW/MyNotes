@@ -242,7 +242,7 @@ function LoadedNoteEditor({ note, onBack, onDeleted }: LoadedProps): React.JSX.E
           </span>
           <button
             type="button"
-            className="inline-flex h-8 items-center gap-1.5 rounded-sm border border-border bg-surface px-2.5 text-xs text-text-muted hover:border-accent hover:text-accent disabled:opacity-50"
+            className="inline-flex h-8 items-center gap-1.5 rounded-sm border border-border bg-solid px-2.5 text-xs text-text-muted hover:border-accent hover:text-accent disabled:opacity-50"
             disabled={exporting}
             onClick={() => void handleExportPdf()}
           >
@@ -251,7 +251,7 @@ function LoadedNoteEditor({ note, onBack, onDeleted }: LoadedProps): React.JSX.E
           </button>
           <button
             type="button"
-            className="inline-flex h-8 items-center gap-1.5 rounded-sm border border-border bg-surface px-2.5 text-xs text-text-muted hover:border-accent hover:text-accent"
+            className="inline-flex h-8 items-center gap-1.5 rounded-sm border border-border bg-solid px-2.5 text-xs text-text-muted hover:border-accent hover:text-accent"
             onClick={() => void handleDelete()}
           >
             <IconTrash className="h-4 w-4" />
@@ -292,7 +292,7 @@ function LoadedNoteEditor({ note, onBack, onDeleted }: LoadedProps): React.JSX.E
         <select
           aria-label="Note group"
           value={groupId ?? ''}
-          className="h-8 rounded-sm border border-border bg-surface px-2 text-sm text-text outline-none focus:border-accent"
+          className="h-8 rounded-sm border border-border bg-solid px-2 text-sm text-text outline-none focus:border-accent"
           onChange={(event) => handleGroupChange(event.target.value)}
         >
           <option value="">No group</option>
@@ -391,7 +391,7 @@ export default function NoteEditor({
         </p>
         <button
           type="button"
-          className="inline-flex h-8 items-center gap-1.5 rounded-sm border border-border bg-surface px-2.5 text-sm text-text hover:border-accent hover:text-accent"
+          className="inline-flex h-8 items-center gap-1.5 rounded-sm border border-border bg-solid px-2.5 text-sm text-text hover:border-accent hover:text-accent"
           onClick={onBack}
         >
           <IconArrowLeft className="h-4 w-4" />

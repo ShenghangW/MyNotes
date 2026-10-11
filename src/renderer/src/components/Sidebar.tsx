@@ -93,7 +93,7 @@ export default function Sidebar({
                 'flex h-8 items-center rounded-sm text-sm',
                 collapsed ? 'justify-center' : 'gap-2 px-2',
                 active
-                  ? 'bg-hover font-medium text-text'
+                  ? 'bg-active font-medium text-text'
                   : 'text-text-muted hover:bg-hover hover:text-text'
               )}
               onClick={() => onNavigate(item.id)}
@@ -121,7 +121,7 @@ export default function Sidebar({
                 'flex h-8 items-center rounded-sm text-sm',
                 collapsed ? 'justify-center' : 'gap-2 px-2',
                 active
-                  ? 'bg-hover font-medium text-text'
+                  ? 'bg-active font-medium text-text'
                   : 'text-text-muted hover:bg-hover hover:text-text'
               )}
               onClick={() => onNavigate(item.id)}

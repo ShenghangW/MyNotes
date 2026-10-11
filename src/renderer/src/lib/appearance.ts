@@ -10,8 +10,12 @@ export type ResolvedMode = 'light' | 'dark'
 export type Appearance = { theme: ThemeId; mode: ColorMode }
 
 export const THEMES: { id: ThemeId; label: string; description: string }[] = [
-  { id: 'notion', label: 'Notion', description: 'Flat, quiet and compact, like Notion' },
-  { id: 'glass', label: 'Apple Glass', description: 'Frosted translucent panels over a soft glow' }
+  {
+    id: 'notion',
+    label: 'Notion',
+    description: 'Calm, minimal and monochrome: shades of black, white and grey'
+  },
+  { id: 'glass', label: 'Apple Glass', description: 'Vivid frosted glass in shades of blue' }
 ]
 
 export const COLOR_MODES: { id: ColorMode; label: string }[] = [

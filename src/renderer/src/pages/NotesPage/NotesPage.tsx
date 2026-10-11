@@ -114,7 +114,7 @@ function NoteCard({
         type="button"
         aria-label={`Delete ${note.title}`}
         title="Delete note"
-        className="absolute top-2 right-2 flex h-7 w-7 items-center justify-center rounded-sm border border-border bg-surface text-text-muted opacity-0 hover:border-accent hover:text-accent focus:opacity-100 group-hover:opacity-100"
+        className="absolute top-2 right-2 flex h-7 w-7 items-center justify-center rounded-sm border border-border bg-solid text-text-muted opacity-0 hover:border-accent hover:text-accent focus:opacity-100 group-hover:opacity-100"
         onClick={(event) => {
           event.stopPropagation()
           onDelete(note)
@@ -214,7 +214,7 @@ export default function NotesPage({
         <h1 className="text-2xl font-semibold tracking-tight">Notes</h1>
         <button
           type="button"
-          className="mt-3 inline-flex h-9 items-center gap-2 rounded-sm border border-border bg-surface px-3 text-sm text-text hover:border-accent hover:text-accent"
+          className="mt-3 inline-flex h-9 items-center gap-2 rounded-sm border border-border bg-solid px-3 text-sm text-text hover:border-accent hover:text-accent"
           onClick={() => void createAndOpen()}
         >
           <IconPlus className="h-4 w-4" />
@@ -245,7 +245,7 @@ export default function NotesPage({
                 type="search"
                 value={query}
                 placeholder="Search title and content"
-                className="h-9 w-full rounded-sm border border-border bg-surface pr-3 pl-8 text-sm text-text outline-none placeholder:text-text-muted focus:border-accent"
+                className="h-9 w-full rounded-sm border border-border bg-solid pr-3 pl-8 text-sm text-text outline-none placeholder:text-text-muted focus:border-accent"
                 onChange={(event) => setQuery(event.target.value)}
               />
             </label>

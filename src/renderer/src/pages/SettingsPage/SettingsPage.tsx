@@ -104,7 +104,7 @@ export default function SettingsPage(): React.JSX.Element {
                 className={cn(
                   'h-8 rounded-sm border px-3 text-sm',
                   appearance.theme === theme.id
-                    ? 'border-accent bg-hover font-medium text-text'
+                    ? 'border-accent bg-active font-medium text-text'
                     : 'border-border text-text-muted hover:bg-hover hover:text-text'
                 )}
                 onClick={() => setTheme(theme.id)}
@@ -127,7 +127,7 @@ export default function SettingsPage(): React.JSX.Element {
                 className={cn(
                   'h-8 rounded-sm border px-3 text-sm',
                   appearance.mode === mode.id
-                    ? 'border-accent bg-hover font-medium text-text'
+                    ? 'border-accent bg-active font-medium text-text'
                     : 'border-border text-text-muted hover:bg-hover hover:text-text'
                 )}
                 onClick={() => setMode(mode.id)}

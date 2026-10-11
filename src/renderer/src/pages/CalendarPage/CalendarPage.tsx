@@ -162,7 +162,7 @@ export default function CalendarPage(): React.JSX.Element {
         <h1 className="text-2xl font-semibold tracking-tight">Calendar</h1>
         <button
           type="button"
-          className="flex h-9 items-center gap-2 rounded-sm border border-border bg-surface px-3 text-sm text-text hover:border-accent hover:text-accent"
+          className="flex h-9 items-center gap-2 rounded-sm border border-border bg-solid px-3 text-sm text-text hover:border-accent hover:text-accent"
           onClick={() => openCreate({ startDate: showDayPanel ? view.date : undefined })}
         >
           <IconPlus className="h-4 w-4" />

@@ -70,7 +70,7 @@ export default function ClockWidget(): React.JSX.Element {
             className={cn(
               'flex h-8 flex-1 items-center justify-center gap-1.5 text-xs',
               view === tab.id
-                ? 'bg-hover font-medium text-text'
+                ? 'bg-active font-medium text-text'
                 : 'text-text-muted hover:bg-hover hover:text-text'
             )}
             onClick={() => setView(tab.id)}

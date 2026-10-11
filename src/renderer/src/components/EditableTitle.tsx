@@ -54,7 +54,7 @@ export default function EditableTitle({
         aria-label="Page title"
         value={draft}
         maxLength={maxLength}
-        className={`${HEADING_STYLE} h-9 w-full max-w-xl rounded-sm border border-accent bg-surface px-2 text-text outline-none`}
+        className={`${HEADING_STYLE} h-9 w-full max-w-xl rounded-sm border border-accent bg-solid px-2 text-text outline-none`}
         onFocus={(event) => event.currentTarget.select()}
         onChange={(event) => setDraft(event.target.value)}
         onKeyDown={(event) => {

@@ -11,7 +11,7 @@ type NoteCoverProps = {
 }
 
 const buttonClass =
-  'inline-flex h-8 items-center gap-1.5 rounded-sm border border-border bg-surface px-2.5 text-xs text-text-muted hover:border-accent hover:text-accent'
+  'inline-flex h-8 items-center gap-1.5 rounded-sm border border-border bg-solid px-2.5 text-xs text-text-muted hover:border-accent hover:text-accent'
 
 export default function NoteCover({
   noteId,

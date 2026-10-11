@@ -58,7 +58,7 @@ export default function TimetablePage(): React.JSX.Element {
         <h1 className="text-2xl font-semibold tracking-tight">Timetable</h1>
         <button
           type="button"
-          className="flex h-9 items-center gap-2 rounded-sm border border-border bg-surface px-3 text-sm text-text hover:border-accent hover:text-accent"
+          className="flex h-9 items-center gap-2 rounded-sm border border-border bg-solid px-3 text-sm text-text hover:border-accent hover:text-accent"
           onClick={() => openCreate()}
         >
           <IconPlus className="h-4 w-4" />
@@ -74,7 +74,7 @@ export default function TimetablePage(): React.JSX.Element {
 
       <div className="mt-4 h-[calc(100vh-11rem)] min-h-[420px] overflow-auto rounded-md border border-border bg-surface">
         <div className="min-w-[760px]">
-          <div className="sticky top-0 z-10 flex border-b border-border bg-surface">
+          <div className="sticky top-0 z-10 flex border-b border-border bg-solid">
             <div className="w-14 shrink-0" />
             {WEEKDAYS.map((weekday, day) => (
               <div
