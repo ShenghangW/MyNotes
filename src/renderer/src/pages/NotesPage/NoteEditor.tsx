@@ -225,7 +225,7 @@ function LoadedNoteEditor({ note, onBack, onDeleted }: LoadedProps): React.JSX.E
       <div className="flex items-center justify-between">
         <button
           type="button"
-          className="inline-flex h-8 items-center gap-1.5 rounded-sm px-2 text-sm text-text-muted hover:bg-surface hover:text-text"
+          className="inline-flex h-8 items-center gap-1.5 rounded-sm px-2 text-sm text-text-muted hover:bg-hover hover:text-text"
           onClick={() => void handleBack()}
         >
           <IconArrowLeft className="h-4 w-4" />
@@ -305,7 +305,7 @@ function LoadedNoteEditor({ note, onBack, onDeleted }: LoadedProps): React.JSX.E
       </label>
 
       <div
-        className="mn-note-surface min-h-[50vh] flex-1 rounded-md bg-surface py-3"
+        className="mn-note-surface min-h-[50vh] flex-1 rounded-md bg-canvas py-3"
         onMouseDown={(event) => {
           // Clicking the empty space below the text puts the cursor at the end, like a real page.
           if (

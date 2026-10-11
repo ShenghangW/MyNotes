@@ -18,6 +18,15 @@ const ICONS: Record<AppPage, typeof IconHome> = {
   settings: IconSettings
 }
 
+// Each area keeps its own colour everywhere (the same tone as its cards and highlights).
+const ICON_COLORS: Record<AppPage, string> = {
+  home: 'text-tone-purple-fg',
+  notes: 'text-tone-yellow-fg',
+  calendar: 'text-tone-orange-fg',
+  timetable: 'text-tone-green-fg',
+  settings: 'text-tone-gray-fg'
+}
+
 type SidebarProps = {
   currentPage: AppPage
   collapsed: boolean
@@ -89,7 +98,7 @@ export default function Sidebar({
               )}
               onClick={() => onNavigate(item.id)}
             >
-              <Icon />
+              <Icon className={ICON_COLORS[item.id]} />
               {!collapsed ? <span>{item.label}</span> : null}
             </button>
           )
@@ -117,7 +126,7 @@ export default function Sidebar({
               )}
               onClick={() => onNavigate(item.id)}
             >
-              <Icon />
+              <Icon className={ICON_COLORS[item.id]} />
               {!collapsed ? <span>{item.label}</span> : null}
             </button>
           )

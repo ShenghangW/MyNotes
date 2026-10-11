@@ -21,8 +21,8 @@ const rowClass = (active: boolean): string =>
   cn(
     'flex h-8 min-w-0 flex-1 items-center rounded-sm px-2 text-left text-sm',
     active
-      ? 'bg-surface font-medium text-accent'
-      : 'text-text-muted hover:bg-surface hover:text-text'
+      ? 'bg-tone-yellow font-medium text-text'
+      : 'text-text-muted hover:bg-hover hover:text-text'
   )
 
 const iconButtonClass =
@@ -117,7 +117,7 @@ export default function NoteGroupList({
         ) : (
           <button
             type="button"
-            className="flex h-8 items-center gap-1.5 rounded-sm px-2 text-sm text-text-muted hover:bg-surface hover:text-accent"
+            className="flex h-8 items-center gap-1.5 rounded-sm px-2 text-sm text-text-muted hover:bg-hover hover:text-accent"
             onClick={() => setCreating(true)}
           >
             <IconPlus className="h-4 w-4" />

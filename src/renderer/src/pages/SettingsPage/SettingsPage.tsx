@@ -85,7 +85,7 @@ export default function SettingsPage(): React.JSX.Element {
         </p>
       ) : null}
 
-      <div className="mt-6 max-w-2xl rounded-md border border-border bg-surface p-4">
+      <div className="mt-6 max-w-2xl rounded-md border border-tone-purple-line bg-tone-purple p-4">
         <h2 className="text-xs uppercase tracking-wide text-text-muted">Appearance</h2>
         <div className="mt-3 flex flex-wrap items-start justify-between gap-3">
           <div>
@@ -139,7 +139,7 @@ export default function SettingsPage(): React.JSX.Element {
         </div>
       </div>
 
-      <div className="mt-4 max-w-2xl rounded-md border border-border bg-surface p-4">
+      <div className="mt-4 max-w-2xl rounded-md border border-tone-orange-line bg-tone-orange p-4">
         <h2 className="text-xs uppercase tracking-wide text-text-muted">Reminders</h2>
         <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
           <label htmlFor="reminder-lead-select" className="text-sm text-text">
@@ -161,7 +161,7 @@ export default function SettingsPage(): React.JSX.Element {
         </p>
       </div>
 
-      <div className="mt-4 max-w-2xl rounded-md border border-border bg-surface p-4">
+      <div className="mt-4 max-w-2xl rounded-md border border-tone-gray-line bg-tone-gray p-4">
         <h2 className="text-xs uppercase tracking-wide text-text-muted">Data folder</h2>
         <div className="mt-3 flex flex-wrap items-center gap-3">
           <p
@@ -181,7 +181,7 @@ export default function SettingsPage(): React.JSX.Element {
         </div>
       </div>
 
-      <div className="mt-4 max-w-2xl rounded-md border border-border bg-surface p-4">
+      <div className="mt-4 max-w-2xl rounded-md border border-tone-yellow-line bg-tone-yellow p-4">
         <h2 className="text-xs uppercase tracking-wide text-text-muted">Note groups</h2>
         <p className="mt-1 mb-3 text-sm text-text-muted">
           Deleting a group keeps its notes; they become ungrouped.
@@ -189,7 +189,7 @@ export default function SettingsPage(): React.JSX.Element {
         <NoteGroupManager />
       </div>
 
-      <div className="mt-4 max-w-2xl rounded-md border border-border bg-surface p-4">
+      <div className="mt-4 max-w-2xl rounded-md border border-tone-blue-line bg-tone-blue p-4">
         <h2 className="text-xs uppercase tracking-wide text-text-muted">Keyboard shortcuts</h2>
         <dl className="mt-3 space-y-2" data-testid="shortcuts">
           {SHORTCUTS.map((shortcut) => (

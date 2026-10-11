@@ -43,7 +43,7 @@ export default function DayTodoPanel({
   return (
     <aside
       aria-label="To-dos for this day"
-      className="flex w-80 shrink-0 flex-col rounded-md border border-border bg-surface p-4"
+      className="flex w-80 shrink-0 flex-col rounded-md border border-tone-blue-line bg-tone-blue p-4"
     >
       <div className="flex items-baseline justify-between">
         <h2 className="text-sm font-medium text-text">To-do · {formatDueDate(date)}</h2>

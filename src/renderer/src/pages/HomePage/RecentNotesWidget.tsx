@@ -17,7 +17,7 @@ export default function RecentNotesWidget({
   return (
     <section
       aria-labelledby="recent-notes-heading"
-      className="rounded-md border border-border bg-surface p-4"
+      className="rounded-md border border-tone-yellow-line bg-tone-yellow p-4"
     >
       <h2 id="recent-notes-heading" className="text-sm font-medium text-text">
         Recent notes

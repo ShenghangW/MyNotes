@@ -45,7 +45,10 @@ export default function PhotoWidget({
     })
 
   return (
-    <section aria-label="Photo" className="rounded-md border border-border bg-surface p-4">
+    <section
+      aria-label="Photo"
+      className="rounded-md border border-tone-pink-line bg-tone-pink p-4"
+    >
       {photoPath && visible ? (
         <div className="group relative">
           <img

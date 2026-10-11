@@ -62,7 +62,7 @@ export default function SaveIndicator(): React.JSX.Element | null {
       role="status"
       aria-live="polite"
       data-testid="save-pill"
-      className="pointer-events-none fixed bottom-4 right-4 rounded-full border border-border bg-surface px-3 py-1 text-xs text-text-muted"
+      className="pointer-events-none fixed bottom-4 right-4 rounded-full border border-border bg-raised px-3 py-1 text-xs text-text-muted"
     >
       {label}
     </div>

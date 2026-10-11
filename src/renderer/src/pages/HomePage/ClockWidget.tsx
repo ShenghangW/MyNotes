@@ -58,7 +58,7 @@ export default function ClockWidget(): React.JSX.Element {
   return (
     <section
       aria-label="Clock"
-      className="overflow-hidden rounded-md border border-border bg-bg text-center"
+      className="overflow-hidden rounded-md border border-tone-gray-line bg-tone-gray text-center"
     >
       <div role="tablist" aria-label="Clock views" className="flex border-b border-border">
         {tabs.map((tab) => (

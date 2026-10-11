@@ -81,7 +81,7 @@ export default function TimetablePage(): React.JSX.Element {
                 key={weekday.long}
                 className={cn(
                   'flex-1 border-l border-border py-2 text-center text-sm',
-                  day === today ? 'bg-bg font-medium text-text' : 'text-text-muted'
+                  day === today ? 'bg-tone-green font-medium text-text' : 'text-text-muted'
                 )}
               >
                 {weekday.long}
@@ -110,7 +110,7 @@ export default function TimetablePage(): React.JSX.Element {
                 title={`Add a class on ${weekday.long}`}
                 className={cn(
                   'relative flex-1 cursor-pointer border-l border-border',
-                  day === today ? 'bg-bg' : undefined
+                  day === today ? 'bg-tone-green' : undefined
                 )}
                 style={{ height: gridHeight }}
                 onClick={(clickEvent) => {

@@ -60,7 +60,10 @@ function NoteCard({
             className="h-24 w-full border-b border-border object-cover"
           />
         ) : (
-          <div className="h-24 w-full border-b border-border bg-bg" aria-hidden />
+          <div
+            className="h-24 w-full border-b border-tone-yellow-line bg-tone-yellow"
+            aria-hidden
+          />
         )
       ) : null}
 

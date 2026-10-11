@@ -26,7 +26,7 @@ export default function UpcomingWidget({ onOpenCalendar }: UpcomingWidgetProps):
   return (
     <section
       aria-labelledby="upcoming-heading"
-      className="rounded-md border border-border bg-surface p-4"
+      className="rounded-md border border-tone-orange-line bg-tone-orange p-4"
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1">

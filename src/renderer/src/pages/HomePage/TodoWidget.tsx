@@ -42,7 +42,7 @@ export default function TodoWidget(): React.JSX.Element {
   return (
     <section
       aria-labelledby="todo-heading"
-      className="rounded-md border border-border bg-surface p-4"
+      className="rounded-md border border-tone-blue-line bg-tone-blue p-4"
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1">

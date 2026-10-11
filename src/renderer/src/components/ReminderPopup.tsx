@@ -63,7 +63,7 @@ export default function ReminderPopup(): React.JSX.Element | null {
     <aside
       role="region"
       aria-label="Event reminders"
-      className="fixed bottom-4 right-4 z-50 w-80 rounded-md border border-border bg-surface p-4"
+      className="fixed bottom-4 right-4 z-50 w-80 rounded-md border border-border bg-raised p-4 shadow-lg"
     >
       <h2 className="text-sm font-medium text-text">
         {reminders.length === 1 ? 'Upcoming event' : `${reminders.length} upcoming events`}

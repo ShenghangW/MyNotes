@@ -76,7 +76,7 @@ export default function ClassModal({
         role="dialog"
         aria-modal="true"
         aria-labelledby="class-modal-heading"
-        className="max-h-full w-full max-w-md overflow-auto rounded-md border border-border bg-surface p-5"
+        className="max-h-full w-full max-w-md overflow-auto rounded-md border border-border bg-raised p-5 shadow-lg"
       >
         <h2 id="class-modal-heading" className="text-base font-medium text-text">
           {entry ? 'Edit class' : 'New class'}

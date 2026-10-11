@@ -200,7 +200,7 @@ export default function DrawDialog({ onCancel, onInsert }: DrawDialogProps): Rea
         role="dialog"
         aria-modal="true"
         aria-labelledby="draw-dialog-heading"
-        className="flex max-h-full w-full max-w-[960px] flex-col gap-3 overflow-auto rounded-md border border-border bg-surface p-4"
+        className="flex max-h-full w-full max-w-[960px] flex-col gap-3 overflow-auto rounded-md border border-border bg-raised p-4 shadow-lg"
       >
         <div className="flex items-center justify-between">
           <h2 id="draw-dialog-heading" className="text-base font-medium text-text">
