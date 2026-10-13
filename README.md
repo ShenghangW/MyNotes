@@ -67,13 +67,13 @@ myNote/
 - [x] Image storage
 - [x] Automated tests (Vitest)
 - [x] Windows installer packaging
-- [ ] GitHub Actions CI
-- [ ] Notes: create, edit, delete
-- [ ] Block editor with foldable headings
-- [ ] Auto-save and manual save
+- [x] GitHub Actions CI
+- [x] Notes: create, edit, delete
+- [x] Block editor with foldable headings
+- [x] Auto-save and manual save
 - [x] 7-day timetable
-- [ ] To-do list
-- [ ] Calendar with reminders
+- [x] To-do list
+- [x] Calendar with reminders
 
 ## Development
 
