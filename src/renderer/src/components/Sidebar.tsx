@@ -1,5 +1,7 @@
 import { APP_PAGES, type AppPage } from '@renderer/types'
 import { cn } from '@renderer/lib/cn'
+import { useAppearance } from '@renderer/hooks/useAppearance'
+import { THEMES } from '@renderer/lib/appearance'
 import {
   IconCalendar,
   IconHome,
@@ -7,6 +9,7 @@ import {
   IconNotes,
   IconPlus,
   IconSettings,
+  IconTheme,
   IconTimetable
 } from './icons'
 
@@ -42,17 +45,20 @@ export default function Sidebar({
   onToggleCollapsed,
   onAddNote
 }: SidebarProps): React.JSX.Element {
+  const { appearance, setTheme } = useAppearance()
+  // One click flips between the two looks (Notion <-> Apple Glass).
+  const nextTheme = THEMES.find((item) => item.id !== appearance.theme) ?? THEMES[0]
   return (
     <aside
       className={cn(
-        'lg-sidebar flex h-full shrink-0 flex-col py-3',
+        'flex h-full shrink-0 flex-col border-r border-border bg-sidebar py-3',
         collapsed ? 'w-14 px-2' : 'w-[220px] px-3'
       )}
     >
       <div className={cn('mb-3 flex items-center', collapsed ? 'justify-center' : 'gap-2')}>
         <button
           type="button"
-          className="lg-text-2 flex h-8 w-8 items-center justify-center rounded-sm hover:bg-hover hover:text-text"
+          className="flex h-8 w-8 items-center justify-center rounded-sm text-text-muted hover:bg-hover hover:text-text"
           aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
           aria-expanded={!collapsed}
           onClick={onToggleCollapsed}
@@ -67,7 +73,7 @@ export default function Sidebar({
       <button
         type="button"
         className={cn(
-          'lg-text-2 mb-3 flex h-8 items-center gap-2 rounded-sm text-sm hover:bg-hover hover:text-text',
+          'mb-3 flex h-8 items-center gap-2 rounded-sm text-sm text-text-muted hover:bg-hover hover:text-text',
           collapsed ? 'justify-center px-0' : 'px-2'
         )}
         aria-label="Add new note"
@@ -93,8 +99,8 @@ export default function Sidebar({
                 'flex h-8 items-center rounded-sm text-sm',
                 collapsed ? 'justify-center' : 'gap-2 px-2',
                 active
-                  ? 'lg-active font-medium'
-                  : 'lg-text-2 hover:bg-hover hover:text-text'
+                  ? 'bg-active font-medium text-text'
+                  : 'text-text-muted hover:bg-hover hover:text-text'
               )}
               onClick={() => onNavigate(item.id)}
             >
@@ -106,7 +112,20 @@ export default function Sidebar({
       </nav>
 
       {/* Settings lives at the bottom-left, where people expect it. */}
-      <div className="lg-divider mt-auto flex flex-col gap-1 border-t pt-3">
+      <div className="mt-auto flex flex-col gap-1 border-t border-border pt-3">
+        <button
+          type="button"
+          className={cn(
+            'flex h-8 items-center rounded-sm text-sm text-text-muted hover:bg-hover hover:text-text',
+            collapsed ? 'justify-center' : 'gap-2 px-2'
+          )}
+          aria-label={`Switch theme to ${nextTheme.label}`}
+          title={`Switch to ${nextTheme.label}`}
+          onClick={() => setTheme(nextTheme.id)}
+        >
+          <IconTheme />
+          {!collapsed ? <span>{nextTheme.label} theme</span> : null}
+        </button>
         {APP_PAGES.filter((item) => item.id === 'settings').map((item) => {
           const Icon = ICONS[item.id]
           const active = currentPage === item.id
@@ -121,8 +140,8 @@ export default function Sidebar({
                 'flex h-8 items-center rounded-sm text-sm',
                 collapsed ? 'justify-center' : 'gap-2 px-2',
                 active
-                  ? 'lg-active font-medium'
-                  : 'lg-text-2 hover:bg-hover hover:text-text'
+                  ? 'bg-active font-medium text-text'
+                  : 'text-text-muted hover:bg-hover hover:text-text'
               )}
               onClick={() => onNavigate(item.id)}
             >

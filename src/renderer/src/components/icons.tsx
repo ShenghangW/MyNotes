@@ -142,3 +142,12 @@ export function IconChevronDown({ className }: IconProps): React.JSX.Element {
     </svg>
   )
 }
+
+export function IconTheme({ className }: IconProps): React.JSX.Element {
+  return (
+    <svg className={className} width="18" height="18" viewBox="0 0 24 24" aria-hidden {...stroke}>
+      <circle cx="12" cy="12" r="8" />
+      <path d="M12 4a8 8 0 0 1 0 16Z" />
+    </svg>
+  )
+}
