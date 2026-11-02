@@ -1,0 +1,100 @@
+/* ============================================================
+   myNote — Liquid Glass (soft edition)
+   思路：颜色只做"点缀"，玻璃本身接近中性色，靠 模糊 + 高光边 + 柔和阴影 撑出质感
+   用法：在入口 (main.tsx / index.css) 里  import './liquid-glass.css'
+   主题：<html data-theme="dark"> 或 <html data-theme="light">
+   ============================================================ */
+
+:root, :root[data-theme="dark"] {
+  --lg-bg-base:   #11151b;                 /* 深灰蓝，不再是饱和深蓝 */
+  --lg-glass:     rgba(255,255,255,.07);   /* 普通卡片 */
+  --lg-glass-2:   rgba(255,255,255,.12);   /* 更突出：选中/悬浮 */
+  --lg-border:    rgba(255,255,255,.14);
+  --lg-highlight: rgba(255,255,255,.28);   /* 顶部高光线 = "玻璃边缘反光" */
+  --lg-shadow:    0 10px 30px rgba(0,0,0,.30);
+  --lg-text:      rgba(255,255,255,.92);
+  --lg-text-2:    rgba(255,255,255,.60);
+  --lg-accent:    #8fb0dc;                 /* 低饱和雾蓝 */
+  --lg-accent-bg: rgba(143,176,220,.18);
+  --lg-blob-1:    rgba(110,145,195,.22);   /* 背景光斑：很淡 */
+  --lg-blob-2:    rgba(150,130,190,.14);
+  --lg-blob-3:    rgba(110,180,180,.10);
+}
+
+:root[data-theme="light"] {
+  --lg-bg-base:   #e8edf3;
+  --lg-glass:     rgba(255,255,255,.48);
+  --lg-glass-2:   rgba(255,255,255,.72);
+  --lg-border:    rgba(255,255,255,.75);
+  --lg-highlight: rgba(255,255,255,.95);
+  --lg-shadow:    0 10px 30px rgba(40,60,90,.12);
+  --lg-text:      #1d2530;
+  --lg-text-2:    rgba(29,37,48,.58);
+  --lg-accent:    #4f7db5;
+  --lg-accent-bg: rgba(79,125,181,.14);
+  --lg-blob-1:    rgba(130,170,220,.45);
+  --lg-blob-2:    rgba(200,170,220,.30);
+  --lg-blob-3:    rgba(150,210,200,.28);
+}
+
+/* 整个应用的背景（放在最外层容器）*/
+.lg-app-bg {
+  color: var(--lg-text);
+  background:
+    radial-gradient(60% 50% at 15% 10%, var(--lg-blob-1), transparent 70%),
+    radial-gradient(50% 50% at 90% 20%, var(--lg-blob-2), transparent 70%),
+    radial-gradient(60% 60% at 60% 100%, var(--lg-blob-3), transparent 70%),
+    var(--lg-bg-base);
+}
+
+/* 玻璃卡片：To-do、Recent notes、Clock 等 */
+.lg-glass {
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.10), rgba(255,255,255,0) 45%),
+    var(--lg-glass);
+  -webkit-backdrop-filter: blur(28px) saturate(140%);
+          backdrop-filter: blur(28px) saturate(140%);
+  border: 1px solid var(--lg-border);
+  border-radius: 22px;
+  box-shadow: inset 0 1px 0 var(--lg-highlight), var(--lg-shadow);
+  color: var(--lg-text);
+}
+.lg-glass-strong { background-color: var(--lg-glass-2); }
+
+/* 侧边栏 */
+.lg-sidebar {
+  background: var(--lg-glass);
+  -webkit-backdrop-filter: blur(32px) saturate(140%);
+          backdrop-filter: blur(32px) saturate(140%);
+  border-right: 1px solid var(--lg-border);
+}
+
+/* 选中项（侧边栏图标、Clock 选中标签）：低饱和，不要实心亮蓝 */
+.lg-active {
+  background: var(--lg-accent-bg);
+  color: var(--lg-accent);
+  box-shadow: inset 0 1px 0 var(--lg-highlight);
+  border-radius: 12px;
+}
+
+.lg-text-2 { color: var(--lg-text-2); }
+.lg-divider { border-color: var(--lg-border); }
+
+/* 按钮 / 输入框 */
+.lg-btn, .lg-input {
+  background: var(--lg-glass);
+  border: 1px solid var(--lg-border);
+  border-radius: 12px;
+  color: var(--lg-text);
+  box-shadow: inset 0 1px 0 var(--lg-highlight);
+  transition: background .2s ease;
+}
+.lg-btn:hover { background: var(--lg-glass-2); }
+
+/* 复选框：灰玻璃，勾选后才出现淡淡的强调色 */
+.lg-check { accent-color: var(--lg-accent); }
+
+/* 系统开了"降低透明度"时，退回不透明，保证可读 */
+@media (prefers-reduced-transparency: reduce) {
+  .lg-glass, .lg-sidebar { -webkit-backdrop-filter: none; backdrop-filter: none; background: var(--lg-bg-base); }
+}

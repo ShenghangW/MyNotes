@@ -45,14 +45,14 @@ export default function Sidebar({
   return (
     <aside
       className={cn(
-        'flex h-full shrink-0 flex-col border-r border-border bg-sidebar py-3',
+        'lg-sidebar flex h-full shrink-0 flex-col py-3',
         collapsed ? 'w-14 px-2' : 'w-[220px] px-3'
       )}
     >
       <div className={cn('mb-3 flex items-center', collapsed ? 'justify-center' : 'gap-2')}>
         <button
           type="button"
-          className="flex h-8 w-8 items-center justify-center rounded-sm text-text-muted hover:bg-hover hover:text-text"
+          className="lg-text-2 flex h-8 w-8 items-center justify-center rounded-sm hover:bg-hover hover:text-text"
           aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
           aria-expanded={!collapsed}
           onClick={onToggleCollapsed}
@@ -67,7 +67,7 @@ export default function Sidebar({
       <button
         type="button"
         className={cn(
-          'mb-3 flex h-8 items-center gap-2 rounded-sm text-sm text-text-muted hover:bg-hover hover:text-text',
+          'lg-text-2 mb-3 flex h-8 items-center gap-2 rounded-sm text-sm hover:bg-hover hover:text-text',
           collapsed ? 'justify-center px-0' : 'px-2'
         )}
         aria-label="Add new note"
@@ -93,8 +93,8 @@ export default function Sidebar({
                 'flex h-8 items-center rounded-sm text-sm',
                 collapsed ? 'justify-center' : 'gap-2 px-2',
                 active
-                  ? 'bg-active font-medium text-text'
-                  : 'text-text-muted hover:bg-hover hover:text-text'
+                  ? 'lg-active font-medium'
+                  : 'lg-text-2 hover:bg-hover hover:text-text'
               )}
               onClick={() => onNavigate(item.id)}
             >
@@ -106,7 +106,7 @@ export default function Sidebar({
       </nav>
 
       {/* Settings lives at the bottom-left, where people expect it. */}
-      <div className="mt-auto flex flex-col gap-1 border-t border-border pt-3">
+      <div className="lg-divider mt-auto flex flex-col gap-1 border-t pt-3">
         {APP_PAGES.filter((item) => item.id === 'settings').map((item) => {
           const Icon = ICONS[item.id]
           const active = currentPage === item.id
@@ -121,8 +121,8 @@ export default function Sidebar({
                 'flex h-8 items-center rounded-sm text-sm',
                 collapsed ? 'justify-center' : 'gap-2 px-2',
                 active
-                  ? 'bg-active font-medium text-text'
-                  : 'text-text-muted hover:bg-hover hover:text-text'
+                  ? 'lg-active font-medium'
+                  : 'lg-text-2 hover:bg-hover hover:text-text'
               )}
               onClick={() => onNavigate(item.id)}
             >

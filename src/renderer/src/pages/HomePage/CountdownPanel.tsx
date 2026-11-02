@@ -49,15 +49,15 @@ export default function CountdownPanel(): React.JSX.Element {
             className={cn(
               'h-7 rounded-sm border px-2 text-xs disabled:opacity-50',
               editable && minutes === preset
-                ? 'border-accent bg-active text-text'
-                : 'border-border text-text-muted hover:bg-hover hover:text-text'
+                ? 'lg-active border-accent'
+                : 'lg-text-2 border-border hover:bg-hover hover:text-text'
             )}
             onClick={() => setCountdownMinutes(preset)}
           >
             {preset} min
           </button>
         ))}
-        <label className="flex items-center gap-1 text-xs text-text-muted">
+        <label className="lg-text-2 flex items-center gap-1 text-xs">
           <input
             type="number"
             aria-label="Countdown minutes"

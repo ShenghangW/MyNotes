@@ -75,7 +75,7 @@ export default function SettingsPage(): React.JSX.Element {
   return (
     <section>
       <h1 className="text-2xl font-semibold tracking-tight">Settings</h1>
-      <p className="mt-2 max-w-xl text-sm text-text-muted">
+      <p className="lg-text-2 mt-2 max-w-xl text-sm">
         Everything is stored locally on this computer. Changes save automatically.
       </p>
 
@@ -85,14 +85,14 @@ export default function SettingsPage(): React.JSX.Element {
         </p>
       ) : null}
 
-      <div className="mt-6 max-w-2xl rounded-md border border-tone-purple-line bg-tone-purple p-4">
-        <h2 className="text-xs uppercase tracking-wide text-text-muted">Appearance</h2>
+      <div className="lg-glass mt-6 max-w-2xl rounded-md p-4">
+        <h2 className="lg-text-2 text-xs uppercase tracking-wide">Appearance</h2>
         <div className="mt-3 flex flex-wrap items-start justify-between gap-3">
           <div>
             <p className="text-sm text-text" id="theme-label">
               Theme
             </p>
-            <p className="text-sm text-text-muted">Only the look changes, never your data.</p>
+            <p className="lg-text-2 text-sm">Only the look changes, never your data.</p>
           </div>
           <div role="group" aria-labelledby="theme-label" className="flex gap-2">
             {THEMES.map((theme) => (
@@ -104,8 +104,8 @@ export default function SettingsPage(): React.JSX.Element {
                 className={cn(
                   'h-8 rounded-sm border px-3 text-sm',
                   appearance.theme === theme.id
-                    ? 'border-accent bg-active font-medium text-text'
-                    : 'border-border text-text-muted hover:bg-hover hover:text-text'
+                    ? 'lg-active border-accent font-medium'
+                    : 'lg-text-2 border-border hover:bg-hover hover:text-text'
                 )}
                 onClick={() => setTheme(theme.id)}
               >
@@ -127,8 +127,8 @@ export default function SettingsPage(): React.JSX.Element {
                 className={cn(
                   'h-8 rounded-sm border px-3 text-sm',
                   appearance.mode === mode.id
-                    ? 'border-accent bg-active font-medium text-text'
-                    : 'border-border text-text-muted hover:bg-hover hover:text-text'
+                    ? 'lg-active border-accent font-medium'
+                    : 'lg-text-2 border-border hover:bg-hover hover:text-text'
                 )}
                 onClick={() => setMode(mode.id)}
               >
@@ -139,8 +139,8 @@ export default function SettingsPage(): React.JSX.Element {
         </div>
       </div>
 
-      <div className="mt-4 max-w-2xl rounded-md border border-tone-orange-line bg-tone-orange p-4">
-        <h2 className="text-xs uppercase tracking-wide text-text-muted">Reminders</h2>
+      <div className="lg-glass mt-4 max-w-2xl rounded-md p-4">
+        <h2 className="lg-text-2 text-xs uppercase tracking-wide">Reminders</h2>
         <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
           <label htmlFor="reminder-lead-select" className="text-sm text-text">
             Remind me before an event
@@ -156,13 +156,13 @@ export default function SettingsPage(): React.JSX.Element {
             <option value="2">2 days before</option>
           </select>
         </div>
-        <p className="mt-2 text-sm text-text-muted">
+        <p className="lg-text-2 mt-2 text-sm">
           Reminders pop up while the app is open, for events that have a reminder turned on.
         </p>
       </div>
 
-      <div className="mt-4 max-w-2xl rounded-md border border-tone-gray-line bg-tone-gray p-4">
-        <h2 className="text-xs uppercase tracking-wide text-text-muted">Data folder</h2>
+      <div className="lg-glass mt-4 max-w-2xl rounded-md p-4">
+        <h2 className="lg-text-2 text-xs uppercase tracking-wide">Data folder</h2>
         <div className="mt-3 flex flex-wrap items-center gap-3">
           <p
             className="min-w-0 flex-1 break-all font-mono text-sm text-text"
@@ -181,21 +181,21 @@ export default function SettingsPage(): React.JSX.Element {
         </div>
       </div>
 
-      <div className="mt-4 max-w-2xl rounded-md border border-tone-yellow-line bg-tone-yellow p-4">
-        <h2 className="text-xs uppercase tracking-wide text-text-muted">Note groups</h2>
-        <p className="mt-1 mb-3 text-sm text-text-muted">
+      <div className="lg-glass mt-4 max-w-2xl rounded-md p-4">
+        <h2 className="lg-text-2 text-xs uppercase tracking-wide">Note groups</h2>
+        <p className="lg-text-2 mt-1 mb-3 text-sm">
           Deleting a group keeps its notes; they become ungrouped.
         </p>
         <NoteGroupManager />
       </div>
 
-      <div className="mt-4 max-w-2xl rounded-md border border-tone-blue-line bg-tone-blue p-4">
-        <h2 className="text-xs uppercase tracking-wide text-text-muted">Keyboard shortcuts</h2>
+      <div className="lg-glass mt-4 max-w-2xl rounded-md p-4">
+        <h2 className="lg-text-2 text-xs uppercase tracking-wide">Keyboard shortcuts</h2>
         <dl className="mt-3 space-y-2" data-testid="shortcuts">
           {SHORTCUTS.map((shortcut) => (
             <div key={shortcut.keys} className="flex items-center justify-between gap-4">
               <dt className="text-sm text-text">{shortcut.action}</dt>
-              <dd className="font-mono text-xs text-text-muted">{shortcut.keys}</dd>
+              <dd className="lg-text-2 font-mono text-xs">{shortcut.keys}</dd>
             </div>
           ))}
         </dl>

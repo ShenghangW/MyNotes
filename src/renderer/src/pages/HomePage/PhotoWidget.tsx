@@ -47,7 +47,7 @@ export default function PhotoWidget({
   return (
     <section
       aria-label="Photo"
-      className="rounded-md border border-tone-pink-line bg-tone-pink p-4"
+      className="lg-glass rounded-md p-4"
     >
       {photoPath && visible ? (
         <div className="group relative">
@@ -87,7 +87,7 @@ export default function PhotoWidget({
         </div>
       ) : photoPath ? (
         <div className="flex items-center justify-between gap-2">
-          <span className="text-sm text-text-muted">Photo hidden</span>
+          <span className="lg-text-2 text-sm">Photo hidden</span>
           <button
             type="button"
             className={buttonClass}
@@ -99,7 +99,7 @@ export default function PhotoWidget({
         </div>
       ) : (
         <div className="flex items-center justify-between gap-2">
-          <span className="text-sm text-text-muted">No photo yet</span>
+          <span className="lg-text-2 text-sm">No photo yet</span>
           <button type="button" className={buttonClass} disabled={busy} onClick={() => void pick()}>
             <IconImage className="h-4 w-4" />
             Add photo

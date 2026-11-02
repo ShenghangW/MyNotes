@@ -20,7 +20,7 @@
  *   tone-X-fg    – the stronger shade for icons and small highlights
  * The slot names are only labels. What fills them is up to the theme:
  *   Notion – seven shades of grey (calm and monochrome)
- *   Glass  – seven shades of blue, from sky to indigo (vivid, but one colour family)
+ *   Glass  – seven faint blue-grey tints (soft and airy, one colour family)
  *
  * A new theme = a new :root[data-appearance='…'] block (and an entry in lib/appearance.ts).
  */
@@ -119,8 +119,10 @@
 }
 
 /*
- * Apple Glass: vivid, bright and cosy. One colour family (blue, from sky to deep indigo)
- * over a luminous gradient, with two kinds of glass:
+ * Apple Glass (soft edition): calm, low-saturation and airy, like Apple's Liquid Glass.
+ * The glass itself is almost colourless (frosted white in light mode, smoked slate in dark
+ * mode); a faint blue-grey tint and a thin bright edge do the work instead of strong colour.
+ * Two kinds of glass:
  *   translucent – big sections (widgets, cards, sidebar): frosted, see-through
  *   solid       – small controls (buttons, tabs, selected items, header rows): brighter and
  *                 nearly opaque, with a soft lift, so they stand out from the big panels
@@ -130,103 +132,103 @@
   --font-sans:
     -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Helvetica Neue',
     'Segoe UI Variable', 'Segoe UI', sans-serif;
-  --color-canvas: rgba(255, 255, 255, 0.5);
+  --color-canvas: rgba(255, 255, 255, 0.46);
   --color-surface: rgba(255, 255, 255, 0.4);
-  --color-sidebar: rgba(255, 255, 255, 0.3);
-  --color-raised: rgba(255, 255, 255, 0.88);
-  --color-solid: rgba(255, 255, 255, 0.82);
-  --color-active: rgba(255, 255, 255, 0.96);
-  --color-bg: rgba(255, 255, 255, 0.62);
-  --color-hover: rgba(10, 70, 160, 0.09);
-  --color-border: rgba(10, 70, 160, 0.16);
-  --color-text: #0b2545;
-  --color-text-muted: #46618a;
-  --color-accent: #0a6cff;
+  --color-sidebar: rgba(255, 255, 255, 0.34);
+  --color-raised: rgba(255, 255, 255, 0.86);
+  --color-solid: rgba(255, 255, 255, 0.72);
+  --color-active: rgba(255, 255, 255, 0.92);
+  --color-bg: rgba(255, 255, 255, 0.5);
+  --color-hover: rgba(60, 85, 120, 0.08);
+  --color-border: rgba(60, 85, 120, 0.14);
+  --color-text: #1f2a37;
+  --color-text-muted: #5c6b7e;
+  --color-accent: #4a76ad;
   --color-on-accent: #ffffff;
-  --color-today: rgba(10, 108, 255, 0.14);
+  --color-today: rgba(74, 118, 173, 0.12);
 
-  --color-tone-blue: rgba(96, 175, 255, 0.34);
-  --color-tone-blue-line: rgba(255, 255, 255, 0.7);
-  --color-tone-blue-fg: #1565c0;
-  --color-tone-green: rgba(70, 205, 230, 0.3);
-  --color-tone-green-line: rgba(255, 255, 255, 0.7);
-  --color-tone-green-fg: #00798f;
-  --color-tone-yellow: rgba(150, 165, 255, 0.34);
-  --color-tone-yellow-line: rgba(255, 255, 255, 0.7);
-  --color-tone-yellow-fg: #3949ab;
-  --color-tone-orange: rgba(35, 125, 255, 0.26);
-  --color-tone-orange-line: rgba(255, 255, 255, 0.7);
-  --color-tone-orange-fg: #0d47a1;
-  --color-tone-pink: rgba(185, 175, 255, 0.34);
-  --color-tone-pink-line: rgba(255, 255, 255, 0.7);
-  --color-tone-pink-fg: #5b3fc0;
-  --color-tone-purple: rgba(95, 105, 235, 0.26);
-  --color-tone-purple-line: rgba(255, 255, 255, 0.7);
-  --color-tone-purple-fg: #2f3fb5;
-  --color-tone-gray: rgba(120, 155, 200, 0.26);
-  --color-tone-gray-line: rgba(255, 255, 255, 0.65);
-  --color-tone-gray-fg: #3f5f8a;
+  --color-tone-blue: rgba(120, 160, 210, 0.22);
+  --color-tone-blue-line: rgba(255, 255, 255, 0.65);
+  --color-tone-blue-fg: #3f6d9f;
+  --color-tone-green: rgba(120, 190, 190, 0.2);
+  --color-tone-green-line: rgba(255, 255, 255, 0.65);
+  --color-tone-green-fg: #3d8089;
+  --color-tone-yellow: rgba(150, 155, 210, 0.22);
+  --color-tone-yellow-line: rgba(255, 255, 255, 0.65);
+  --color-tone-yellow-fg: #5a62a3;
+  --color-tone-orange: rgba(100, 145, 200, 0.18);
+  --color-tone-orange-line: rgba(255, 255, 255, 0.65);
+  --color-tone-orange-fg: #355f8f;
+  --color-tone-pink: rgba(175, 160, 210, 0.22);
+  --color-tone-pink-line: rgba(255, 255, 255, 0.65);
+  --color-tone-pink-fg: #7060a5;
+  --color-tone-purple: rgba(130, 140, 200, 0.2);
+  --color-tone-purple-line: rgba(255, 255, 255, 0.65);
+  --color-tone-purple-fg: #4c5a9a;
+  --color-tone-gray: rgba(130, 150, 175, 0.2);
+  --color-tone-gray-line: rgba(255, 255, 255, 0.6);
+  --color-tone-gray-fg: #5a6d85;
 
   --radius-sm: 9px;
   --radius-md: 16px;
-  --glass-blur: blur(24px) saturate(1.8);
-  --glass-shadow: 0 10px 32px rgba(20, 80, 190, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.75);
-  --glass-shadow-sm: 0 2px 8px rgba(20, 80, 190, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  --glass-blur: blur(28px) saturate(1.2);
+  --glass-shadow: 0 10px 30px rgba(40, 60, 90, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  --glass-shadow-sm: 0 2px 8px rgba(40, 60, 90, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.95);
   --canvas:
-    radial-gradient(55% 50% at 8% 6%, #6cc0ff 0%, transparent 72%),
-    radial-gradient(50% 45% at 96% 14%, #a9b4ff 0%, transparent 72%),
-    radial-gradient(45% 45% at 50% 52%, #8fe0f2 0%, transparent 74%),
-    radial-gradient(55% 55% at 88% 100%, #6d8bff 0%, transparent 72%),
-    radial-gradient(50% 50% at 4% 100%, #7ad2ff 0%, transparent 72%), #cfe6ff;
+    radial-gradient(55% 50% at 8% 6%, #bcd0e6 0%, transparent 72%),
+    radial-gradient(50% 45% at 96% 14%, #d3cde3 0%, transparent 72%),
+    radial-gradient(45% 45% at 50% 52%, #cde0e0 0%, transparent 74%),
+    radial-gradient(55% 55% at 88% 100%, #bfcbe6 0%, transparent 72%),
+    radial-gradient(50% 50% at 4% 100%, #c6dbe8 0%, transparent 72%), #e8edf3;
 }
 
 :root[data-appearance='glass'][data-theme='dark'] {
   color-scheme: dark;
-  --color-canvas: rgba(18, 32, 74, 0.5);
-  --color-surface: rgba(20, 36, 84, 0.4);
-  --color-sidebar: rgba(8, 16, 44, 0.5);
-  --color-raised: rgba(30, 48, 104, 0.88);
-  --color-solid: rgba(52, 78, 150, 0.6);
-  --color-active: rgba(86, 128, 240, 0.6);
-  --color-bg: rgba(255, 255, 255, 0.08);
-  --color-hover: rgba(255, 255, 255, 0.1);
-  --color-border: rgba(160, 190, 255, 0.18);
-  --color-text: #eaf1ff;
-  --color-text-muted: #9fb6dc;
-  --color-accent: #4d9bff;
-  --color-on-accent: #04152e;
-  --color-today: rgba(77, 155, 255, 0.2);
+  --color-canvas: rgba(28, 34, 44, 0.5);
+  --color-surface: rgba(255, 255, 255, 0.06);
+  --color-sidebar: rgba(10, 14, 20, 0.45);
+  --color-raised: rgba(40, 48, 62, 0.88);
+  --color-solid: rgba(255, 255, 255, 0.1);
+  --color-active: rgba(143, 176, 220, 0.26);
+  --color-bg: rgba(255, 255, 255, 0.06);
+  --color-hover: rgba(255, 255, 255, 0.08);
+  --color-border: rgba(255, 255, 255, 0.12);
+  --color-text: #eceff4;
+  --color-text-muted: #9aa6b8;
+  --color-accent: #8fb0dc;
+  --color-on-accent: #0d1420;
+  --color-today: rgba(143, 176, 220, 0.16);
 
-  --color-tone-blue: rgba(60, 140, 235, 0.28);
-  --color-tone-blue-line: rgba(180, 210, 255, 0.2);
-  --color-tone-blue-fg: #7dbbff;
-  --color-tone-green: rgba(40, 190, 220, 0.24);
-  --color-tone-green-line: rgba(180, 210, 255, 0.2);
-  --color-tone-green-fg: #5fd6ec;
-  --color-tone-yellow: rgba(110, 125, 245, 0.3);
-  --color-tone-yellow-line: rgba(180, 210, 255, 0.2);
-  --color-tone-yellow-fg: #9fabff;
-  --color-tone-orange: rgba(25, 100, 235, 0.32);
-  --color-tone-orange-line: rgba(180, 210, 255, 0.2);
-  --color-tone-orange-fg: #6aa6ff;
-  --color-tone-pink: rgba(140, 120, 240, 0.28);
-  --color-tone-pink-line: rgba(180, 210, 255, 0.2);
-  --color-tone-pink-fg: #b3a3ff;
-  --color-tone-purple: rgba(75, 85, 220, 0.3);
-  --color-tone-purple-line: rgba(180, 210, 255, 0.2);
-  --color-tone-purple-fg: #8d99ff;
-  --color-tone-gray: rgba(130, 165, 215, 0.2);
-  --color-tone-gray-line: rgba(180, 210, 255, 0.18);
-  --color-tone-gray-fg: #9fb6dc;
+  --color-tone-blue: rgba(110, 150, 200, 0.16);
+  --color-tone-blue-line: rgba(255, 255, 255, 0.12);
+  --color-tone-blue-fg: #9bbbe3;
+  --color-tone-green: rgba(110, 180, 180, 0.14);
+  --color-tone-green-line: rgba(255, 255, 255, 0.12);
+  --color-tone-green-fg: #8ccaca;
+  --color-tone-yellow: rgba(140, 145, 205, 0.16);
+  --color-tone-yellow-line: rgba(255, 255, 255, 0.12);
+  --color-tone-yellow-fg: #a5acdc;
+  --color-tone-orange: rgba(95, 135, 190, 0.16);
+  --color-tone-orange-line: rgba(255, 255, 255, 0.12);
+  --color-tone-orange-fg: #8fb2e0;
+  --color-tone-pink: rgba(165, 150, 205, 0.15);
+  --color-tone-pink-line: rgba(255, 255, 255, 0.12);
+  --color-tone-pink-fg: #b9aadc;
+  --color-tone-purple: rgba(120, 130, 195, 0.16);
+  --color-tone-purple-line: rgba(255, 255, 255, 0.12);
+  --color-tone-purple-fg: #9ea9de;
+  --color-tone-gray: rgba(255, 255, 255, 0.08);
+  --color-tone-gray-line: rgba(255, 255, 255, 0.1);
+  --color-tone-gray-fg: #a3afc2;
 
-  --glass-shadow: 0 10px 32px rgba(0, 10, 40, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  --glass-shadow-sm: 0 2px 8px rgba(0, 10, 40, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  --glass-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+  --glass-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.18);
   --canvas:
-    radial-gradient(55% 50% at 8% 6%, #174f9e 0%, transparent 72%),
-    radial-gradient(50% 45% at 96% 14%, #3a34a8 0%, transparent 72%),
-    radial-gradient(45% 45% at 50% 52%, #0e5f86 0%, transparent 74%),
-    radial-gradient(55% 55% at 88% 100%, #2547b8 0%, transparent 72%),
-    radial-gradient(50% 50% at 4% 100%, #0c4a8a 0%, transparent 72%), #07112b;
+    radial-gradient(55% 50% at 8% 6%, #2a3f5c 0%, transparent 72%),
+    radial-gradient(50% 45% at 96% 14%, #3a3652 0%, transparent 72%),
+    radial-gradient(45% 45% at 50% 52%, #24404a 0%, transparent 74%),
+    radial-gradient(55% 55% at 88% 100%, #2c3a58 0%, transparent 72%),
+    radial-gradient(50% 50% at 4% 100%, #26394f 0%, transparent 72%), #10141a;
 }
 
 :root[data-appearance='glass'] .bg-canvas,

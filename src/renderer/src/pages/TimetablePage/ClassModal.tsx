@@ -76,7 +76,7 @@ export default function ClassModal({
         role="dialog"
         aria-modal="true"
         aria-labelledby="class-modal-heading"
-        className="max-h-full w-full max-w-md overflow-auto rounded-md border border-border bg-raised p-5 shadow-lg"
+        className="lg-glass max-h-full w-full max-w-md overflow-auto rounded-md p-5"
       >
         <h2 id="class-modal-heading" className="text-base font-medium text-text">
           {entry ? 'Edit class' : 'New class'}
@@ -101,7 +101,7 @@ export default function ClassModal({
           />
 
           <div>
-            <span className="text-sm text-text-muted">{entry ? 'Day' : 'Days'}</span>
+            <span className="lg-text-2 text-sm">{entry ? 'Day' : 'Days'}</span>
             <div className="mt-1.5 flex flex-wrap gap-1.5" role="group" aria-label="Days">
               {WEEKDAYS.map((weekday, day) => (
                 <button
@@ -125,7 +125,7 @@ export default function ClassModal({
 
           <div className="space-y-2">
             <div className="flex items-center justify-between gap-2">
-              <span className="w-12 text-sm text-text-muted">From</span>
+              <span className="lg-text-2 w-12 text-sm">From</span>
               <TimeSelect
                 label="Start"
                 value={draft.startTime}
@@ -133,7 +133,7 @@ export default function ClassModal({
               />
             </div>
             <div className="flex items-center justify-between gap-2">
-              <span className="w-12 text-sm text-text-muted">To</span>
+              <span className="lg-text-2 w-12 text-sm">To</span>
               <TimeSelect
                 label="End"
                 value={draft.endTime}
@@ -148,7 +148,7 @@ export default function ClassModal({
           </div>
 
           <div className="flex items-center justify-between">
-            <span className="text-sm text-text-muted">Colour</span>
+            <span className="lg-text-2 text-sm">Colour</span>
             <div className="flex items-center gap-1.5" role="group" aria-label="Colour">
               {EVENT_COLORS.map((color) => (
                 <button

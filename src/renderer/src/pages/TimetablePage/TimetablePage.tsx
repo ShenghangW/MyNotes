@@ -72,7 +72,7 @@ export default function TimetablePage(): React.JSX.Element {
         </p>
       ) : null}
 
-      <div className="mt-4 h-[calc(100vh-11rem)] min-h-[420px] overflow-auto rounded-md border border-border bg-surface">
+      <div className="lg-glass mt-4 h-[calc(100vh-11rem)] min-h-[420px] overflow-auto rounded-md">
         <div className="min-w-[760px]">
           <div className="sticky top-0 z-10 flex border-b border-border bg-solid">
             <div className="w-14 shrink-0" />
@@ -81,7 +81,7 @@ export default function TimetablePage(): React.JSX.Element {
                 key={weekday.long}
                 className={cn(
                   'flex-1 border-l border-border py-2 text-center text-sm',
-                  day === today ? 'bg-tone-green font-medium text-text' : 'text-text-muted'
+                  day === today ? 'lg-active font-medium' : 'lg-text-2'
                 )}
               >
                 {weekday.long}
@@ -94,7 +94,7 @@ export default function TimetablePage(): React.JSX.Element {
               {hours.map((hour) => (
                 <span
                   key={hour}
-                  className="absolute right-2 -translate-y-1/2 text-xs text-text-muted first:translate-y-0"
+                  className="lg-text-2 absolute right-2 -translate-y-1/2 text-xs first:translate-y-0"
                   style={{ top: (hour - firstHour) * HOUR_PX }}
                 >
                   {String(hour).padStart(2, '0')}:00
@@ -110,7 +110,7 @@ export default function TimetablePage(): React.JSX.Element {
                 title={`Add a class on ${weekday.long}`}
                 className={cn(
                   'relative flex-1 cursor-pointer border-l border-border',
-                  day === today ? 'bg-tone-green' : undefined
+                  day === today ? 'lg-active' : undefined
                 )}
                 style={{ height: gridHeight }}
                 onClick={(clickEvent) => {

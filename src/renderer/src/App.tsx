@@ -125,7 +125,7 @@ export default function App(): React.JSX.Element {
   const Page = page === 'notes' || page === 'home' ? null : PAGES[page]
 
   return (
-    <div className="flex h-full min-h-0">
+    <div className="lg-app-bg flex h-full min-h-0">
       <Sidebar
         currentPage={page}
         collapsed={collapsed}

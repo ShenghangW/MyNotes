@@ -43,11 +43,11 @@ export default function DayTodoPanel({
   return (
     <aside
       aria-label="To-dos for this day"
-      className="flex w-80 shrink-0 flex-col rounded-md border border-tone-blue-line bg-tone-blue p-4"
+      className="lg-glass flex w-80 shrink-0 flex-col rounded-md p-4"
     >
       <div className="flex items-baseline justify-between">
         <h2 className="text-sm font-medium text-text">To-do · {formatDueDate(date)}</h2>
-        <span className="text-xs text-text-muted">
+        <span className="lg-text-2 text-xs">
           {dayTodos.filter((todo) => !todo.done).length} remaining
         </span>
       </div>
@@ -86,7 +86,7 @@ export default function DayTodoPanel({
       ) : null}
 
       {dayTodos.length === 0 ? (
-        <p className="mt-3 text-sm text-text-muted">Nothing due on this day.</p>
+        <p className="lg-text-2 mt-3 text-sm">Nothing due on this day.</p>
       ) : null}
 
       <ul className="mt-3 flex-1 divide-y divide-border overflow-auto">
@@ -96,7 +96,7 @@ export default function DayTodoPanel({
               type="checkbox"
               aria-label={`Mark "${todo.text}" as done`}
               checked={todo.done}
-              className="mt-1 h-4 w-4 shrink-0 accent-accent"
+              className="lg-check mt-1 h-4 w-4 shrink-0"
               onChange={(event) => void onUpdate({ id: todo.id, done: event.target.checked })}
             />
             <div className="min-w-0 flex-1">
@@ -109,7 +109,7 @@ export default function DayTodoPanel({
                 maxLength={300}
                 className={cn(
                   'w-full rounded-sm border border-transparent bg-transparent px-1 text-sm outline-none focus:border-accent',
-                  todo.done ? 'text-text-muted line-through' : 'text-text'
+                  todo.done ? 'lg-text-2 line-through' : 'text-text'
                 )}
                 onKeyDown={(event) => {
                   if (event.key === 'Enter') {
@@ -132,7 +132,7 @@ export default function DayTodoPanel({
                 type="date"
                 aria-label={`Due date for "${todo.text}"`}
                 value={todo.dueDate ?? ''}
-                className="mt-0.5 h-6 rounded-sm border border-transparent bg-transparent px-1 text-xs text-text-muted outline-none hover:border-border focus:border-accent"
+                className="lg-text-2 mt-0.5 h-6 rounded-sm border border-transparent bg-transparent px-1 text-xs outline-none hover:border-border focus:border-accent"
                 onChange={(event) =>
                   void onUpdate({ id: todo.id, dueDate: event.target.value || null })
                 }
@@ -142,7 +142,7 @@ export default function DayTodoPanel({
               type="button"
               aria-label={`Delete "${todo.text}"`}
               title="Delete to-do"
-              className="flex h-7 w-7 shrink-0 items-center justify-center rounded-sm text-text-muted opacity-0 hover:text-accent focus:opacity-100 group-hover:opacity-100"
+              className="lg-text-2 flex h-7 w-7 shrink-0 items-center justify-center rounded-sm opacity-0 hover:text-accent focus:opacity-100 group-hover:opacity-100"
               onClick={() => void onDelete(todo.id)}
             >
               <IconTrash className="h-4 w-4" />

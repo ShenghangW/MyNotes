@@ -1,4 +1,5 @@
 import './assets/app.css'
+import './liquid-glass.css'
 
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'

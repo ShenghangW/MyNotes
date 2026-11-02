@@ -26,7 +26,7 @@ export default function UpcomingWidget({ onOpenCalendar }: UpcomingWidgetProps):
   return (
     <section
       aria-labelledby="upcoming-heading"
-      className="rounded-md border border-tone-orange-line bg-tone-orange p-4"
+      className="lg-glass rounded-md p-4"
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1">
@@ -35,7 +35,7 @@ export default function UpcomingWidget({ onOpenCalendar }: UpcomingWidgetProps):
             aria-label={folded ? 'Unfold upcoming events' : 'Fold upcoming events'}
             title={folded ? 'Unfold' : 'Fold'}
             aria-expanded={!folded}
-            className="flex h-7 w-7 items-center justify-center rounded-sm text-text-muted hover:text-accent"
+            className="lg-text-2 flex h-7 w-7 items-center justify-center rounded-sm hover:text-accent"
             onClick={toggleFolded}
           >
             <IconChevronDown
@@ -47,14 +47,14 @@ export default function UpcomingWidget({ onOpenCalendar }: UpcomingWidgetProps):
           </h2>
         </div>
         {folded && upcoming.length > 0 ? (
-          <span className="text-xs text-text-muted">{upcoming.length} upcoming</span>
+          <span className="lg-text-2 text-xs">{upcoming.length} upcoming</span>
         ) : null}
       </div>
 
       {folded ? null : (
         <>
           {!loading && upcoming.length === 0 ? (
-            <p className="mt-3 text-sm text-text-muted">No upcoming events.</p>
+            <p className="lg-text-2 mt-3 text-sm">No upcoming events.</p>
           ) : null}
 
           <ul className="mt-3 space-y-1">
@@ -75,14 +75,14 @@ export default function UpcomingWidget({ onOpenCalendar }: UpcomingWidgetProps):
                     />
                     <span className="min-w-0 flex-1">
                       <span className="block truncate text-sm text-text">{event.title}</span>
-                      <span className="block text-xs text-text-muted">
+                      <span className="lg-text-2 block text-xs">
                         {info.dates} · {info.time}
                       </span>
                     </span>
                     <span
                       className={cn(
                         'shrink-0 text-xs',
-                        info.label === 'Today' ? 'font-medium text-accent' : 'text-text-muted'
+                        info.label === 'Today' ? 'font-medium text-accent' : 'lg-text-2'
                       )}
                     >
                       {info.label}
@@ -101,7 +101,7 @@ export default function UpcomingWidget({ onOpenCalendar }: UpcomingWidgetProps):
                 expanded ? 'Show fewer events' : `Show all ${upcoming.length} upcoming events`
               }
               title={expanded ? 'Show fewer' : 'Show all'}
-              className="mx-auto mt-2 flex items-center gap-1 rounded-sm px-2 py-1 text-xs text-text-muted hover:text-accent"
+              className="lg-text-2 mx-auto mt-2 flex items-center gap-1 rounded-sm px-2 py-1 text-xs hover:text-accent"
               onClick={() => setExpanded((current) => !current)}
             >
               {expanded ? null : <span>{hiddenCount} more</span>}

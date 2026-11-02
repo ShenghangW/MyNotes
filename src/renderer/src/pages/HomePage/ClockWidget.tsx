@@ -22,7 +22,7 @@ function Clock(): React.JSX.Element {
   return (
     <>
       <div className="border-b border-border px-4 py-2">
-        <p className="text-xs tracking-wide text-text-muted uppercase">{weekday}</p>
+        <p className="lg-text-2 text-xs tracking-wide uppercase">{weekday}</p>
         <p className="text-sm text-text">{date}</p>
       </div>
       <p
@@ -58,7 +58,7 @@ export default function ClockWidget(): React.JSX.Element {
   return (
     <section
       aria-label="Clock"
-      className="overflow-hidden rounded-md border border-tone-gray-line bg-tone-gray text-center"
+      className="lg-glass overflow-hidden rounded-md text-center"
     >
       <div role="tablist" aria-label="Clock views" className="flex border-b border-border">
         {tabs.map((tab) => (
@@ -70,8 +70,8 @@ export default function ClockWidget(): React.JSX.Element {
             className={cn(
               'flex h-8 flex-1 items-center justify-center gap-1.5 text-xs',
               view === tab.id
-                ? 'bg-active font-medium text-text'
-                : 'text-text-muted hover:bg-hover hover:text-text'
+                ? 'lg-active font-medium'
+                : 'lg-text-2 hover:bg-hover hover:text-text'
             )}
             onClick={() => setView(tab.id)}
           >

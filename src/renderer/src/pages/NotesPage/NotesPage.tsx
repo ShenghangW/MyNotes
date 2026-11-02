@@ -42,7 +42,7 @@ function NoteCard({
       tabIndex={0}
       aria-label={`Note: ${note.title}`}
       className={cn(
-        'group relative cursor-pointer overflow-hidden rounded-md border border-border bg-surface text-left hover:border-accent focus:border-accent focus:outline-none',
+        'lg-glass group relative cursor-pointer overflow-hidden rounded-md text-left hover:border-accent focus:border-accent focus:outline-none',
         mode === 'list' ? 'flex items-center gap-4 px-4 py-3' : 'flex flex-col'
       )}
       onDoubleClick={() => onOpen(note.id)}
@@ -61,7 +61,7 @@ function NoteCard({
           />
         ) : (
           <div
-            className="h-24 w-full border-b border-tone-yellow-line bg-tone-yellow"
+            className="h-24 w-full border-b border-border"
             aria-hidden
           />
         )
@@ -71,7 +71,7 @@ function NoteCard({
         <h2 className="truncate text-sm font-medium text-text">{note.title}</h2>
         <p
           className={cn(
-            'mt-1 text-xs text-text-muted',
+            'lg-text-2 mt-1 text-xs',
             mode === 'grid' ? 'line-clamp-3 min-h-[3rem]' : 'truncate'
           )}
         >
@@ -85,7 +85,7 @@ function NoteCard({
           mode === 'grid' ? 'justify-between px-3 pb-3' : 'shrink-0'
         )}
       >
-        <span className="text-xs text-text-muted">{formatShortDate(note.updatedAt)}</span>
+        <span className="lg-text-2 text-xs">{formatShortDate(note.updatedAt)}</span>
         {groups.length > 0 ? (
           <select
             aria-label={`Group for ${note.title}`}
@@ -240,7 +240,7 @@ export default function NotesPage({
           <div className="flex items-center gap-3">
             <label className="relative block max-w-sm flex-1">
               <span className="sr-only">Search notes</span>
-              <IconSearch className="pointer-events-none absolute top-1/2 left-2.5 h-4 w-4 -translate-y-1/2 text-text-muted" />
+              <IconSearch className="lg-text-2 pointer-events-none absolute top-1/2 left-2.5 h-4 w-4 -translate-y-1/2" />
               <input
                 type="search"
                 value={query}
@@ -266,8 +266,8 @@ export default function NotesPage({
                   className={cn(
                     'flex h-9 w-9 items-center justify-center rounded-sm border',
                     mode === value
-                      ? 'border-accent text-accent'
-                      : 'border-border text-text-muted hover:text-text'
+                      ? 'lg-active border-accent'
+                      : 'lg-text-2 border-border hover:text-text'
                   )}
                   onClick={() => setMode(value)}
                 >
@@ -284,7 +284,7 @@ export default function NotesPage({
           ) : null}
 
           {!loading && !error && notes.length === 0 ? (
-            <p className="mt-6 text-sm text-text-muted">
+            <p className="lg-text-2 mt-6 text-sm">
               {searching
                 ? 'No notes match your search.'
                 : selection === 'all'

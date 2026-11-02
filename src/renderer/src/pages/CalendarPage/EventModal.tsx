@@ -117,7 +117,7 @@ export default function EventModal({
         role="dialog"
         aria-modal="true"
         aria-labelledby="event-modal-heading"
-        className="max-h-full w-full max-w-md overflow-auto rounded-md border border-border bg-raised p-5 shadow-lg"
+        className="lg-glass max-h-full w-full max-w-md overflow-auto rounded-md p-5"
       >
         <h2 id="event-modal-heading" className="text-base font-medium text-text">
           {event ? 'Edit event' : 'New event'}
@@ -146,14 +146,14 @@ export default function EventModal({
             <input
               type="checkbox"
               checked={draft.allDay}
-              className="h-4 w-4 accent-accent"
+              className="lg-check h-4 w-4"
               onChange={(changeEvent) => setDraft(setAllDay(draft, changeEvent.target.checked))}
             />
           </label>
 
           <div className="space-y-2">
             <div className="flex items-center justify-between gap-2">
-              <span className="w-12 text-sm text-text-muted">Starts</span>
+              <span className="lg-text-2 w-12 text-sm">Starts</span>
               <input
                 type="date"
                 aria-label="Start date"
@@ -174,7 +174,7 @@ export default function EventModal({
               )}
             </div>
             <div className="flex items-center justify-between gap-2">
-              <span className="w-12 text-sm text-text-muted">Ends</span>
+              <span className="lg-text-2 w-12 text-sm">Ends</span>
               <input
                 type="date"
                 aria-label="End date"
@@ -202,7 +202,7 @@ export default function EventModal({
           </div>
 
           <div className="flex items-center justify-between">
-            <span className="text-sm text-text-muted">Colour</span>
+            <span className="lg-text-2 text-sm">Colour</span>
             <div className="flex items-center gap-1.5" role="group" aria-label="Colour">
               {EVENT_COLORS.map((color) => (
                 <button
@@ -228,7 +228,7 @@ export default function EventModal({
               <input
                 type="checkbox"
                 checked={draft.reminderEnabled}
-                className="h-4 w-4 accent-accent"
+                className="lg-check h-4 w-4"
                 onChange={(changeEvent) =>
                   setDraft({ ...draft, reminderEnabled: changeEvent.target.checked })
                 }
@@ -237,7 +237,7 @@ export default function EventModal({
             <label className="flex items-center justify-between text-sm text-text">
               <span>
                 Add to to-do list
-                <span className="block text-xs text-text-muted">
+                <span className="lg-text-2 block text-xs">
                   Creates a to-do due on the start date
                 </span>
               </span>
@@ -245,7 +245,7 @@ export default function EventModal({
                 type="checkbox"
                 aria-label="Add to to-do list"
                 checked={draft.addToTodo}
-                className="h-4 w-4 accent-accent"
+                className="lg-check h-4 w-4"
                 onChange={(changeEvent) =>
                   setDraft({ ...draft, addToTodo: changeEvent.target.checked })
                 }

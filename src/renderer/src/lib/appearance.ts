@@ -15,7 +15,7 @@ export const THEMES: { id: ThemeId; label: string; description: string }[] = [
     label: 'Notion',
     description: 'Calm, minimal and monochrome: shades of black, white and grey'
   },
-  { id: 'glass', label: 'Apple Glass', description: 'Vivid frosted glass in shades of blue' }
+  { id: 'glass', label: 'Apple Glass', description: 'Soft frosted glass with faint blue-grey tints' }
 ]
 
 export const COLOR_MODES: { id: ColorMode; label: string }[] = [
