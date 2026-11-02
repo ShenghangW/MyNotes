@@ -18,7 +18,11 @@ A free, local-first desktop app for notes, to-dos, a calendar and a weekly timet
 
 ## Screenshots
 
-_Coming soon._
+### Notion (Light Theme)
+<img width="2548" height="1387" alt="image" src="https://github.com/user-attachments/assets/8f3a1837-622e-48de-a9c9-8f477f2c9031" />
+
+### Apple Glass (Dark Theme)
+  <img width="2559" height="1382" alt="image" src="https://github.com/user-attachments/assets/4beb465d-d979-4f36-a56f-a53ec629112b" />
 
 ## Quick start
 
