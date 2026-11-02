@@ -190,8 +190,8 @@ export default function DrawDialog({ onCancel, onInsert }: DrawDialogProps): Rea
     cn(
       'h-8 rounded-sm border px-2.5 text-sm disabled:opacity-50',
       active
-        ? 'lg-active border-accent font-medium'
-        : 'lg-text-2 border-border hover:bg-hover hover:text-text'
+        ? 'border-accent bg-active font-medium text-text'
+        : 'border-border text-text-muted hover:bg-hover hover:text-text'
     )
 
   return (
@@ -200,13 +200,13 @@ export default function DrawDialog({ onCancel, onInsert }: DrawDialogProps): Rea
         role="dialog"
         aria-modal="true"
         aria-labelledby="draw-dialog-heading"
-        className="lg-glass flex max-h-full w-full max-w-[960px] flex-col gap-3 overflow-auto rounded-md p-4"
+        className="flex max-h-full w-full max-w-[960px] flex-col gap-3 overflow-auto rounded-md border border-border bg-raised p-4 shadow-lg"
       >
         <div className="flex items-center justify-between">
           <h2 id="draw-dialog-heading" className="text-base font-medium text-text">
             Draw
           </h2>
-          <p className="lg-text-2 text-xs">Use your mouse, finger or pen.</p>
+          <p className="text-xs text-text-muted">Use your mouse, finger or pen.</p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">

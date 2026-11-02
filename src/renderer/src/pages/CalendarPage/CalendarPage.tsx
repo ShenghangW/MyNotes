@@ -177,7 +177,7 @@ export default function CalendarPage(): React.JSX.Element {
       ) : null}
 
       <div className="mt-4 flex h-[calc(100vh-8rem)] min-h-[520px] gap-4">
-        <div className="mn-calendar lg-glass min-w-0 flex-1 rounded-md p-4">
+        <div className="mn-calendar min-w-0 flex-1 rounded-md border border-border bg-surface p-4">
           <FullCalendar
             ref={calendarRef}
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}

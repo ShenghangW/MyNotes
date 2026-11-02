@@ -42,7 +42,7 @@ export default function TodoWidget(): React.JSX.Element {
   return (
     <section
       aria-labelledby="todo-heading"
-      className="lg-glass rounded-md p-4"
+      className="rounded-md border border-tone-blue-line bg-tone-blue p-4"
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1">
@@ -51,7 +51,7 @@ export default function TodoWidget(): React.JSX.Element {
             aria-label={folded ? 'Unfold to-do list' : 'Fold to-do list'}
             title={folded ? 'Unfold' : 'Fold'}
             aria-expanded={!folded}
-            className="lg-text-2 flex h-7 w-7 items-center justify-center rounded-sm hover:text-accent"
+            className="flex h-7 w-7 items-center justify-center rounded-sm text-text-muted hover:text-accent"
             onClick={toggleFolded}
           >
             <IconChevronDown
@@ -63,7 +63,7 @@ export default function TodoWidget(): React.JSX.Element {
           </h2>
         </div>
         <div className="flex items-center gap-2">
-          <span className="lg-text-2 text-xs" data-testid="todo-remaining">
+          <span className="text-xs text-text-muted" data-testid="todo-remaining">
             {remaining} remaining
           </span>
           <button
@@ -131,7 +131,7 @@ export default function TodoWidget(): React.JSX.Element {
           </button>
           <button
             type="button"
-            className="lg-text-2 h-9 rounded-sm px-2 text-sm hover:text-text"
+            className="h-9 rounded-sm px-2 text-sm text-text-muted hover:text-text"
             onClick={closeForm}
           >
             Cancel
@@ -146,7 +146,7 @@ export default function TodoWidget(): React.JSX.Element {
       ) : null}
 
       {!folded && !loading && todos.length === 0 ? (
-        <p className="lg-text-2 mt-3 text-sm">
+        <p className="mt-3 text-sm text-text-muted">
           Nothing to do. Click + to add your first to-do.
         </p>
       ) : null}
@@ -161,13 +161,13 @@ export default function TodoWidget(): React.JSX.Element {
                   type="checkbox"
                   aria-label={`Mark "${todo.text}" as done`}
                   checked={todo.done}
-                  className="lg-check h-4 w-4 shrink-0"
+                  className="h-4 w-4 shrink-0 accent-accent"
                   onChange={(event) => void updateTodo({ id: todo.id, done: event.target.checked })}
                 />
                 <span
                   className={cn(
                     'min-w-0 flex-1 break-words text-sm',
-                    todo.done ? 'lg-text-2 line-through' : 'text-text'
+                    todo.done ? 'text-text-muted line-through' : 'text-text'
                   )}
                 >
                   {todo.text}
@@ -178,7 +178,7 @@ export default function TodoWidget(): React.JSX.Element {
                     data-testid="todo-due"
                     className={cn(
                       'shrink-0 text-xs',
-                      overdue ? 'font-medium text-accent' : 'lg-text-2'
+                      overdue ? 'font-medium text-accent' : 'text-text-muted'
                     )}
                   >
                     {overdue ? 'Overdue · ' : ''}
@@ -190,7 +190,7 @@ export default function TodoWidget(): React.JSX.Element {
                   type="date"
                   aria-label={`Due date for "${todo.text}"`}
                   value={todo.dueDate ?? ''}
-                  className="lg-text-2 h-7 w-[7.5rem] shrink-0 rounded-sm border border-transparent bg-transparent px-1 text-xs opacity-0 outline-none group-hover:opacity-100 focus:border-accent focus:opacity-100"
+                  className="h-7 w-[7.5rem] shrink-0 rounded-sm border border-transparent bg-transparent px-1 text-xs text-text-muted opacity-0 outline-none group-hover:opacity-100 focus:border-accent focus:opacity-100"
                   onChange={(event) =>
                     void updateTodo({ id: todo.id, dueDate: event.target.value || null })
                   }
@@ -199,7 +199,7 @@ export default function TodoWidget(): React.JSX.Element {
                   type="button"
                   aria-label={`Delete "${todo.text}"`}
                   title="Delete to-do"
-                  className="lg-text-2 flex h-7 w-7 shrink-0 items-center justify-center rounded-sm opacity-0 hover:text-accent focus:opacity-100 group-hover:opacity-100"
+                  className="flex h-7 w-7 shrink-0 items-center justify-center rounded-sm text-text-muted opacity-0 hover:text-accent focus:opacity-100 group-hover:opacity-100"
                   onClick={() => void deleteTodo(todo.id)}
                 >
                   <IconTrash className="h-4 w-4" />
@@ -216,7 +216,7 @@ export default function TodoWidget(): React.JSX.Element {
           aria-expanded={expanded}
           aria-label={expanded ? 'Show fewer to-dos' : `Show all ${todos.length} to-dos`}
           title={expanded ? 'Show fewer' : 'Show all'}
-          className="lg-text-2 mx-auto mt-2 flex items-center gap-1 rounded-sm px-2 py-1 text-xs hover:text-accent"
+          className="mx-auto mt-2 flex items-center gap-1 rounded-sm px-2 py-1 text-xs text-text-muted hover:text-accent"
           onClick={() => setExpanded((current) => !current)}
         >
           {expanded ? null : <span>{hiddenCount} more</span>}

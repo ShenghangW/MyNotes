@@ -17,13 +17,13 @@ export default function RecentNotesWidget({
   return (
     <section
       aria-labelledby="recent-notes-heading"
-      className="lg-glass rounded-md p-4"
+      className="rounded-md border border-tone-yellow-line bg-tone-yellow p-4"
     >
       <h2 id="recent-notes-heading" className="text-sm font-medium text-text">
         Recent notes
       </h2>
       {recent.length === 0 ? (
-        <p className="lg-text-2 mt-3 text-sm">
+        <p className="mt-3 text-sm text-text-muted">
           {loading ? 'Loading…' : 'No notes yet. Use “Add new note” to start one.'}
         </p>
       ) : (
@@ -38,10 +38,10 @@ export default function RecentNotesWidget({
                 <span className="min-w-0 flex-1">
                   <span className="block truncate text-sm text-text">{note.title}</span>
                   {note.preview ? (
-                    <span className="lg-text-2 block truncate text-xs">{note.preview}</span>
+                    <span className="block truncate text-xs text-text-muted">{note.preview}</span>
                   ) : null}
                 </span>
-                <span className="lg-text-2 shrink-0 text-xs">
+                <span className="shrink-0 text-xs text-text-muted">
                   {formatShortDate(note.updatedAt)}
                 </span>
               </button>
