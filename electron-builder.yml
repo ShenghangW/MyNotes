@@ -17,12 +17,13 @@ extraResources:
     to: sql-wasm.wasm
 win:
   executableName: myNote
+  icon: build/icon.ico
   target:
     - nsis
-    - dir
 nsis:
-  oneClick: true
-  artifactName: myNote-setup.${ext}
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  artifactName: myNote-setup-${version}.${ext}
   shortcutName: ${productName}
   uninstallDisplayName: ${productName}
   createDesktopShortcut: always
